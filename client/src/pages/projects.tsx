@@ -3,7 +3,6 @@ import { projects } from "@/lib/mock-data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Github, Play } from "lucide-react";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 export default function Projects() {
   return (
@@ -16,39 +15,30 @@ export default function Projects() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-8">
+        <div className="space-y-6">
           {projects.map((project) => (
             <div 
               key={project.id}
-              className="group grid grid-cols-1 lg:grid-cols-2 gap-8 border border-border rounded-xl overflow-hidden bg-card hover:shadow-lg transition-all duration-300"
+              className="group p-6 lg:p-8 border border-border rounded-xl bg-card hover:border-primary/30 hover:shadow-lg transition-all duration-300"
             >
-              {/* Image Section */}
-              <div className="relative h-64 lg:h-full min-h-[300px] overflow-hidden bg-muted">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10 opacity-60" />
-                <img 
-                  src={project.image} 
-                  alt={project.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute bottom-4 left-4 right-4 z-20 flex gap-2">
-                   {project.tags.map(tag => (
-                     <Badge key={tag} variant="secondary" className="bg-background/90 backdrop-blur text-xs">
-                       {tag}
-                     </Badge>
-                   ))}
-                </div>
-              </div>
-
-              {/* Content Section */}
-              <div className="p-6 lg:p-8 flex flex-col justify-center">
-                <h2 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors">
+              <div className="space-y-4">
+                <h2 className="text-2xl font-bold group-hover:text-primary transition-colors">
                   {project.title}
                 </h2>
-                <p className="text-muted-foreground leading-relaxed mb-6 font-serif">
+                
+                <p className="text-muted-foreground leading-relaxed font-serif">
                   {project.description}
                 </p>
+
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {project.tags.map(tag => (
+                    <Badge key={tag} variant="secondary" className="text-xs">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
                 
-                <div className="flex gap-4 mt-auto">
+                <div className="flex gap-4 mt-6 pt-4 border-t border-border/50">
                   <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
                     <Button variant="outline" className="gap-2">
                       <Github className="w-4 h-4" />

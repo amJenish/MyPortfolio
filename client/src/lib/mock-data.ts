@@ -1,11 +1,7 @@
-import aiImage from "@assets/generated_images/abstract_visualization_of_neural_networks_and_ai_data_streams.png";
-import sysImage from "@assets/generated_images/system_architecture_diagram_visualization.png";
-
 export interface Project {
   id: string;
   title: string;
   description: string;
-  image: string;
   githubUrl: string;
   videoUrl?: string;
   tags: string[];
@@ -24,7 +20,6 @@ export const projects: Project[] = [
     id: "1",
     title: "Neural Network Visualization Tool",
     description: "An interactive web-based tool for visualizing the internal state of neural networks in real-time. Built with WebGL and React to handle large-scale matrix operations on the client side.",
-    image: aiImage,
     githubUrl: "https://github.com/replit/neural-vis",
     tags: ["TypeScript", "WebGL", "React", "Machine Learning"],
   },
@@ -32,16 +27,14 @@ export const projects: Project[] = [
     id: "2",
     title: "Distributed System Simulator",
     description: "A simulation framework for testing consensus algorithms in distributed systems. Allows users to define network topology and inject failures to observe system resilience.",
-    image: sysImage,
     githubUrl: "https://github.com/replit/dist-sim",
-    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", // Placeholder
+    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     tags: ["Go", "Distributed Systems", "Algorithm Design"],
   },
   {
     id: "3",
     title: "Compiler Optimization Research",
     description: "Experimental compiler pass implementation for LLVM that optimizes memory access patterns for graph processing algorithms.",
-    image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop",
     githubUrl: "https://github.com/replit/llvm-pass",
     tags: ["C++", "LLVM", "Compilers"],
   }
