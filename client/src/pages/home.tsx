@@ -20,6 +20,41 @@ export default function Home() {
           </p>
         </div>
 
+        {/* Skills */}
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold">Skills & Expertise</h2>
+          <div className="space-y-8">
+            <div>
+              <p className="text-xs font-mono text-primary uppercase tracking-widest mb-3">Languages</p>
+              <p className="text-foreground leading-relaxed">{skills.languages.join(", ")}</p>
+            </div>
+
+            <div>
+              <p className="text-xs font-mono text-primary uppercase tracking-widest mb-3">Frontend</p>
+              <p className="text-foreground leading-relaxed">{skills.frontend.join(", ")}</p>
+            </div>
+
+            <div>
+              <p className="text-xs font-mono text-primary uppercase tracking-widest mb-3">Backend</p>
+              <p className="text-foreground leading-relaxed">{skills.backend.join(", ")}</p>
+            </div>
+
+            <div>
+              <p className="text-xs font-mono text-primary uppercase tracking-widest mb-3">Tools & Infrastructure</p>
+              <p className="text-foreground leading-relaxed">{skills.tools.join(", ")}</p>
+            </div>
+
+            <div className="pt-4 border-t border-border/50">
+              <p className="text-xs font-mono text-primary uppercase tracking-widest mb-3">Specializations</p>
+              <div className="flex flex-wrap gap-2">
+                {skills.specialties.map(skill => (
+                  <Badge key={skill} variant="secondary" className="text-xs">{skill}</Badge>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Highlighted Projects */}
         {featuredProjects.length > 0 && (
           <div className="space-y-6">
@@ -64,57 +99,6 @@ export default function Home() {
             </div>
           </div>
         )}
-
-        {/* Skills */}
-        <div className="space-y-6">
-          <h2 className="text-2xl font-bold">Skills</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Languages</h3>
-              <div className="flex flex-wrap gap-2">
-                {skills.languages.map(skill => (
-                  <Badge key={skill} variant="outline" className="text-xs">{skill}</Badge>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Frontend</h3>
-              <div className="flex flex-wrap gap-2">
-                {skills.frontend.map(skill => (
-                  <Badge key={skill} variant="outline" className="text-xs">{skill}</Badge>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Backend</h3>
-              <div className="flex flex-wrap gap-2">
-                {skills.backend.map(skill => (
-                  <Badge key={skill} variant="outline" className="text-xs">{skill}</Badge>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Tools</h3>
-              <div className="flex flex-wrap gap-2">
-                {skills.tools.map(skill => (
-                  <Badge key={skill} variant="outline" className="text-xs">{skill}</Badge>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-3 pt-4 border-t border-border/50">
-            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Specializations</h3>
-            <div className="flex flex-wrap gap-2">
-              {skills.specialties.map(skill => (
-                <Badge key={skill} variant="secondary" className="text-xs">{skill}</Badge>
-              ))}
-            </div>
-          </div>
-        </div>
       </div>
     </Layout>
   );
