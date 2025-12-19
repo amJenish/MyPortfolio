@@ -106,3 +106,11 @@ We plan to simulate this on a physical testbed of 50 Raspberry Pi nodes deployed
     `
   }
 ];
+
+export const skills = {
+  languages: ["TypeScript", "Python", "Go", "C++", "Rust", "Java"],
+  frontend: ["React", "Next.js", "Tailwind CSS", "WebGL"],
+  backend: ["Node.js", "Express", "PostgreSQL", "Redis"],
+  tools: ["Docker", "Kubernetes", "LLVM", "Git", "AWS"],
+  specialties: ["Distributed Systems", "Compiler Design", "Machine Learning", "Systems Engineering"]
+};
