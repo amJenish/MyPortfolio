@@ -21,32 +21,28 @@ export default function Home() {
         </div>
 
         {/* Skills */}
-        <div className="space-y-6">
-          <h2 className="text-2xl font-bold">Skills & Expertise</h2>
-          <div className="space-y-8">
+        <div className="space-y-4">
+          <h2 className="text-2xl font-bold">Skills</h2>
+          <div className="space-y-2 text-sm">
             <div>
-              <p className="text-xs font-mono text-primary uppercase tracking-widest mb-3">Languages</p>
-              <p className="text-foreground leading-relaxed">{skills.languages.join(", ")}</p>
+              <span className="font-mono text-xs text-primary uppercase tracking-widest">Languages: </span>
+              <span className="text-foreground">{skills.languages.join(", ")}</span>
             </div>
-
             <div>
-              <p className="text-xs font-mono text-primary uppercase tracking-widest mb-3">Frontend</p>
-              <p className="text-foreground leading-relaxed">{skills.frontend.join(", ")}</p>
+              <span className="font-mono text-xs text-primary uppercase tracking-widest">Frontend: </span>
+              <span className="text-foreground">{skills.frontend.join(", ")}</span>
             </div>
-
             <div>
-              <p className="text-xs font-mono text-primary uppercase tracking-widest mb-3">Backend</p>
-              <p className="text-foreground leading-relaxed">{skills.backend.join(", ")}</p>
+              <span className="font-mono text-xs text-primary uppercase tracking-widest">Backend: </span>
+              <span className="text-foreground">{skills.backend.join(", ")}</span>
             </div>
-
             <div>
-              <p className="text-xs font-mono text-primary uppercase tracking-widest mb-3">Tools & Infrastructure</p>
-              <p className="text-foreground leading-relaxed">{skills.tools.join(", ")}</p>
+              <span className="font-mono text-xs text-primary uppercase tracking-widest">Tools: </span>
+              <span className="text-foreground">{skills.tools.join(", ")}</span>
             </div>
-
-            <div className="pt-4 border-t border-border/50">
-              <p className="text-xs font-mono text-primary uppercase tracking-widest mb-3">Specializations</p>
-              <div className="flex flex-wrap gap-2">
+            <div className="pt-2">
+              <span className="font-mono text-xs text-primary uppercase tracking-widest">Specializations: </span>
+              <div className="flex flex-wrap gap-2 mt-2">
                 {skills.specialties.map(skill => (
                   <Badge key={skill} variant="secondary" className="text-xs">{skill}</Badge>
                 ))}
