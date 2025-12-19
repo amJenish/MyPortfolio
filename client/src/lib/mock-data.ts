@@ -5,6 +5,7 @@ export interface Project {
   githubUrl: string;
   videoUrl?: string;
   tags: string[];
+  featured?: boolean;
 }
 
 export interface ResearchPaper {
@@ -22,6 +23,7 @@ export const projects: Project[] = [
     description: "An interactive web-based tool for visualizing the internal state of neural networks in real-time. Built with WebGL and React to handle large-scale matrix operations on the client side.",
     githubUrl: "https://github.com/replit/neural-vis",
     tags: ["TypeScript", "WebGL", "React", "Machine Learning"],
+    featured: true,
   },
   {
     id: "2",
@@ -30,6 +32,7 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/replit/dist-sim",
     videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     tags: ["Go", "Distributed Systems", "Algorithm Design"],
+    featured: true,
   },
   {
     id: "3",
