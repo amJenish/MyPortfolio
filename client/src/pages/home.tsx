@@ -21,32 +21,32 @@ export default function Home() {
         </div>
 
         {/* Skills */}
-        <div className="space-y-4">
+        <div className="space-y-6">
           <h2 className="text-2xl font-bold">Skills</h2>
-          <div className="space-y-2 text-sm">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
             <div>
-              <span className="font-mono text-xs text-primary uppercase tracking-widest">Languages: </span>
-              <span className="text-foreground">{skills.languages.join(", ")}</span>
+              <p className="font-semibold text-foreground mb-1">Languages</p>
+              <p className="text-muted-foreground">{skills.languages.join(", ")}</p>
             </div>
             <div>
-              <span className="font-mono text-xs text-primary uppercase tracking-widest">Frontend: </span>
-              <span className="text-foreground">{skills.frontend.join(", ")}</span>
+              <p className="font-semibold text-foreground mb-1">Frontend</p>
+              <p className="text-muted-foreground">{skills.frontend.join(", ")}</p>
             </div>
             <div>
-              <span className="font-mono text-xs text-primary uppercase tracking-widest">Backend: </span>
-              <span className="text-foreground">{skills.backend.join(", ")}</span>
+              <p className="font-semibold text-foreground mb-1">Backend</p>
+              <p className="text-muted-foreground">{skills.backend.join(", ")}</p>
             </div>
             <div>
-              <span className="font-mono text-xs text-primary uppercase tracking-widest">Tools: </span>
-              <span className="text-foreground">{skills.tools.join(", ")}</span>
+              <p className="font-semibold text-foreground mb-1">Tools</p>
+              <p className="text-muted-foreground">{skills.tools.join(", ")}</p>
             </div>
-            <div className="pt-2">
-              <span className="font-mono text-xs text-primary uppercase tracking-widest">Specializations: </span>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {skills.specialties.map(skill => (
-                  <Badge key={skill} variant="secondary" className="text-xs">{skill}</Badge>
-                ))}
-              </div>
+          </div>
+          <div className="pt-2">
+            <p className="font-semibold text-foreground mb-3">Specializations</p>
+            <div className="flex flex-wrap gap-2">
+              {skills.specialties.map(skill => (
+                <Badge key={skill} variant="secondary" className="text-xs">{skill}</Badge>
+              ))}
             </div>
           </div>
         </div>
