@@ -135,26 +135,34 @@ export default function Home() {
         {featuredProjects.length > 0 && (
           <section className="space-y-6">
             <h2 className="text-2xl font-bold">Featured</h2>
-            <div className="p-6 border border-border rounded-lg bg-card">
-              <h3 className="text-xl font-bold mb-2">{featuredProjects[0].title}</h3>
-              <p className="text-muted-foreground text-sm mb-4 font-serif leading-relaxed">
-                {featuredProjects[0].description}
-              </p>
-              <div className="flex flex-wrap gap-2 mb-4">
-                {featuredProjects[0].tags.map(tag => (
-                  <Badge key={tag} variant="secondary" className="text-xs">
-                    {tag}
-                  </Badge>
-                ))}
+            <Link href={`/project/${featuredProjects[0].id}`}>
+              <div className="group p-6 border border-border rounded-lg bg-card hover:border-primary/40 hover:shadow-md transition-all duration-200 cursor-pointer">
+                <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">{featuredProjects[0].title}</h3>
+                <p className="text-muted-foreground text-sm mb-4 font-serif leading-relaxed">
+                  {featuredProjects[0].description}
+                </p>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {featuredProjects[0].tags.map(tag => (
+                    <Badge key={tag} variant="secondary" className="text-xs">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
               </div>
-              <div className="flex gap-3 pt-4 border-t border-border/50">
-                <a href={featuredProjects[0].githubUrl} target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" size="sm" className="gap-2">
-                    <Github className="w-4 h-4" />
-                    View Code
-                  </Button>
-                </a>
-              </div>
+            </Link>
+            <div className="flex gap-3 pt-2">
+              <a href={featuredProjects[0].githubUrl} target="_blank" rel="noopener noreferrer">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Github className="w-4 h-4" />
+                  View Code
+                </Button>
+              </a>
+              <Link href={`/project/${featuredProjects[0].id}`}>
+                <Button size="sm" className="gap-2">
+                  Learn More
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </Link>
             </div>
           </section>
         )}

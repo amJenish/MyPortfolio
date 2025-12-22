@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import Projects from "@/pages/projects";
+import ProjectDetail from "@/pages/project-detail";
 import Research from "@/pages/research";
 import Kaggle from "@/pages/kaggle";
 
@@ -14,6 +15,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/projects" component={Projects} />
+      <Route path="/project/:id" component={ProjectDetail} />
       <Route path="/research" component={Research} />
       <Route path="/kaggle" component={Kaggle} />
       <Route component={NotFound} />
