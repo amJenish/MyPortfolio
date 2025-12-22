@@ -1,7 +1,7 @@
 import Layout from "@/components/layout";
 import { Button } from "@/components/ui/button";
-import { Github, Play, FolderGit2, BookOpen, Award } from "lucide-react";
-import { projects, skills } from "@/lib/mock-data";
+import { ArrowRight, Github, Linkedin } from "lucide-react";
+import { projects, skills, researchPapers, kaggleProjects } from "@/lib/mock-data";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
 
@@ -10,122 +10,153 @@ export default function Home() {
 
   return (
     <Layout>
-      <div className="space-y-16">
-        {/* Intro */}
-        <div className="space-y-4 max-w-2xl">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-            Computer Science researcher and fullstack engineer.
-          </h1>
-          <p className="text-lg text-muted-foreground font-serif">
-            Passionate about distributed systems, compiler design, and artificial intelligence.
-          </p>
-        </div>
+      <div className="space-y-20">
+        {/* Hero Section */}
+        <section className="space-y-6">
+          <div className="space-y-4">
+            <h1 className="text-5xl md:text-6xl font-bold tracking-tight leading-tight">
+              Engineering systems that scale.
+            </h1>
+            <p className="text-xl text-muted-foreground font-serif max-w-3xl leading-relaxed">
+              Computer Science researcher and fullstack engineer building high-performance distributed systems, optimizing compilers, and exploring machine learning applications.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3 pt-4">
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" size="lg" className="gap-2">
+                <Github className="w-4 h-4" />
+                GitHub
+              </Button>
+            </a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" size="lg" className="gap-2">
+                <Linkedin className="w-4 h-4" />
+                LinkedIn
+              </Button>
+            </a>
+          </div>
+        </section>
 
-        {/* Navigation to Main Sections */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Link href="/projects">
-            <div className="p-6 border border-border rounded-lg bg-card hover:border-primary/40 hover:shadow-sm transition-all duration-200 cursor-pointer">
-              <FolderGit2 className="w-6 h-6 text-primary mb-3" />
-              <h3 className="font-bold mb-2">Projects</h3>
-              <p className="text-sm text-muted-foreground">
-                Engineering projects and technical work
-              </p>
+        {/* Core Strengths */}
+        <section className="space-y-6">
+          <h2 className="text-2xl font-bold">Core Strengths</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-5 border border-border rounded-lg bg-card">
+              <p className="font-semibold text-sm uppercase tracking-wide text-primary mb-2">Distributed Systems</p>
+              <p className="text-sm text-muted-foreground">Consensus algorithms, fault tolerance, large-scale architecture design</p>
             </div>
-          </Link>
-          <Link href="/research">
-            <div className="p-6 border border-border rounded-lg bg-card hover:border-primary/40 hover:shadow-sm transition-all duration-200 cursor-pointer">
-              <BookOpen className="w-6 h-6 text-primary mb-3" />
-              <h3 className="font-bold mb-2">Research</h3>
-              <p className="text-sm text-muted-foreground">
-                Academic papers and technical research
-              </p>
+            <div className="p-5 border border-border rounded-lg bg-card">
+              <p className="font-semibold text-sm uppercase tracking-wide text-primary mb-2">Compiler Design</p>
+              <p className="text-sm text-muted-foreground">LLVM optimization, memory efficiency, performance tuning</p>
             </div>
-          </Link>
-          <Link href="/kaggle">
-            <div className="p-6 border border-border rounded-lg bg-card hover:border-primary/40 hover:shadow-sm transition-all duration-200 cursor-pointer">
-              <Award className="w-6 h-6 text-primary mb-3" />
-              <h3 className="font-bold mb-2">Kaggle</h3>
-              <p className="text-sm text-muted-foreground">
-                Machine learning competition notebooks
-              </p>
-            </div>
-          </Link>
-        </div>
-
-        {/* Skills */}
-        <div className="space-y-6">
-          <h2 className="text-2xl font-bold">Skills</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-            <div>
-              <p className="font-semibold text-foreground mb-1">Languages</p>
-              <p className="text-muted-foreground">{skills.languages.join(", ")}</p>
-            </div>
-            <div>
-              <p className="font-semibold text-foreground mb-1">Frontend</p>
-              <p className="text-muted-foreground">{skills.frontend.join(", ")}</p>
-            </div>
-            <div>
-              <p className="font-semibold text-foreground mb-1">Backend</p>
-              <p className="text-muted-foreground">{skills.backend.join(", ")}</p>
-            </div>
-            <div>
-              <p className="font-semibold text-foreground mb-1">Tools</p>
-              <p className="text-muted-foreground">{skills.tools.join(", ")}</p>
+            <div className="p-5 border border-border rounded-lg bg-card">
+              <p className="font-semibold text-sm uppercase tracking-wide text-primary mb-2">Full Stack Development</p>
+              <p className="text-sm text-muted-foreground">React, Node.js, PostgreSQL, system architecture</p>
             </div>
           </div>
-          <div className="pt-2">
-            <p className="font-semibold text-foreground mb-3">Specializations</p>
-            <div className="flex flex-wrap gap-2">
-              {skills.specialties.map(skill => (
-                <Badge key={skill} variant="secondary" className="text-xs">{skill}</Badge>
-              ))}
+        </section>
+
+        {/* Technical Toolkit */}
+        <section className="space-y-6">
+          <h2 className="text-2xl font-bold">Technical Toolkit</h2>
+          <div className="space-y-5">
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">Languages</p>
+              <div className="flex flex-wrap gap-2">
+                {skills.languages.map(skill => (
+                  <Badge key={skill} variant="outline" className="text-xs">{skill}</Badge>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">Frameworks & Tools</p>
+              <div className="flex flex-wrap gap-2">
+                {[...skills.frontend, ...skills.backend, ...skills.tools].map(skill => (
+                  <Badge key={skill} variant="outline" className="text-xs">{skill}</Badge>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Highlighted Projects */}
-        {featuredProjects.length > 0 && (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold">Highlighted Projects</h2>
-            <div className="space-y-4">
-              {featuredProjects.map((project) => (
-                <div 
-                  key={project.id}
-                  className="p-6 border border-border rounded-lg bg-card hover:border-primary/40 hover:shadow-sm transition-all duration-200"
-                >
-                  <h3 className="text-lg font-bold mb-2">
-                    {project.title}
-                  </h3>
-                  <p className="text-muted-foreground text-sm mb-4 font-serif leading-relaxed">
-                    {project.description}
-                  </p>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {project.tags.map(tag => (
-                      <Badge key={tag} variant="secondary" className="text-xs">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                  <div className="flex gap-3">
-                    <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline" size="sm" className="gap-2 h-9">
-                        <Github className="w-4 h-4" />
-                        Code
-                      </Button>
-                    </a>
-                    {project.videoUrl && (
-                      <a href={project.videoUrl} target="_blank" rel="noopener noreferrer">
-                        <Button variant="ghost" size="sm" className="gap-2 h-9 text-primary hover:bg-primary/10">
-                          <Play className="w-4 h-4" />
-                          Demo
-                        </Button>
-                      </a>
-                    )}
-                  </div>
+        {/* Portfolio Sections */}
+        <section className="space-y-8">
+          <h2 className="text-2xl font-bold">Work & Research</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Projects */}
+            <Link href="/projects" className="group">
+              <div className="p-6 border border-border rounded-lg bg-card hover:border-primary/40 hover:shadow-md transition-all duration-200 h-full">
+                <div className="flex items-start justify-between mb-4">
+                  <h3 className="text-lg font-bold group-hover:text-primary transition-colors">Projects</h3>
+                  <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
                 </div>
-              ))}
-            </div>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Engineering projects showcasing systems design and technical implementation
+                </p>
+                <div className="text-2xl font-bold text-primary">{projects.length}</div>
+                <p className="text-xs text-muted-foreground mt-1">projects</p>
+              </div>
+            </Link>
+
+            {/* Research */}
+            <Link href="/research" className="group">
+              <div className="p-6 border border-border rounded-lg bg-card hover:border-primary/40 hover:shadow-md transition-all duration-200 h-full">
+                <div className="flex items-start justify-between mb-4">
+                  <h3 className="text-lg font-bold group-hover:text-primary transition-colors">Research</h3>
+                  <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                </div>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Academic papers and technical research in computer systems
+                </p>
+                <div className="text-2xl font-bold text-primary">{researchPapers.length}</div>
+                <p className="text-xs text-muted-foreground mt-1">papers</p>
+              </div>
+            </Link>
+
+            {/* Kaggle */}
+            <Link href="/kaggle" className="group">
+              <div className="p-6 border border-border rounded-lg bg-card hover:border-primary/40 hover:shadow-md transition-all duration-200 h-full">
+                <div className="flex items-start justify-between mb-4">
+                  <h3 className="text-lg font-bold group-hover:text-primary transition-colors">Kaggle</h3>
+                  <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                </div>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Machine learning competition notebooks and data science projects
+                </p>
+                <div className="text-2xl font-bold text-primary">{kaggleProjects.length}</div>
+                <p className="text-xs text-muted-foreground mt-1">competitions</p>
+              </div>
+            </Link>
           </div>
+        </section>
+
+        {/* Featured Project */}
+        {featuredProjects.length > 0 && (
+          <section className="space-y-6">
+            <h2 className="text-2xl font-bold">Featured</h2>
+            <div className="p-6 border border-border rounded-lg bg-card">
+              <h3 className="text-xl font-bold mb-2">{featuredProjects[0].title}</h3>
+              <p className="text-muted-foreground text-sm mb-4 font-serif leading-relaxed">
+                {featuredProjects[0].description}
+              </p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {featuredProjects[0].tags.map(tag => (
+                  <Badge key={tag} variant="secondary" className="text-xs">
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+              <div className="flex gap-3 pt-4 border-t border-border/50">
+                <a href={featuredProjects[0].githubUrl} target="_blank" rel="noopener noreferrer">
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <Github className="w-4 h-4" />
+                    View Code
+                  </Button>
+                </a>
+              </div>
+            </div>
+          </section>
         )}
       </div>
     </Layout>
