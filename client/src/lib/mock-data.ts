@@ -13,7 +13,15 @@ export interface ResearchPaper {
   title: string;
   date: string;
   summary: string;
-  content: string;
+  pdfUrl: string;
+}
+
+export interface KaggleProject {
+  id: string;
+  title: string;
+  date: string;
+  summary: string;
+  pdfUrl: string;
 }
 
 export const projects: Project[] = [
@@ -49,61 +57,31 @@ export const researchPapers: ResearchPaper[] = [
     title: "Efficient Graph Processing on Heterogeneous Architectures",
     date: "2024-10-15",
     summary: "Exploring novel techniques for partitioning graph datasets across CPU and GPU memory hierarchies to minimize latency.",
-    content: `
-# Efficient Graph Processing on Heterogeneous Architectures
-
-## Abstract
-This paper explores novel techniques for partitioning graph datasets across CPU and GPU memory hierarchies. As graph datasets grow exponentially, traditional single-node processing becomes a bottleneck. We propose a hybrid approach...
-
-## Introduction
-Graph processing is fundamental to social network analysis, recommendation systems, and bioinformatics. The challenge lies in the irregular memory access patterns typical of graph traversal algorithms like BFS and PageRank.
-
-### The Memory Wall
-The primary bottleneck in modern graph processing is not compute, but memory bandwidth. Our analysis shows that...
-
-\`\`\`cpp
-// Example of optimized edge traversal
-void traverse(Graph& g, Node start) {
-    for (auto& edge : g.edges(start)) {
-        prefetch(edge.target);
-        process(edge);
-    }
-}
-\`\`\`
-
-## Methodology
-We implemented a custom allocator that groups graph nodes based on connectivity density. High-degree nodes are placed in GPU memory, while the long tail of low-degree nodes resides in host RAM.
-
-## Results
-Our benchmarks indicate a **3.5x speedup** over standard CSR (Compressed Sparse Row) implementations on the Graph500 dataset.
-
-## Conclusion
-Heterogeneous architectures offer a promising path forward for large-scale graph analytics, provided that data placement is managed intelligently.
-    `
+    pdfUrl: "https://arxiv.org/pdf/2401.00000.pdf"
   },
   {
     id: "consensus-in-mesh-networks",
     title: "Consensus Mechanisms in Ad-Hoc Mesh Networks",
     date: "2024-05-22",
     summary: "A comparative analysis of Paxos and Raft variants adapted for high-latency, lossy network environments.",
-    content: `
-# Consensus Mechanisms in Ad-Hoc Mesh Networks
+    pdfUrl: "https://arxiv.org/pdf/2405.00001.pdf"
+  }
+];
 
-## Overview
-Distributed consensus is difficult enough in reliable networks. In ad-hoc mesh networks, where nodes can disappear at any moment and latency is unpredictable, traditional algorithms fail.
-
-## The Problem with Raft
-Raft assumes a stable leader. In a mesh network, the "leader" might move out of range or run out of battery. This leads to constant re-elections and system stagnation.
-
-## Proposed Modifications
-We introduce a *probabilistic leader heartbeat* mechanism that accounts for signal strength, not just connectivity.
-
-1.  **Signal Strength Weighting**: Votes are weighted by the node's connectivity stability.
-2.  **Adaptive Timeouts**: Election timeouts scale dynamically based on observed network jitter.
-
-## Future Work
-We plan to simulate this on a physical testbed of 50 Raspberry Pi nodes deployed in an office environment.
-    `
+export const kaggleProjects: KaggleProject[] = [
+  {
+    id: "kaggle-1",
+    title: "Time Series Forecasting Competition",
+    date: "2024-08-20",
+    summary: "Developed ensemble models for predicting stock market volatility using LSTM and gradient boosting techniques.",
+    pdfUrl: "https://example.com/kaggle-1-notebook.pdf"
+  },
+  {
+    id: "kaggle-2",
+    title: "Image Classification Challenge",
+    date: "2024-06-15",
+    summary: "Fine-tuned vision transformers on custom dataset achieving top 5% accuracy in competition.",
+    pdfUrl: "https://example.com/kaggle-2-notebook.pdf"
   }
 ];
 
