@@ -1,8 +1,9 @@
 import Layout from "@/components/layout";
 import { Button } from "@/components/ui/button";
-import { Github, Play } from "lucide-react";
+import { Github, Play, FolderGit2, BookOpen, Award } from "lucide-react";
 import { projects, skills } from "@/lib/mock-data";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "wouter";
 
 export default function Home() {
   const featuredProjects = projects.filter(p => p.featured);
@@ -18,6 +19,37 @@ export default function Home() {
           <p className="text-lg text-muted-foreground font-serif">
             Passionate about distributed systems, compiler design, and artificial intelligence.
           </p>
+        </div>
+
+        {/* Navigation to Main Sections */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Link href="/projects">
+            <div className="p-6 border border-border rounded-lg bg-card hover:border-primary/40 hover:shadow-sm transition-all duration-200 cursor-pointer">
+              <FolderGit2 className="w-6 h-6 text-primary mb-3" />
+              <h3 className="font-bold mb-2">Projects</h3>
+              <p className="text-sm text-muted-foreground">
+                Engineering projects and technical work
+              </p>
+            </div>
+          </Link>
+          <Link href="/research">
+            <div className="p-6 border border-border rounded-lg bg-card hover:border-primary/40 hover:shadow-sm transition-all duration-200 cursor-pointer">
+              <BookOpen className="w-6 h-6 text-primary mb-3" />
+              <h3 className="font-bold mb-2">Research</h3>
+              <p className="text-sm text-muted-foreground">
+                Academic papers and technical research
+              </p>
+            </div>
+          </Link>
+          <Link href="/kaggle">
+            <div className="p-6 border border-border rounded-lg bg-card hover:border-primary/40 hover:shadow-sm transition-all duration-200 cursor-pointer">
+              <Award className="w-6 h-6 text-primary mb-3" />
+              <h3 className="font-bold mb-2">Kaggle</h3>
+              <p className="text-sm text-muted-foreground">
+                Machine learning competition notebooks
+              </p>
+            </div>
+          </Link>
         </div>
 
         {/* Skills */}

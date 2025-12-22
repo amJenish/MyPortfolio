@@ -7,6 +7,7 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import Projects from "@/pages/projects";
 import Research from "@/pages/research";
+import Kaggle from "@/pages/kaggle";
 
 function Router() {
   return (
@@ -14,6 +15,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/projects" component={Projects} />
       <Route path="/research" component={Research} />
+      <Route path="/kaggle" component={Kaggle} />
       <Route component={NotFound} />
     </Switch>
   );

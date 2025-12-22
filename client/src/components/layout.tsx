@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
-import { Terminal, BookOpen, User, FolderGit2, Menu, X } from "lucide-react";
+import { Terminal, BookOpen, User, FolderGit2, Award, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -10,8 +10,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   const navItems = [
     { href: "/", label: "Overview", icon: User },
-    { href: "/research", label: "Research", icon: BookOpen },
     { href: "/projects", label: "Projects", icon: FolderGit2 },
+    { href: "/research", label: "Research", icon: BookOpen },
+    { href: "/kaggle", label: "Kaggle", icon: Award },
   ];
 
   return (
