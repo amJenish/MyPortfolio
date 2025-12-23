@@ -1,6 +1,7 @@
 import Layout from "@/components/layout";
 import { projects } from "@/lib/mock-data";
 import { Badge } from "@/components/ui/badge";
+import { MarkdownView } from "@/components/MarkdownView";
 import { Button } from "@/components/ui/button";
 import { Github, Play, ArrowLeft } from "lucide-react";
 import { useParams, Link } from "wouter";
@@ -103,7 +104,9 @@ export default function ProjectDetail() {
                 </h3>
                 <div className="flex flex-col gap-2">
                   <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" className="w-full gap-2">
+                    <Button 
+                      className="w-full gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+>
                       <Github className="w-4 h-4" />
                       View Source Code
                     </Button>
@@ -127,7 +130,7 @@ export default function ProjectDetail() {
           <h2 className="text-2xl font-bold">About This Project</h2>
           <div className="prose prose-sm dark:prose-invert max-w-none">
             <p className="text-muted-foreground leading-relaxed font-serif">
-              {project.description}
+              {<MarkdownView content={project.content} />}
             </p>
           </div>
         </section>

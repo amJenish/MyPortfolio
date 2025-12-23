@@ -61,10 +61,7 @@ export default function Projects() {
                   </a>
                 )}
                 <Link href={`/project/${project.id}`}>
-                  <Button variant="ghost" className="gap-2 ml-auto">
-                    Learn More
-                    <ArrowRight className="w-4 h-4" />
-                  </Button>
+
                 </Link>
               </div>
             </div>

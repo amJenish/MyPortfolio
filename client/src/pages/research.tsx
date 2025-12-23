@@ -16,7 +16,7 @@ export default function Research() {
         <div>
           <h1 className="text-3xl font-bold mb-2">Research</h1>
           <p className="text-muted-foreground font-serif text-lg">
-            Academic papers and technical research.
+            Academic papers and personal research.
           </p>
         </div>
 
@@ -84,9 +84,6 @@ export default function Research() {
                     </div>
                     <div>
                       <h3 className="font-bold text-foreground mb-1">PDF Document</h3>
-                      <p className="text-sm text-muted-foreground mb-4">
-                        Click the download button above to view the full PDF
-                      </p>
                       <a href={selectedPaper.pdfUrl} target="_blank" rel="noopener noreferrer">
                         <Button size="sm" className="gap-2">
                           <FileText className="w-4 h-4" />
@@ -96,6 +93,16 @@ export default function Research() {
                     </div>
                   </div>
                 </div>
+
+                                {/* Abstract Section */}
+                {"abstract" in selectedPaper && selectedPaper.abstract && (
+                  <div className="space-y-4 pt-4">
+                    <h3 className="font-semibold text-lg">Abstract</h3>
+                    <div className="prose prose-sm dark:prose-invert max-w-none">
+                      {selectedPaper.abstract} 
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="h-full flex flex-col items-center justify-center p-8 border border-dashed border-border rounded-lg bg-muted/10 text-muted-foreground">

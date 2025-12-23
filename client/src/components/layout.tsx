@@ -1,123 +1,339 @@
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
-import { Terminal, BookOpen, User, FolderGit2, Award, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { Terminal, BookOpen, User, FolderGit2, Award, Menu, X, Mail, Copy, Github, Linkedin, Sparkles } from "lucide-react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { profile } from "@/lib/mock-data";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [emailCopied, setEmailCopied] = useState(false);
+  const email = profile.email;
 
   const navItems = [
     { href: "/", label: "Overview", icon: User },
     { href: "/projects", label: "Projects", icon: FolderGit2 },
     { href: "/research", label: "Research", icon: BookOpen },
-    { href: "/kaggle", label: "Kaggle", icon: Award },
+    { href: "/kaggle", label: "Kaggle + ML", icon: Award },
   ];
 
+  const socialLinks = [
+    { href: "https://github.com/amJenish", icon: Github, label: "GitHub" },
+    { href: "https://www.linkedin.com/in/jenish-paudel-52687b260/", icon: Linkedin, label: "LinkedIn" },
+  ];
+
+  const copyEmail = () => {
+    navigator.clipboard.writeText(email);
+    setEmailCopied(true);
+    setTimeout(() => setEmailCopied(false), 2000);
+  };
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location]);
+
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-background font-sans text-foreground selection:bg-primary/20">
-      {/* Sidebar Navigation (Desktop) */}
-      <aside className="hidden md:flex flex-col w-64 fixed h-full border-r border-border bg-card/50 backdrop-blur-sm z-50">
-        <div className="p-8 pb-4">
-          <div className="flex items-center gap-2 font-bold text-xl tracking-tight text-primary">
-            <Terminal className="w-6 h-6" />
-            <span>DevPortfolio</span>
+    <div className="min-h-screen bg-background font-sans text-foreground selection:bg-primary/20">
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-80 border-r border-border bg-gradient-to-b from-background via-background to-card/50 z-50">
+        <div className="flex flex-col w-full h-full">
+          {/* Header */}
+          <div className="p-8 pb-6">
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center gap-3 group cursor-default"
+            >
+              <div className="relative">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/10 flex items-center justify-center backdrop-blur-sm">
+                  <Terminal className="w-6 h-6 text-primary" />
+                </div>
+                <motion.div 
+                  className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-gradient-to-r from-primary to-primary/60 flex items-center justify-center"
+                  animate={{ rotate: [0, 360] }}
+                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                >
+                  <Sparkles className="w-2 h-2 text-primary-foreground" />
+                </motion.div>
+              </div>
+              <div className="space-y-1">
+                <h1 className="text-xl font-bold tracking-tight text-foreground">
+                  Jenish Paudel
+                </h1>
+                <p className="text-sm text-muted-foreground font-mono">
+                  DS & SoftEng
+                </p>
+              </div>
+            </motion.div>
           </div>
-          <p className="text-xs text-muted-foreground mt-2 font-mono">
-            v1.0.0 // build_2024
-          </p>
-        </div>
 
-        <nav className="flex-1 px-4 py-8 space-y-2">
-          {navItems.map((item) => {
-            const isActive = location === item.href;
-            const Icon = item.icon;
-            return (
-              <Link key={item.href} href={item.href} className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-all duration-200 group relative overflow-hidden block",
-                    isActive
-                      ? "text-primary bg-primary/10"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                  )}>
-                  <Icon className="w-4 h-4" />
-                  {item.label}
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeNav"
-                      className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-r-full"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                    />
-                  )}
-              </Link>
-            );
-          })}
-        </nav>
+          {/* Navigation */}
+          <nav className="flex-1 px-6 space-y-1">
+            {navItems.map((item, index) => {
+              const isActive = location === item.href;
+              const Icon = item.icon;
+              return (
+                <motion.div
+                  key={item.href}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                >
+                  <Link href={item.href}>
+                    <div
+                      className={cn(
+                        "group relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer",
+                        isActive
+                          ? "bg-primary/10 text-primary"
+                          : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      <Icon className="w-5 h-5 flex-shrink-0" />
+                      <span className="font-medium">{item.label}</span>
+                      {isActive && (
+                        <motion.div
+                          layoutId="activeNav"
+                          className="absolute inset-0 bg-primary/5 rounded-xl border border-primary/20"
+                          initial={false}
+                          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        />
+                      )}
+                      <motion.div
+                        className={cn(
+                          "absolute right-4 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full",
+                          isActive ? "bg-primary" : "bg-transparent"
+                        )}
+                        initial={false}
+                        animate={{ scale: isActive ? 1 : 0 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      />
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </nav>
 
-        <div className="p-8 pt-4 border-t border-border">
-          <div className="flex gap-4">
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-              <span className="sr-only">GitHub</span>
-              <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
-              </svg>
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-              <span className="sr-only">LinkedIn</span>
-              <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path fillRule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clipRule="evenodd" />
-              </svg>
-            </a>
+          {/* Footer Section */}
+          <div className="p-8 pt-6 border-t border-border/50 space-y-8">
+            {/* Social Links */}
+            <div className="space-y-4">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                Links
+              </p>
+              <div className="flex gap-3">
+                {socialLinks.map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-lg border border-border bg-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-primary/5 transition-all duration-200 group"
+                    aria-label={link.label}
+                  >
+                    <link.icon className="w-5 h-5" />
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Email */}
+            <div className="space-y-3">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                Contact
+              </p>
+              <div className="group relative">
+                <button
+                  onClick={copyEmail}
+                  className="w-full p-3 rounded-xl border border-border bg-card/50 hover:bg-card text-left transition-all duration-200 group-hover:border-primary/30"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-xs text-muted-foreground font-medium">Email</p>
+                      <p className="text-sm font-mono text-foreground truncate">{email}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Copy className={cn(
+                        "w-4 h-4 transition-colors",
+                        emailCopied ? "text-green-500" : "text-muted-foreground group-hover:text-primary"
+                      )} />
+                      {emailCopied && (
+                        <motion.span
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          className="text-xs font-medium text-green-500"
+                        >
+                          Copied!
+                        </motion.span>
+                      )}
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            {/* Copyright */}
+            <div className="pt-4 border-t border-border/30">
+              <p className="text-xs text-muted-foreground/70 text-center">
+                © {new Date().getFullYear()} — Built with passion
+              </p>
+            </div>
           </div>
         </div>
       </aside>
 
-      {/* Mobile Topbar */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-16 border-b border-border bg-background/80 backdrop-blur-md z-50 px-4 flex items-center justify-between">
-         <div className="flex items-center gap-2 font-bold text-lg text-primary">
-            <Terminal className="w-5 h-5" />
-            <span>DevPortfolio</span>
+      {/* Mobile Header */}
+      <header className="md:hidden fixed top-0 left-0 right-0 h-16 border-b border-border bg-background/80 backdrop-blur-lg z-50 px-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/10 flex items-center justify-center">
+            <Terminal className="w-4 h-4 text-primary" />
           </div>
-          <button 
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 text-muted-foreground hover:text-foreground"
-          >
-            {isMobileMenuOpen ? <X /> : <Menu />}
-          </button>
-      </div>
+          <div>
+            <h1 className="text-sm font-bold text-foreground">Jenish Paudel</h1>
+          </div>
+        </div>
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="w-10 h-10 rounded-lg border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
+          aria-label="Toggle menu"
+        >
+          {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
+      </header>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 top-16 bg-background z-40 p-4 md:hidden"
-          >
-            <nav className="flex flex-col space-y-4">
-              {navItems.map((item) => (
-                <Link key={item.href} href={item.href} className={cn(
-                      "text-lg font-medium py-2 border-b border-border block",
-                      location === item.href ? "text-primary" : "text-muted-foreground"
-                    )}
-                    onClick={() => setIsMobileMenuOpen(false)}>
-                    {item.label}
-                </Link>
-              ))}
-            </nav>
-          </motion.div>
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden"
+            />
+            
+            {/* Menu Panel */}
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="fixed right-0 top-0 bottom-0 w-80 border-l border-border bg-background z-50 md:hidden overflow-y-auto"
+            >
+              <div className="p-8 space-y-8">
+                {/* Header */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/10 flex items-center justify-center">
+                      <Terminal className="w-6 h-6 text-primary" />
+                    </div>
+                    <div className="space-y-1">
+                      <h1 className="text-xl font-bold text-foreground">Jenish Paudel</h1>
+                      <p className="text-sm text-muted-foreground font-mono">Data Science/Software Engineering Student</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Navigation */}
+                <nav className="space-y-2">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-2">
+                    Navigation
+                  </p>
+                  {navItems.map((item) => {
+                    const isActive = location === item.href;
+                    const Icon = item.icon;
+                    return (
+                      <Link key={item.href} href={item.href}>
+                        <div
+                          className={cn(
+                            "flex items-center gap-3 px-4 py-4 rounded-xl transition-all duration-200",
+                            isActive
+                              ? "bg-primary/10 text-primary border border-primary/20"
+                              : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
+                          )}
+                        >
+                          <Icon className="w-5 h-5" />
+                          <span className="font-medium">{item.label}</span>
+                          {isActive && (
+                            <div className="ml-auto w-2 h-2 rounded-full bg-primary" />
+                          )}
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </nav>
+
+                {/* Social Links */}
+                <div className="space-y-4">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-2">
+                    Social
+                  </p>
+                  <div className="flex gap-3">
+                    {socialLinks.map((link) => (
+                      <a
+                        key={link.label}
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 h-12 rounded-lg border border-border bg-card flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-primary/5 transition-all"
+                      >
+                        <link.icon className="w-5 h-5" />
+                        <span className="text-sm font-medium">{link.label}</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Email */}
+                <div className="space-y-4">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-2">
+                    Contact
+                  </p>
+                  <button
+                    onClick={copyEmail}
+                    className="w-full p-4 rounded-xl border border-border bg-card/50 hover:bg-card transition-all"
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Mail className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm font-medium text-muted-foreground">Email</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-mono text-foreground truncate">{email}</p>
+                        <Copy className={cn(
+                          "w-4 h-4",
+                          emailCopied ? "text-green-500" : "text-muted-foreground"
+                        )} />
+                      </div>
+                      {emailCopied && (
+                        <motion.p
+                          initial={{ opacity: 0, y: -5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="text-xs text-green-500 font-medium"
+                        >
+                          Email copied to clipboard
+                        </motion.p>
+                      )}
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 
-      {/* Main Content Area */}
-      <main className="flex-1 md:ml-64 pt-20 md:pt-0 min-h-screen">
-        <div className="max-w-4xl mx-auto p-6 md:p-12 lg:p-16">
+      {/* Main Content */}
+      <main className="md:ml-80 pt-16 md:pt-0 min-h-screen">
+        <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
           <motion.div
             key={location}
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
           >
