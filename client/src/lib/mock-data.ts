@@ -33,7 +33,6 @@ export interface KaggleProject {
   id: string;
   title: string;
   date: string;
-  pdfUrl: string;
   description: string;
   githubUrl: string;
 }
@@ -261,7 +260,6 @@ export const kaggleProjects: KaggleProject[] = [
     id: "kaggle-1",
     title: "Breast Cancer Classification",
     date: "2025-12-12",
-    pdfUrl: "../../public/research_pdfs/Deconstructing SVMs.pdf",
     githubUrl: 'https://github.com/amJenish/Breast-Cancer-Classification',
     description: `
 ## 1. Baseline Model
