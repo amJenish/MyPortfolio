@@ -53,7 +53,6 @@ export default function Research() {
                 >
                   {paper.title}
                 </h3>
-                <p className="text-xs text-muted-foreground line-clamp-2">{paper.summary}</p>
               </div>
             ))}
           </div>

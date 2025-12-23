@@ -8,9 +8,7 @@
     "dev": "vite --port 5000",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "tsc",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "check": "tsc"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

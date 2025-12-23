@@ -25,7 +25,6 @@ export interface ResearchPaper {
   id: string;
   title: string;
   date: string;
-  summary: string;
   pdfUrl: string;
   abstract: string;
 }
@@ -34,7 +33,6 @@ export interface KaggleProject {
   id: string;
   title: string;
   date: string;
-  summary: string;
   pdfUrl: string;
   description: string;
   githubUrl: string;
@@ -247,8 +245,7 @@ export const researchPapers: ResearchPaper[] = [
     id: "research-1",
     title: "Deconstructing the Support Vector Machine: A Mathematical Analysis",
     date: "2025-12-20",
-    summary: "A mathematical derivation of Support Vector Machines, starting from the hard-margin primal problem through Lagrangian duality and KKT conditions, then analyzing extention soft-margin and kernel methods. The theory is applied to a practical example using polynomial features on non-linear concentric circle data.",
-    pdfUrl: "../../public/research_pdfs/Deconstructing SVMs.pdf",
+    pdfUrl: "/public/research_pdfs/Deconstructing SVMs.pdf",
     abstract: `
     This article provides a mathematical deconstruction of the Support Vector Machine (SVM) for classification, progressing systematically from the primal hard-margin formulation to its soft-margin and kernelized extensions. Using Lagrange multipliers, the dual optimization problem is derived, establishing the quadratic programming framework and Karush–Kuhn–Tucker (KKT) conditions that characterize the solution. For pedagogical clarity, a complete computational example is developed: a two-dimensional, non-linearly separable dataset is made separable via an explicit second-degree polynomial feature mapping. The dual problem is solved numerically to obtain the Lagrange multipliers, from which the optimal weight vector, bias, and support vectors are recovered, yielding a decision boundary that corresponds to a circle in the original space. The article concludes by connecting this explicit feature construction to the kernel trick, demonstrating how kernel methods preserve the same mathematical structure while avoiding explicit high-dimensional computations. The treatment unifies theory and implementation, offering a complete picture 
     of the SVM's mathematical foundation.
@@ -264,7 +261,6 @@ export const kaggleProjects: KaggleProject[] = [
     id: "kaggle-1",
     title: "Breast Cancer Classification",
     date: "2025-12-12",
-    summary: "n/a",
     pdfUrl: "../../public/research_pdfs/Deconstructing SVMs.pdf",
     githubUrl: 'https://github.com/amJenish/Breast-Cancer-Classification',
     description: `

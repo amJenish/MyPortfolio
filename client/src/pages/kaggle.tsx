@@ -54,7 +54,6 @@ export default function Kaggle() {
                 >
                   {project.title}
                 </h3>
-                <p className="text-xs text-muted-foreground line-clamp-2">{project.summary}</p>
               </div>
             ))}
           </div>
