@@ -3,11 +3,14 @@
   "version": "1.0.0",
   "type": "module",
   "license": "MIT",
+  "homepage": "https://amJenish.github.io/MyPortfolio/",
   "scripts": {
     "dev": "vite --port 5000",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "tsc"
+    "check": "tsc",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
