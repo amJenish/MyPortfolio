@@ -361,7 +361,7 @@ While showing promise for reducing manual screening effort, further validation i
 
 
   `,
-  githubUrl: "https://github.com/amJenish/Job-Resume-Matching";
+  githubUrl: "https://github.com/amJenish/Job-Resume-Matching"
   },
   {
     id: "kaggle-2",
