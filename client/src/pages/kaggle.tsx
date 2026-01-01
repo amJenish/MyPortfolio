@@ -15,9 +15,9 @@ export default function Kaggle() {
     <Layout>
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Kaggle Projects</h1>
+          <h1 className="text-3xl font-bold mb-2">ML, DS & Kaggle Projects</h1>
           <p className="text-muted-foreground font-serif text-lg">
-            Jupyter notebooks/python solutions to kaggle problems/competitions.
+            my personal data-science/ML-focued projects along with kaggle. 
           </p>
         </div>
 
