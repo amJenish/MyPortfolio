@@ -368,8 +368,7 @@ While showing promise for reducing manual screening effort, further validation i
     title: "Neural Network From Scratch",
     date: "2025-12-28",
     githubUrl: 'https://github.com/amJenish/Neural-Network-From-Scratch',
-    description: `
-    # Neural-Network-From-Scratch
+    description: `# Neural-Network-From-Scratch
 
 Building a neural network from scratch, only relying on numPy and math library for the production.
 

@@ -286,8 +286,7 @@ This study presents a comprehensive machine learning pipeline for automated resu
 While showing promise for reducing manual screening effort, further validation in real-world settings and exploration of ranking-based approaches would strengthen practical applicability.  
 
 
-  `,githubUrl:"https://github.com/amJenish/Job-Resume-Matching"},{id:"kaggle-3",title:"Neural Network From Scratch",date:"2025-12-28",githubUrl:"https://github.com/amJenish/Neural-Network-From-Scratch",description:`
-    # Neural-Network-From-Scratch
+  `,githubUrl:"https://github.com/amJenish/Job-Resume-Matching"},{id:"kaggle-3",title:"Neural Network From Scratch",date:"2025-12-28",githubUrl:"https://github.com/amJenish/Neural-Network-From-Scratch",description:`# Neural-Network-From-Scratch
 
 Building a neural network from scratch, only relying on numPy and math library for the production.
 
