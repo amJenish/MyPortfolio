@@ -15,7 +15,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     { href: "/", label: "Overview", icon: User },
     { href: "/projects", label: "Projects", icon: FolderGit2 },
     { href: "/research", label: "Research", icon: BookOpen },
-    { href: "/kaggle", label: "Kaggle + ML", icon: Award },
+    { href: "/kaggle", label: "ML & DS", icon: Award },
   ];
 
   const socialLinks = [
