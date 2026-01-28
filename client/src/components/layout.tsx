@@ -174,13 +174,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </button>
               </div>
             </div>
-
-            {/* Copyright */}
-            <div className="pt-4 border-t border-border/30">
-              <p className="text-xs text-muted-foreground/70 text-center">
-                © {new Date().getFullYear()} — Built with passion
-              </p>
-            </div>
           </div>
         </div>
       </aside>
