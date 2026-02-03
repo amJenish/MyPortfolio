@@ -526,7 +526,7 @@ Represents a full feedforward neural network.
 - Fully manual implementation with no high-level ML libraries  
 - Supports multiple activation and loss functions  
 - Gradient clipping to stabilize training  
-- Designed to best fit for both regression** and binary classification tasks  
+- Designed to best fit for binary classification tasks  
 - Extensible for new layers, activation, or loss functions  
     `
   },
