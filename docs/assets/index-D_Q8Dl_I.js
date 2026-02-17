@@ -430,9 +430,6 @@ Represents a full feedforward neural network.
 - Designed to best fit for binary classification tasks  
 - Extensible for new layers, activation, or loss functions  
     `},{id:"kaggle-5",title:"Telco Customer Churn Prediction",date:"2026-01-24",githubUrl:"https://github.com/amJenish/Telco-Customer-Churn-Prediction",description:` 
-
-    # Telco Customer Churn Prediction --- Data Analytics Project
-
 ## Project Overview
 
 This project analyzes customer churn behavior using the Telco Customer

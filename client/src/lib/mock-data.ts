@@ -536,9 +536,6 @@ Represents a full feedforward neural network.
     date: "2026-01-24",
     githubUrl: 'https://github.com/amJenish/Telco-Customer-Churn-Prediction',
     description: ` 
-
-    # Telco Customer Churn Prediction --- Data Analytics Project
-
 ## Project Overview
 
 This project analyzes customer churn behavior using the Telco Customer
