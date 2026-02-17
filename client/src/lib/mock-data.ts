@@ -665,7 +665,7 @@ Churn Class Metrics: - Precision: 0.652\
 
 ------------------------------------------------------------------------
 
-## 🚀 Future Improvements
+## Future Improvements
 
 -   Threshold tuning to maximize retention ROI.
 -   Cost-sensitive learning implementation.
