@@ -18,7 +18,7 @@ function Router() {
         <Route path="/projects" component={Projects} />
         <Route path="/project/:id" component={ProjectDetail} />
         <Route path="/research" component={Research} />
-        <Route path="/kaggle" component={Kaggle} />
+        <Route path="/data" component={Kaggle} />
         <Route path="/" component={Home} />
         <Route component={NotFound} />
       </Switch>
