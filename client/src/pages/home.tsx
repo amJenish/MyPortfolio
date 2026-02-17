@@ -209,18 +209,17 @@ export default function Home() {
               </div>
             </Link>
 
-            {/* Kaggle */}
-            <Link href="/kaggle" className="group">
+            {/* Data */}
+            <Link href="/data" className="group">
               <div className="p-6 border border-border rounded-lg bg-card hover:border-primary/40 hover:shadow-md transition-all duration-200 h-full">
                 <div className="flex items-start justify-between mb-4">
-                  <h3 className="text-lg font-bold group-hover:text-primary transition-colors">DS/ML + Kaggle</h3>
+                  <h3 className="text-lg font-bold group-hover:text-primary transition-colors">Data and ML</h3>
                   <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
                 </div>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Machine learning/data science projects & kaggle
+                  Analytical + Machine learning/data science projects
                 </p>
                 <div className="text-2xl font-bold text-primary">{kaggleProjects.length}</div>
-                <p className="text-xs text-muted-foreground mt-1">competitions</p>
               </div>
             </Link>
           </div>
