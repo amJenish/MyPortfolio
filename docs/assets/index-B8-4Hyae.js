@@ -430,10 +430,12 @@ Represents a full feedforward neural network.
 - Designed to best fit for binary classification tasks  
 - Extensible for new layers, activation, or loss functions  
     `},{id:"kaggle-5",title:"Telco Customer Churn Prediction",date:"2026-01-24",githubUrl:"https://github.com/amJenish/Telco-Customer-Churn-Prediction",description:` 
+
 ## Project Overview
 
 This project analyzes customer churn behavior using the Telco Customer
-Churn dataset.The goal is to identify key factors influencing churn and build
+Churn dataset.
+The goal is to identify key factors influencing churn and build
 predictive models to help businesses reduce customer attrition through
 targeted retention strategies.
 
@@ -450,7 +452,9 @@ targeted retention strategies.
 
 ## Dataset Summary
 
--   **Total Records (after cleaning):** 7,032 customers-   **Target Variable:** \`Churn\` (binary classification)-   **Churn Rate:** ~26.6%
+-   **Total Records (after cleaning):** 7,032 customers
+-   **Target Variable:** \`Churn\` (binary classification)
+-   **Churn Rate:** 26.6%
 
 ### Key Features:
 
@@ -520,7 +524,9 @@ targeted retention strategies.
 -   Strong ROC-AUC performance
 -   Balanced precision and recall
 
-Churn Class Metrics: - Precision: 0.652- Recall: 0.488- F1-Score: 0.559
+Churn Class Metrics: - Precision: 0.652
+- Recall: 0.488
+- F1-Score: 0.559
 
 ------------------------------------------------------------------------
 
@@ -554,7 +560,7 @@ Churn Class Metrics: - Precision: 0.652- Recall: 0.488- F1-Score: 0.559
 
 ------------------------------------------------------------------------
 
-## Future Improvements
+##  Future Improvements
 
 -   Threshold tuning to maximize retention ROI.
 -   Cost-sensitive learning implementation.
@@ -576,12 +582,16 @@ Churn Class Metrics: - Precision: 0.652- Recall: 0.488- F1-Score: 0.559
 ## Conclusion
 
 This project demonstrates a full end-to-end data science workflow: -
-Data cleaning- Feature engineering- Exploratory analysis- Model comparison- Business-focused interpretation
+Data cleaning
+- Feature engineering
+- Exploratory analysis
+- Model comparison
+- Business-focused interpretation
 
 The final model provides strong predictive performance and actionable
 insights for reducing telecom customer churn.
 
-  
+
     `},{id:"kaggle-2",title:"Breast Cancer Classification",date:"2025-12-12",githubUrl:"https://github.com/amJenish/Breast-Cancer-Classification",description:`
 ## 1. Baseline Model
 Algorithm: Logistic Regression (L2 regularization, standardized features)
