@@ -10,7 +10,7 @@ export const AIStudyAssistant: Project =
     featured: false,
     content: `
 
-    # Research & Study Assistant — RAG + LLM Pipeline
+# Research & Study Assistant -- RAG + LLM Pipeline
 
 An AI-powered research and study assistant that allows users to upload documents, semantically chunk and index them, and interactively query their content through a conversational chat interface. Built on a Retrieval-Augmented Generation (RAG) architecture using Groq's LLaMA 3.2, ElasticSearch, and a React/BlueprintUI frontend — all containerized with Docker.
 

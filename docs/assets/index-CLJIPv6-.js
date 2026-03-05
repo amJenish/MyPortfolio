@@ -408,7 +408,7 @@ To create a Teacher account:
 - In dev mode, the user has access to everything the students would in addition to the ability to override their game progress, skipping to any level, and editing their fuel count. To access this mode, the user must log in with the username cs2212 and the password ducks2212.
   `},ez={id:"5",title:"Rag + LLM Study/Research AI Assistant",description:"A full-stack Retrieval-Augmented Generation (RAG) web application that allows users to upload documents and query them in natural language. Uploaded PDFs are processed, chunked, embedded, and stored in a vector database for semantic retrieval. Queries return answers strictly based on the uploaded content, with accurate source citations. The project was developed independently, handling the complete architecture including document ingestion, indexing, retrieval logic, prompt engineering, and frontend integration, resulting in a fully functional end-to-end document Q&A system.",githubUrl:"https://github.com/amJenish/StudentEnrollmentSystem",tags:["Python","ElasticSearch","FastAPI","LLM","RAG","Docker","React","BlueprintUI"],featured:!1,content:`
 
-    # Research & Study Assistant — RAG + LLM Pipeline
+# Research & Study Assistant -- RAG + LLM Pipeline
 
 An AI-powered research and study assistant that allows users to upload documents, semantically chunk and index them, and interactively query their content through a conversational chat interface. Built on a Retrieval-Augmented Generation (RAG) architecture using Groq's LLaMA 3.2, ElasticSearch, and a React/BlueprintUI frontend — all containerized with Docker.
 
