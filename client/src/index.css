@@ -1,6 +1,8 @@
 @import "tailwindcss";
+@import "highlight.js/styles/github-dark.css";
 @import "tw-animate-css";
 
+@plugin "@tailwindcss/typography";
 @plugin "tailwindcss-animate";
 
 @theme inline {
@@ -68,37 +70,11 @@
   }
 }
 
-.prose {
-  @apply max-w-none text-foreground;
-  
-  h1, h2, h3, h4 {
-    @apply font-sans font-medium mt-8 mb-4;
-  }
-  
-  p {
-    @apply font-serif leading-relaxed text-lg text-muted-foreground mb-6;
-  }
+/* Syntax highlighting: rehype-highlight emits .hljs on <code> inside <pre> */
+.prose pre {
+  @apply rounded-lg border border-border bg-slate-950;
+}
 
-  code {
-    @apply font-mono bg-muted px-1 py-0.5 rounded text-sm text-primary font-medium;
-  }
-  
-  pre {
-    @apply bg-slate-950 p-4 rounded-lg overflow-x-auto my-6 border border-border;
-    code {
-      @apply bg-transparent text-slate-50 p-0 text-sm;
-    }
-  }
-
-  a {
-    @apply text-primary hover:underline underline-offset-4 decoration-primary/30;
-  }
-
-  ul {
-    @apply list-disc list-outside ml-6 mb-6 space-y-2 text-muted-foreground font-serif;
-  }
-  
-  blockquote {
-    @apply border-l-4 border-primary/30 pl-4 italic text-muted-foreground my-6;
-  }
+.prose pre code.hljs {
+  @apply bg-transparent p-0 text-sm;
 }

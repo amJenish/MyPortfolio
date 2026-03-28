@@ -95,14 +95,11 @@ export default function Kaggle() {
                   </div>
 
                   {selectedProject.description && (
-  <div className="space-y-4 w-full">
-    <h3 className="font-semibold text-lg">Project Report</h3>
-    {/* Custom container without prose constraints */}
-    <div className="w-full [&_h1]:text-2xl [&_h2]:text-xl [&_h3]:text-lg [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:mb-2">
-      <MarkdownView content={selectedProject.description}/>
-    </div>
-  </div>
-)}
+                    <div className="space-y-4 w-full">
+                      <h3 className="font-semibold text-lg">Project Report</h3>
+                      <MarkdownView content={selectedProject.description} />
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (

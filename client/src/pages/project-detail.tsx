@@ -128,11 +128,7 @@ export default function ProjectDetail() {
         {/* Project Description */}
         <section className="space-y-6">
           <h2 className="text-2xl font-bold">About This Project</h2>
-          <div className="prose prose-sm dark:prose-invert max-w-none">
-            <p className="text-muted-foreground leading-relaxed font-serif">
-              {<MarkdownView content={project.content} />}
-            </p>
-          </div>
+          <MarkdownView content={project.content} />
         </section>
 
         {/* Skills Demonstrated */}
