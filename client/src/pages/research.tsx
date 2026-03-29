@@ -1,119 +1,160 @@
 import Layout from "@/components/layout";
-import { researchPapers } from "@/lib/mock-data";
+import { researchPapers } from "@/lib/content/registry";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { ChevronRight, FileText, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ScrollReveal } from "@/components/motion/ScrollReveal";
+import { ScrollRevealStagger } from "@/components/motion/ScrollRevealStagger";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { scrollEase } from "@/components/motion/scrollMotion";
 
-export default function Research() {
+function PlainAbstract({ text }: { text: string }) {
+  const blocks = text
+    .trim()
+    .split(/\n\n+/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+  return (
+    <div className="space-y-3 text-left text-sm leading-[1.6] text-muted-foreground">
+      {blocks.map((para, i) => (
+        <p key={i}>{para}</p>
+      ))}
+    </div>
+  );
+}
+
+export default function PaperworkPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const selectedPaper = researchPapers.find(p => p.id === selectedId);
+  const selectedPaper = researchPapers.find((p) => p.id === selectedId);
+  const reduceMotion = useReducedMotion();
 
   return (
     <Layout>
       <div className="space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">Research</h1>
-          <p className="text-muted-foreground font-serif text-lg">
-            Academic papers and personal research.
+        <ScrollReveal as="header" className="paperwork-hero max-w-2xl space-y-3 rounded-2xl border border-border/80 bg-gradient-to-br from-card via-background to-primary/[0.04] p-6 text-left shadow-sm md:p-8">
+          <p className="text-xs font-medium text-primary">Paperwork</p>
+          <h1 className="font-heading text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+            Papers &amp; PDFs
+          </h1>
+          <p className="leading-relaxed text-muted-foreground">
+            Long-form write-ups with short on-site summaries—open a PDF for the full document.
           </p>
-        </div>
+        </ScrollReveal>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-          {/* List */}
-          <div className="lg:col-span-1 space-y-3">
-            {researchPapers.map((paper) => (
-              <div
-                key={paper.id}
-                onClick={() => setSelectedId(paper.id)}
-                className={cn(
-                  "p-4 rounded-lg border cursor-pointer transition-all duration-200 group relative",
-                  selectedId === paper.id
-                    ? "bg-primary/5 border-primary shadow-sm"
-                    : "bg-card border-border hover:border-primary/50 hover:bg-muted/30"
-                )}
-              >
-                <div className="flex items-start justify-between mb-2">
-                  <Badge variant="outline" className="font-mono text-xs text-muted-foreground">
-                    {paper.date}
-                  </Badge>
-                  <ChevronRight
-                    className={cn(
-                      "w-4 h-4 text-muted-foreground transition-transform",
-                      selectedId === paper.id ? "rotate-90 text-primary" : "group-hover:translate-x-1"
-                    )}
-                  />
-                </div>
-                <h3
+        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-3">
+          <ScrollRevealStagger
+            className="flex flex-col gap-2 lg:col-span-1"
+            role="navigation"
+            aria-label="Paper list"
+            stagger={0.055}
+            delayChildren={0.06}
+          >
+            {researchPapers.map((paper) => {
+              const selected = selectedId === paper.id;
+              return (
+                <button
+                  key={paper.id}
+                  type="button"
+                  onClick={() => setSelectedId(paper.id)}
                   className={cn(
-                    "font-bold text-sm mb-2",
-                    selectedId === paper.id ? "text-primary" : "text-foreground"
+                    "paperwork-list-item w-full rounded-xl border p-4 text-left transition-all duration-200",
+                    selected
+                      ? "border-primary/50 bg-primary/[0.07] shadow-md ring-1 ring-primary/15"
+                      : "border-border bg-card hover:border-primary/35 hover:bg-muted/40",
                   )}
                 >
-                  {paper.title}
-                </h3>
-              </div>
-            ))}
-          </div>
-
-          {/* PDF Viewer */}
-          <div className="lg:col-span-2 min-h-[600px]">
-            {selectedPaper ? (
-              <div className="space-y-4">
-                <div className="border-b border-border pb-4">
-                  <h2 className="text-2xl font-bold mb-2">{selectedPaper.title}</h2>
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm text-muted-foreground">
-                      Published: {selectedPaper.date}
-                    </p>
-                    <a href={selectedPaper.pdfUrl} download target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline" size="sm" className="gap-2">
-                        <Download className="w-4 h-4" />
-                        Download
-                      </Button>
-                    </a>
+                  <div className="mb-2 flex items-start justify-between gap-2">
+                    <Badge variant="outline" className="font-mono text-xs text-muted-foreground">
+                      {paper.date}
+                    </Badge>
+                    <ChevronRight
+                      className={cn(
+                        "h-4 w-4 shrink-0 text-muted-foreground transition-transform",
+                        selected ? "rotate-90 text-primary" : "",
+                      )}
+                    />
                   </div>
-                </div>
+                  <span
+                    className={cn(
+                      "text-sm font-semibold leading-snug",
+                      selected ? "text-primary" : "text-foreground",
+                    )}
+                  >
+                    {paper.title}
+                  </span>
+                </button>
+              );
+            })}
+          </ScrollRevealStagger>
 
-                <div className="border border-border rounded-lg bg-muted/50 p-6 flex flex-col items-center justify-center min-h-[500px]">
-                  <div className="text-center space-y-4">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mx-auto">
-                      <FileText className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-foreground mb-1">PDF Document</h3>
-                      <a href={selectedPaper.pdfUrl} target="_blank" rel="noopener noreferrer">
-                        <Button size="sm" className="gap-2">
-                          <FileText className="w-4 h-4" />
-                          Open in Browser
+          <div className="min-h-[520px] lg:col-span-2">
+            <AnimatePresence mode="wait">
+              {selectedPaper ? (
+                <motion.div
+                  key={selectedPaper.id}
+                  role="region"
+                  aria-label="Paper details"
+                  initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={reduceMotion ? undefined : { opacity: 0, y: -14 }}
+                  transition={{ duration: 0.4, ease: scrollEase }}
+                  className="space-y-4 rounded-2xl border border-border bg-card p-6 shadow-sm md:p-8"
+                >
+                  <div className="border-b border-border pb-4">
+                    <h2 className="font-heading text-xl font-bold text-foreground md:text-2xl">
+                      {selectedPaper.title}
+                    </h2>
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+                      <p className="text-sm text-muted-foreground">Published: {selectedPaper.date}</p>
+                      <a href={selectedPaper.pdfUrl} download target="_blank" rel="noopener noreferrer">
+                        <Button variant="outline" size="sm" className="gap-2">
+                          <Download className="h-4 w-4" />
+                          Download
                         </Button>
                       </a>
                     </div>
                   </div>
-                </div>
 
-                                {/* Abstract Section */}
-                {"abstract" in selectedPaper && selectedPaper.abstract && (
-                  <div className="space-y-4 pt-4">
-                    <h3 className="font-semibold text-lg">Abstract</h3>
-                    <div className="prose prose-sm dark:prose-invert max-w-none">
-                      {selectedPaper.abstract} 
+                  <div className="flex min-h-[280px] flex-col items-center justify-center rounded-xl border border-dashed border-border bg-muted/30 p-8">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/15 text-primary">
+                      <FileText className="h-7 w-7" />
                     </div>
+                    <p className="mt-4 font-semibold text-foreground">PDF</p>
+                    <a href={selectedPaper.pdfUrl} target="_blank" rel="noopener noreferrer" className="mt-3">
+                      <Button size="sm" className="gap-2 shadow-md">
+                        <FileText className="h-4 w-4" />
+                        Open in browser
+                      </Button>
+                    </a>
                   </div>
-                )}
-              </div>
-            ) : (
-              <div className="h-full flex flex-col items-center justify-center p-8 border border-dashed border-border rounded-lg bg-muted/10 text-muted-foreground">
-                <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-                  <FileText className="w-8 h-8 opacity-50" />
-                </div>
-                <h3 className="text-lg font-medium mb-2">Select a paper to view</h3>
-                <p className="text-sm max-w-xs text-center">
-                  Click on any research paper from the list to view the PDF document.
-                </p>
-              </div>
-            )}
+
+                  {selectedPaper.abstract ? (
+                    <div className="max-w-3xl space-y-3 border-t border-border pt-6">
+                      <h3 className="text-xs font-medium text-muted-foreground">Summary</h3>
+                      <PlainAbstract text={selectedPaper.abstract} />
+                    </div>
+                  ) : null}
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="empty"
+                  role="status"
+                  initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={reduceMotion ? undefined : { opacity: 0, y: -10 }}
+                  transition={{ duration: 0.35, ease: scrollEase }}
+                  className="flex h-full min-h-[400px] flex-col items-start justify-center rounded-2xl border border-dashed border-border bg-muted/20 p-8 text-left leading-[1.6] text-muted-foreground"
+                >
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted/60">
+                    <FileText className="h-8 w-8 opacity-50" />
+                  </div>
+                  <h3 className="mt-4 text-lg font-semibold text-foreground">Select a paper</h3>
+                  <p className="mt-2 max-w-xs text-sm">Choose an item on the left to preview details and open the PDF.</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>

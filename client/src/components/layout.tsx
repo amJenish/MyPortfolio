@@ -1,339 +1,289 @@
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
-import { Terminal, BookOpen, User, FolderGit2, Award, Menu, X, Mail, Copy, Github, Linkedin, Sparkles } from "lucide-react";
+import {
+  BookOpen,
+  Home,
+  FolderGit2,
+  NotebookText,
+  Menu,
+  X,
+  Mail,
+  Github,
+  Linkedin,
+} from "lucide-react";
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { profile } from "@/lib/mock-data";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { ScrollReadingProgress } from "@/components/motion/ScrollReadingProgress";
+import { profile } from "@/lib/content/registry";
+import {
+  ML_LIST_PATH,
+  PAPERWORK_LIST_PATH,
+  isMlSection,
+  isMlSectionLegacy,
+  isPaperworkSection,
+  isProjectsSection,
+} from "@/lib/routes";
+
+const navItems = [
+  {
+    href: "/",
+    label: "Home",
+    icon: Home,
+    match: (path: string) => path === "/",
+  },
+  {
+    href: "/projects",
+    label: "Projects",
+    icon: FolderGit2,
+    match: (path: string) => isProjectsSection(path),
+  },
+  {
+    href: ML_LIST_PATH,
+    label: "Data & ML",
+    icon: NotebookText,
+    match: (path: string) => isMlSection(path) || isMlSectionLegacy(path),
+  },
+  {
+    href: PAPERWORK_LIST_PATH,
+    label: "Paperwork",
+    icon: BookOpen,
+    match: (path: string) => isPaperworkSection(path),
+  },
+] as const;
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [emailCopied, setEmailCopied] = useState(false);
   const email = profile.email;
+  const reduceMotion = useReducedMotion();
+  const navHover = reduceMotion ? undefined : { y: -1 };
+  const navTap = reduceMotion ? undefined : { scale: 0.98 };
 
-  const navItems = [
-    { href: "/", label: "Overview", icon: User },
-    { href: "/projects", label: "Projects", icon: FolderGit2 },
-    { href: "/research", label: "Research", icon: BookOpen },
-    { href: "/data", label: "Data/ML", icon: Award },
-  ];
-
-  const socialLinks = [
-    { href: "https://github.com/amJenish", icon: Github, label: "GitHub" },
-    { href: "https://www.linkedin.com/in/jenish-paudel-52687b260/", icon: Linkedin, label: "LinkedIn" },
-  ];
-
-  const copyEmail = () => {
-    navigator.clipboard.writeText(email);
-    setEmailCopied(true);
-    setTimeout(() => setEmailCopied(false), 2000);
-  };
-
-  // Close mobile menu on route change
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location]);
 
   return (
-    <div className="min-h-screen bg-background font-sans text-foreground selection:bg-primary/20">
-      {/* Desktop Sidebar */}
-      <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-80 border-r border-border bg-gradient-to-b from-background via-background to-card/50 z-50">
-        <div className="flex flex-col w-full h-full">
-          {/* Header */}
-          <div className="p-8 pb-6">
-            <motion.div 
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-3 group cursor-default"
-            >
-              <div className="relative">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/10 flex items-center justify-center backdrop-blur-sm">
-                  <Terminal className="w-6 h-6 text-primary" />
-                </div>
-                <motion.div 
-                  className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-gradient-to-r from-primary to-primary/60 flex items-center justify-center"
-                  animate={{ rotate: [0, 360] }}
-                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                >
-                  <Sparkles className="w-2 h-2 text-primary-foreground" />
-                </motion.div>
-              </div>
-              <div className="space-y-1">
-                <h1 className="text-xl font-bold tracking-tight text-foreground">
-                  Jenish Paudel
-                </h1>
-                <p className="text-sm text-muted-foreground font-mono">
-                  DS & SoftEng
-                </p>
-              </div>
-            </motion.div>
-          </div>
+    <div className="relative z-[1] min-h-screen bg-background font-sans text-foreground selection:bg-primary/25">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-primary-foreground"
+      >
+        Skip to content
+      </a>
 
-          {/* Navigation */}
-          <nav className="flex-1 px-6 space-y-1">
-            {navItems.map((item, index) => {
-              const isActive = location === item.href;
+      <header className="sticky top-0 z-50 border-b border-border/80 bg-background/90 backdrop-blur-md shadow-[0_1px_0_hsl(165_90%_50%_/_0.06)_inset]">
+        <div className="mx-auto flex h-[3.25rem] w-full max-w-[min(100%,88rem)] items-center gap-3 px-4 sm:px-6 lg:px-8">
+          <Link href="/" className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">
+            <span className="flex flex-col leading-tight">
+              <span className="text-sm font-semibold tracking-tight text-foreground">
+                Jenish Paudel
+              </span>
+              <span className="text-xs uppercase tracking-wider text-muted-foreground">
+                Portfolio
+              </span>
+            </span>
+          </Link>
+
+          <nav
+            className="ml-auto hidden items-center gap-0.5 md:flex"
+            aria-label="Primary"
+          >
+            {navItems.map((item) => {
+              const isActive = item.match(location);
               const Icon = item.icon;
               return (
-                <motion.div
-                  key={item.href}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                >
-                  <Link href={item.href}>
-                    <div
-                      className={cn(
-                        "group relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer",
-                        isActive
-                          ? "bg-primary/10 text-primary"
-                          : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
-                      )}
-                    >
-                      <Icon className="w-5 h-5 flex-shrink-0" />
-                      <span className="font-medium">{item.label}</span>
-                      {isActive && (
-                        <motion.div
-                          layoutId="activeNav"
-                          className="absolute inset-0 bg-primary/5 rounded-xl border border-primary/20"
-                          initial={false}
-                          transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                        />
-                      )}
-                      <motion.div
-                        className={cn(
-                          "absolute right-4 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full",
-                          isActive ? "bg-primary" : "bg-transparent"
-                        )}
-                        initial={false}
-                        animate={{ scale: isActive ? 1 : 0 }}
-                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                <Link key={item.href} href={item.href} className="focus-visible:outline-none rounded-md">
+                  <motion.span
+                    whileHover={navHover}
+                    whileTap={navTap}
+                    className={cn(
+                      "relative inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors rounded-md",
+                      "focus-visible:ring-2 focus-visible:ring-ring",
+                      isActive
+                        ? "text-foreground"
+                        : "text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    <Icon className="h-4 w-4 opacity-85" aria-hidden />
+                    {item.label}
+                    {isActive && (
+                      <span
+                        className="absolute bottom-1 left-3 right-3 h-0.5 rounded-full bg-primary"
+                        aria-hidden
                       />
-                    </div>
-                  </Link>
-                </motion.div>
+                    )}
+                  </motion.span>
+                </Link>
               );
             })}
           </nav>
 
-          {/* Footer Section */}
-          <div className="p-8 pt-6 border-t border-border/50 space-y-8">
-            {/* Social Links */}
-            <div className="space-y-4">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Links
-              </p>
-              <div className="flex gap-3">
-                {socialLinks.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-10 h-10 rounded-lg border border-border bg-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-primary/5 transition-all duration-200 group"
-                    aria-label={link.label}
-                  >
-                    <link.icon className="w-5 h-5" />
-                  </a>
-                ))}
-              </div>
-            </div>
+          <div className="hidden items-center gap-1.5 md:flex">
+            <a
+              href={profile.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-md border border-transparent p-2 text-muted-foreground transition-colors hover:border-border hover:bg-muted/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label="GitHub"
+            >
+              <Github className="h-4 w-4" />
+            </a>
+            <a
+              href={profile.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-md border border-transparent p-2 text-muted-foreground transition-colors hover:border-border hover:bg-muted/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label="LinkedIn"
+            >
+              <Linkedin className="h-4 w-4" />
+            </a>
+            <a
+              href={`mailto:${email}`}
+              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card/70 px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:bg-primary/[0.06] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label={`Send email to ${email}`}
+            >
+              <Mail className="h-3.5 w-3.5 shrink-0" />
+              <span className="hidden sm:inline">Email</span>
+            </a>
+          </div>
 
-            {/* Email */}
-            <div className="space-y-3">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                Contact
-              </p>
-              <div className="group relative">
-                <button
-                  onClick={copyEmail}
-                  className="w-full p-3 rounded-xl border border-border bg-card/50 hover:bg-card text-left transition-all duration-200 group-hover:border-primary/30"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <p className="text-xs text-muted-foreground font-medium">Email</p>
-                      <p className="text-sm font-mono text-foreground truncate">{email}</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Copy className={cn(
-                        "w-4 h-4 transition-colors",
-                        emailCopied ? "text-green-500" : "text-muted-foreground group-hover:text-primary"
-                      )} />
-                      {emailCopied && (
-                        <motion.span
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.8 }}
-                          className="text-xs font-medium text-green-500"
-                        >
-                          Copied!
-                        </motion.span>
-                      )}
-                    </div>
-                  </div>
-                </button>
-              </div>
-            </div>
-          </div>
+          <motion.button
+            type="button"
+            onClick={() => setIsMobileMenuOpen((o) => !o)}
+            whileTap={reduceMotion ? undefined : { scale: 0.94 }}
+            className="ml-auto rounded-md border border-border p-2 text-muted-foreground hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:ml-0 md:hidden"
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-nav"
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+          >
+            {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </motion.button>
         </div>
-      </aside>
-
-      {/* Mobile Header */}
-      <header className="md:hidden fixed top-0 left-0 right-0 h-16 border-b border-border bg-background/80 backdrop-blur-lg z-50 px-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/10 flex items-center justify-center">
-            <Terminal className="w-4 h-4 text-primary" />
-          </div>
-          <div>
-            <h1 className="text-sm font-bold text-foreground">Jenish Paudel</h1>
-          </div>
-        </div>
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="w-10 h-10 rounded-lg border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
-          aria-label="Toggle menu"
-        >
-          {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
       </header>
 
-      {/* Mobile Menu */}
+      <ScrollReadingProgress />
+
       <AnimatePresence>
         {isMobileMenuOpen && (
           <>
-            {/* Backdrop */}
-            <motion.div
+            <motion.button
+              type="button"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              className="fixed inset-0 z-40 bg-black/50 backdrop-blur-[2px] md:hidden"
+              aria-label="Close menu"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden"
             />
-            
-            {/* Menu Panel */}
             <motion.div
+              id="mobile-nav"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Navigation"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed right-0 top-0 bottom-0 w-80 border-l border-border bg-background z-50 md:hidden overflow-y-auto"
+              transition={{ type: "spring", damping: 28, stiffness: 320 }}
+              className="fixed right-0 top-0 z-50 h-full w-[min(100%,20rem)] border-l border-border bg-background shadow-xl md:hidden"
             >
-              <div className="p-8 space-y-8">
-                {/* Header */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/10 flex items-center justify-center">
-                      <Terminal className="w-6 h-6 text-primary" />
-                    </div>
-                    <div className="space-y-1">
-                      <h1 className="text-xl font-bold text-foreground">Jenish Paudel</h1>
-                      <p className="text-sm text-muted-foreground font-mono">Data Science/Software Engineering Student</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Navigation */}
-                <nav className="space-y-2">
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-2">
-                    Navigation
-                  </p>
+              <div className="flex flex-col gap-6 p-6 pt-20">
+                <nav className="flex flex-col gap-1" aria-label="Mobile primary">
                   {navItems.map((item) => {
-                    const isActive = location === item.href;
+                    const isActive = item.match(location);
                     const Icon = item.icon;
                     return (
                       <Link key={item.href} href={item.href}>
-                        <div
+                        <span
                           className={cn(
-                            "flex items-center gap-3 px-4 py-4 rounded-xl transition-all duration-200",
+                            "flex items-center gap-3 rounded-lg border border-transparent px-4 py-3 text-sm font-medium",
                             isActive
-                              ? "bg-primary/10 text-primary border border-primary/20"
-                              : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
+                              ? "border-primary/25 bg-primary/10 text-foreground"
+                              : "text-muted-foreground hover:bg-muted/50",
                           )}
                         >
-                          <Icon className="w-5 h-5" />
-                          <span className="font-medium">{item.label}</span>
-                          {isActive && (
-                            <div className="ml-auto w-2 h-2 rounded-full bg-primary" />
-                          )}
-                        </div>
+                          <Icon className="h-5 w-5" />
+                          {item.label}
+                        </span>
                       </Link>
                     );
                   })}
                 </nav>
-
-                {/* Social Links */}
-                <div className="space-y-4">
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-2">
-                    Social
-                  </p>
-                  <div className="flex gap-3">
-                    {socialLinks.map((link) => (
-                      <a
-                        key={link.label}
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-1 h-12 rounded-lg border border-border bg-card flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-primary/5 transition-all"
-                      >
-                        <link.icon className="w-5 h-5" />
-                        <span className="text-sm font-medium">{link.label}</span>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Email */}
-                <div className="space-y-4">
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-2">
-                    Contact
-                  </p>
-                  <button
-                    onClick={copyEmail}
-                    className="w-full p-4 rounded-xl border border-border bg-card/50 hover:bg-card transition-all"
+                <div className="flex gap-2 border-t border-border pt-4">
+                  <a
+                    href={profile.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-border py-2 text-sm"
                   >
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <Mail className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-sm font-medium text-muted-foreground">Email</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <p className="text-sm font-mono text-foreground truncate">{email}</p>
-                        <Copy className={cn(
-                          "w-4 h-4",
-                          emailCopied ? "text-green-500" : "text-muted-foreground"
-                        )} />
-                      </div>
-                      {emailCopied && (
-                        <motion.p
-                          initial={{ opacity: 0, y: -5 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="text-xs text-green-500 font-medium"
-                        >
-                          Email copied to clipboard
-                        </motion.p>
-                      )}
-                    </div>
-                  </button>
+                    <Github className="h-4 w-4" />
+                    GitHub
+                  </a>
+                  <a
+                    href={profile.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-border py-2 text-sm"
+                  >
+                    <Linkedin className="h-4 w-4" />
+                    LinkedIn
+                  </a>
                 </div>
+                <a
+                  href={`mailto:${email}`}
+                  className="flex w-full items-center justify-center gap-2 rounded-lg border border-border px-4 py-3 text-sm font-medium text-foreground transition-colors hover:border-primary/30 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <Mail className="h-4 w-4" />
+                  Email
+                </a>
               </div>
             </motion.div>
           </>
         )}
       </AnimatePresence>
 
-      {/* Main Content */}
-      <main className="md:ml-80 pt-16 md:pt-0 min-h-screen">
-        <div className="p-6 md:p-8 lg:p-12 max-w-7xl mx-auto">
-          <motion.div
-            key={location}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-          >
-            {children}
-          </motion.div>
-        </div>
+      <main
+        id="main-content"
+        className="mx-auto min-h-[calc(100vh-4rem)] w-full max-w-[min(100%,88rem)] px-4 py-8 sm:px-6 sm:py-10 lg:px-12"
+      >
+        <motion.div
+          key={location}
+          initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: reduceMotion ? 0 : 0.48,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+        >
+          {children}
+        </motion.div>
       </main>
+
+      <footer className="border-t border-border/80 py-8">
+        <div className="mx-auto flex w-full max-w-[min(100%,88rem)] flex-col items-center justify-between gap-4 px-4 text-center text-sm text-muted-foreground sm:flex-row sm:text-left sm:px-6 lg:px-8">
+          <p>Jenish Paudel — Computer Science @ Western University</p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <a
+              href={profile.github}
+              className="rounded-sm hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              GitHub
+            </a>
+            <a
+              href={profile.linkedin}
+              className="rounded-sm hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              LinkedIn
+            </a>
+            <a
+              href={`mailto:${email}`}
+              className="rounded-sm hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              Email
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
