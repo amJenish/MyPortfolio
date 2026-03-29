@@ -236,10 +236,10 @@ export default function TelcoChurnReport(props: WorkPageProps) {
             Telco Customer<br /><span style={{ color: P.accent }}>Churn Prediction</span>
           </h1>
           <p style={{ fontSize: 17, color: P.textDim, maxWidth: 660, lineHeight: 1.8, margin: "0 0 14px" }}>
-            A telecom company's most expensive problem isn't acquiring customers. It's silently losing them. This project builds a churn prediction system across 7,032 subscribers, answering: <strong style={{ color: P.text }}>who is at risk, why they're leaving, and which levers retention teams should pull first.</strong>
+            A telecom company's most expensive problem isn't acquiring customers. It's silently losing them. I built a churn prediction system across 7,032 subscribers to answer: <strong style={{ color: P.text }}>who is at risk, why they're leaving, and which levers retention teams should pull first.</strong>
           </p>
           <p style={{ fontSize: 15, color: P.textDim, maxWidth: 660, lineHeight: 1.7, margin: "0 0 36px" }}>
-            The final Gradient Boosting model achieves <strong style={{ color: P.text }}>79.4% accuracy</strong> and <strong style={{ color: P.text }}>83.6% ROC-AUC</strong>. More importantly, it surfaces five concrete, business-actionable drivers that appear to explain the majority of churn risk.
+            My final Gradient Boosting model achieves <strong style={{ color: P.text }}>79.4% accuracy</strong> and <strong style={{ color: P.text }}>83.6% ROC-AUC</strong>. More importantly, it surfaces five concrete, business-actionable drivers that I found to explain the majority of churn risk.
           </p>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             {["Python", "scikit-learn", "pandas", "GBM", "GridSearchCV", "EDA", "Feature Engineering"].map(t => (
@@ -255,7 +255,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
         <div id="telco-kpis" className="scroll-mt-28" style={{ display: "flex", gap: 16, marginBottom: 80, flexWrap: "wrap" }}>
           <KPI label="Subscribers analysed" value="7,032" sub="After removing 11 new-customer rows with no billing history" />
           <KPI label="Churn rate" value="26.6%" sub="1,869 churners - a significant minority driving outsized revenue loss" color={P.rose} />
-          <KPI label="Model accuracy" value="79.4%" sub="Gradient Boosting, best across 5 algorithms benchmarked" color={P.teal} />
+          <KPI label="Model accuracy" value="79.4%" sub="Gradient Boosting, best across 5 algorithms I benchmarked" color={P.teal} />
           <KPI label="ROC-AUC" value="83.6%" sub="Strong discrimination between churners and retained customers" color={P.purple} />
         </div>
 
@@ -265,10 +265,10 @@ export default function TelcoChurnReport(props: WorkPageProps) {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
             <div>
               <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85, marginTop: 0 }}>
-                Customer churn in telecom is structurally expensive. Acquiring a new subscriber typically costs 5–7× more than retaining an existing one, yet most companies only discover a customer has left after it's already happened. The goal here is to flip that dynamic: <strong style={{ color: P.text }}>predict churn before it occurs</strong> so retention teams can intervene with targeted offers, outreach, or service fixes.
+                Customer churn in telecom is structurally expensive. Acquiring a new subscriber typically costs 5–7× more than retaining an existing one, yet most companies only discover a customer has left after it's already happened. My goal here was to flip that dynamic: <strong style={{ color: P.text }}>predict churn before it occurs</strong> so retention teams can intervene with targeted offers, outreach, or service fixes.
               </p>
               <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85 }}>
-                With 26.6% of the subscriber base churning, roughly 1 in 4 customers, even a modest improvement in early identification could translate directly to recoverable revenue. The question isn't just <em>who</em> will churn, but <em>why</em>: which contract terms, service bundles, and payment experiences create the friction that pushes customers out?
+                With 26.6% of the subscriber base churning, roughly 1 in 4 customers, even a modest improvement in early identification could translate directly to recoverable revenue. The question I kept coming back to wasn't just <em>who</em> will churn, but <em>why</em>: which contract terms, service bundles, and payment experiences create the friction that pushes customers out?
               </p>
             </div>
             <div style={{ background: P.card, border: `1px solid ${P.border}`, borderRadius: 12, overflow: "hidden" }}>
@@ -277,8 +277,8 @@ export default function TelcoChurnReport(props: WorkPageProps) {
                 ["Raw rows", "7,043 × 21 columns"],
                 ["Rows dropped", "11 (tenure = 0, no billing history)"],
                 ["Final dataset", "7,032 rows × 20 features"],
-                ["Churn (positive class)", "1,869 customers — 26.6%"],
-                ["Retained (negative class)", "5,163 customers — 73.4%"],
+                ["Churn (positive class)", "1,869 customers : 26.6%"],
+                ["Retained (negative class)", "5,163 customers : 73.4%"],
                 ["Numeric features", "tenure, MonthlyCharges, TotalCharges"],
                 ["Categorical features", "17"],
                 ["Train / Test split", "70% / 30%, stratified"],
@@ -291,18 +291,18 @@ export default function TelcoChurnReport(props: WorkPageProps) {
         <div id="telco-cleaning" className="scroll-mt-28" style={{ marginBottom: 80 }}>
           <Section n={2} title="Data Cleaning & Quality Decisions" />
           <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85, marginTop: 0, marginBottom: 20 }}>
-            The dataset had a subtle but impactful flaw: <Mono>TotalCharges</Mono> was 
+            I found a subtle but impactful flaw in the dataset: <Mono>TotalCharges</Mono> was 
             typed as a string column rather than numeric. Eleven rows contained blank strings, 
             which pandas couldn't convert to float. These would have silently introduced NaNs into the model,
              producing either a runtime crash or corrupted predictions.
           </p>
           <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85, marginBottom: 20 }}>
-            The key decision was what to <em>do</em> with those 11 rows.
+            My key decision was what to <em>do</em> with those 11 rows.
              Imputing them would have been misleading as every single one had <Mono>tenure = 0</Mono> and <Mono>Churn = No</Mono>. 
              These are brand-new subscribers with zero billing history. 
              <strong style={{ color: P.text }}>There is nothing about their behaviour yet to learn from.
               </strong> Keeping them would have injected noise into a model trying to predict based on behavioural patterns.
-               Dropping them is the more sound analytical decision.
+               Dropping them was the more sound analytical decision.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <Callout color={P.teal} icon="✓">
@@ -310,7 +310,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
                 </strong> Every row where <Mono>InternetService = "No"</Mono> correctly showed <Mono>
                   "No internet service"</Mono> across all six dependent columns: 
                   OnlineSecurity, OnlineBackup, DeviceProtection, TechSupport, StreamingTV, StreamingMovies. Zero violations. 
-                  The dataset appears internally consistent and safe to model.
+                  The dataset appeared internally consistent and safe to model.
             </Callout>
             <Callout color={P.orange} icon="⚠">
               <strong style={{ color: P.text }}>TotalCharges ≠ tenure × MonthlyCharges</strong> for roughly 33% of rows. 
@@ -325,15 +325,15 @@ export default function TelcoChurnReport(props: WorkPageProps) {
         <div id="telco-eda" className="scroll-mt-28" style={{ marginBottom: 80 }}>
           <Section n={3} title="Exploratory Data Analysis" />
           <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85, marginTop: 0, marginBottom: 28 }}>
-            Before training anything, EDA was used to stress-test intuitions and find which features carry genuine predictive signal and which are noise. 
-            Four patterns emerged as dominant, each translating into a retention action that a team could take tomorrow.
+            Before training anything, I used EDA to stress-test my intuitions and find which features carry genuine predictive signal and which are noise. 
+            I identified four dominant patterns, each translating into a retention action that a team could take tomorrow.
           </p>
 
           {/* Chart 1: Tenure */}
           <ChartCard
             label="Chart 1 : Churn rate by tenure group"
             note={<>The relationship between customer longevity and churn probability 
-            is the clearest pattern in the entire dataset. 
+            is the clearest pattern I found in the entire dataset. 
             Customers in their first 6 months churn at <strong style={{ color: P.rose }}>53.3%</strong>. 
             By the 4-6 year mark, that rate collapses to <strong style={{ color: P.teal }}>9.5%</strong>. 
             That's a <strong style={{ color: P.text }}>5.6× difference</strong> observed across tenure groups.</>}
@@ -349,11 +349,11 @@ export default function TelcoChurnReport(props: WorkPageProps) {
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
-            <AnalysisBlock heading="Why this may happen and what it could suggest">
+            <AnalysisBlock heading="Why this may happen and what it suggests to me">
               New subscribers may not yet have built the switching inertia that comes from years of integrated service.
               They're also the most likely to have joined on a promotional rate that expires, making their first full-price bill a potential shock. 
               Customers who stay past 24 months have likely already absorbed the switching cost mentally and made their peace with the relationship.
-              The implication: <strong style={{ color: P.text }}>the first 12 months may be the highest-leverage window for retention investment</strong>.
+              My takeaway: <strong style={{ color: P.text }}>the first 12 months may be the highest-leverage window for retention investment</strong>.
               Early onboarding check-ins, proactive value demonstrations, and lock-in incentives targeted at month 3–6 subscribers could have 
               the highest expected return.
             </AnalysisBlock>
@@ -364,7 +364,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
             <ChartCard
               label="Chart 2 : Churn rate by payment method"
               note={<>Electronic check payers churn at <strong style={{ color: P.rose }}>45.3%</strong>, nearly <strong style={{ color: P.text }}>3× the rate</strong> of credit card subscribers (15.3%).
-               This gap is too large to be coincidental.</>}
+               This gap was too large for me to treat as coincidental.</>}
             >
               <ResponsiveContainer width="100%" height={185}>
                 <BarChart data={paymentChurn} layout="vertical" barCategoryGap="28%">
@@ -377,11 +377,11 @@ export default function TelcoChurnReport(props: WorkPageProps) {
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
-              <AnalysisBlock heading="Why this may matter">
+              <AnalysisBlock heading="My interpretation">
                 Electronic check is the only manual, non-automatic payment method with substantial usage (33.6% of customers). 
                 It requires monthly active effort, which may mean it self-selects for people who haven't <em>fully committed</em> to the relationship. 
                 Automatic payment methods (bank transfer, credit card) tend to correlate with customers who have implicitly decided to stay. <strong style={{ color: P.text }}>
-                  Payment method may not be causing churn directly. It could be a behavioural signal of commitment level.</strong> Migrating 
+                  Payment method may not be causing churn directly. It looks to me more like a behavioural signal of commitment level.</strong> Migrating 
                   at-risk subscribers to automatic payment is a concrete, low-friction retention lever worth exploring.
               </AnalysisBlock>
             </ChartCard>
@@ -403,11 +403,11 @@ export default function TelcoChurnReport(props: WorkPageProps) {
                   <Bar dataKey="retained" name="Retained (count)" fill={P.teal}  radius={[3, 3, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
-              <AnalysisBlock heading="Why this may matter">
+              <AnalysisBlock heading="My interpretation">
                 Higher charges may not directly <em>cause</em> churn, but they raise the stakes for the customer. 
                 Someone paying $100+/month has a strong financial incentive to compare alternatives. 
-                Without bundled security or support services justifying the cost, that price could become a vulnerability. 
-                This may help explain why <strong style={{ color: P.text }}>fiber optic subscribers churn noticeably more than DSL users</strong>:
+                Without bundled security or support services justifying the cost, that price becomes a vulnerability. 
+                This helps explain something I noticed: <strong style={{ color: P.text }}>fiber optic subscribers churn noticeably more than DSL users</strong> —
                  they're paying more, often without the add-ons that might anchor them to the provider.
               </AnalysisBlock>
             </ChartCard>
@@ -418,10 +418,10 @@ export default function TelcoChurnReport(props: WorkPageProps) {
             <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: P.textDim, marginBottom: 18 }}>Additional EDA findings</div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
               {[
-                { icon: "📋", title: "Contract type is the strongest categorical separator", body: "55% of customers are month-to-month, yet this group overwhelmingly dominates the churn population. Two-year contract holders almost never leave, possibly because the switching cost (early termination fees, re-setup friction) exceeds the motivation to leave. Long-term contracts may function as a structural retention mechanism, not just a pricing strategy." },
-                { icon: "🔒", title: "Security & support add-ons may act as anchors", body: "Customers without OnlineSecurity or TechSupport churn at higher rates. These services may deepen the customer's dependence on the provider and give them a contact point when problems arise. Customers who regularly interact with TechSupport tend to stay longer; those who never do appear more likely to leave quietly after a bad experience." },
-                { icon: "👨‍👩‍👧", title: "Dependents may signal long-term commitment", body: "Customers with dependents are significantly less likely to churn. Families sharing a plan face collective switching costs, with one person's decision to leave affecting everyone. The inertia to stay is proportionally higher. This demographic may represent a natural low-risk segment to preserve, rather than one that needs heavy retention spend." },
-                { icon: "⚥", title: "Gender has near-zero predictive power and was deliberately excluded", body: "Male and female customers churn at virtually identical rates (~26.7% vs ~26.5%). This was supported both visually and statistically. Gender was excluded from the final feature set. Knowing what does NOT matter is as analytically valuable as knowing what does; adding noise to a model can hurt its calibration on the signals that actually count." },
+                { icon: "📋", title: "Contract type is the strongest categorical separator", body: "55% of customers are month-to-month, yet this group overwhelmingly dominates the churn population. Two-year contract holders almost never leave, possibly because the switching cost (early termination fees, re-setup friction) exceeds the motivation to leave. Long-term contracts appear to function as a structural retention mechanism, not just a pricing strategy." },
+                { icon: "🔒", title: "Security & support add-ons appear to act as anchors", body: "Customers without OnlineSecurity or TechSupport churn at higher rates. These services seem to deepen the customer's dependence on the provider and give them a contact point when problems arise. Customers who regularly interact with TechSupport tend to stay longer; those who never do appear more likely to leave quietly after a bad experience." },
+                { icon: "👨‍👩‍👧", title: "Dependents appear to signal long-term commitment", body: "Customers with dependents are significantly less likely to churn. Families sharing a plan face collective switching costs, with one person's decision to leave affecting everyone. The inertia to stay is proportionally higher. This demographic looks to me like a natural low-risk segment to preserve, rather than one that needs heavy retention spend." },
+                { icon: "⚥", title: "Gender has near-zero predictive power. I deliberately excluded it", body: "Male and female customers churn at virtually identical rates (~26.7% vs ~26.5%). I confirmed this both visually and statistically, then excluded gender from the final feature set. Knowing what does NOT matter is as analytically valuable as knowing what does; adding noise to a model can hurt its calibration on the signals that actually count." },
               ].map(({ icon, title, body }) => (
                 <div key={title} style={{ background: P.surface, border: `1px solid ${P.border}`, borderRadius: 10, padding: "16px 18px" }}>
                   <div style={{ display: "flex", gap: 10, marginBottom: 8, alignItems: "flex-start" }}>
@@ -439,19 +439,19 @@ export default function TelcoChurnReport(props: WorkPageProps) {
         <div id="telco-features" className="scroll-mt-28" style={{ marginBottom: 80 }}>
           <Section n={4} title="Feature Engineering" />
           <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85, marginTop: 0, marginBottom: 20 }}>
-            Raw features alone don't fully capture churn risk; they need to be translated into signals a model can learn from cleanly. Nine domain-driven binary flags were engineered from EDA findings, plus a composite <Mono>risk_score</Mono> summing them into a single segment-priority metric. The logic behind each flag isn't arbitrary: every one encodes a specific hypothesis about <em>why</em> a customer may be at risk, grounded in observed data.
+            Raw features alone don't fully capture churn risk; I needed to translate them into signals a model can learn from cleanly. I engineered nine domain-driven binary flags from my EDA findings, plus a composite <Mono>risk_score</Mono> summing them into a single segment-priority metric. The logic behind each flag isn't arbitrary: every one encodes a specific hypothesis about <em>why</em> a customer may be at risk, grounded in what I observed in the data.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
             {[
               { name: "short_tenure", why: "Customers in their first 12 months sit in the highest-risk window (36–53% churn). This flag isolates that cohort explicitly so the model can weight it directly.", color: P.rose },
-              { name: "month_to_month", why: "The strongest categorical predictor from EDA. No termination fee, no commitment: this group has maximum structural freedom to leave at any billing cycle.", color: P.rose },
-              { name: "fiber_no_security", why: "Fiber subscribers already pay more. Without OnlineSecurity bundled, they have a high bill with nothing additional anchoring them, a potentially concerning value-perception combination.", color: P.orange },
+              { name: "month_to_month", why: "The strongest categorical predictor from my EDA. No termination fee, no commitment: this group has maximum structural freedom to leave at any billing cycle.", color: P.rose },
+              { name: "fiber_no_security", why: "Fiber subscribers already pay more. Without OnlineSecurity bundled, they have a high bill with nothing additional anchoring them which is a potentially concerning value-perception combination I noticed in the data.", color: P.orange },
               { name: "no_support_services", why: "Customers with no TechSupport or DeviceProtection never interact proactively with the provider. Silence tends to precede churn.", color: P.orange },
               { name: "electronic_check_payment", why: "Manual payment correlates with lower commitment (45.3% churn rate). This flag lets the model weight that behavioural signal directly rather than treating it as a raw category.", color: P.accent },
-              { name: "high_monthly", why: "Charges above the dataset median ($70/month) may compound risk when not justified by bundled services, which could be particularly significant for newer customers still evaluating value.", color: P.accent },
-              { name: "hasOnlineSecurity / hasTechSupport", why: "Protective services may act as retention anchors. Their presence is a negative churn signal; their absence is a risk flag. The model benefits from both directions being encoded.", color: P.teal },
+              { name: "high_monthly", why: "Charges above the dataset median ($70/month) may compound risk when not justified by bundled services. I found this particularly notable for newer customers still evaluating value.", color: P.accent },
+              { name: "hasOnlineSecurity / hasTechSupport", why: "Protective services appear to act as retention anchors. Their presence is a negative churn signal; their absence is a risk flag. I encoded both directions so the model can use both.", color: P.teal },
               { name: "hasStreamingTV / hasStreamingMovies", why: "Entertainment add-ons increase the value extracted from the plan and may raise the cost of switching to a competitor who doesn't offer the same bundle.", color: P.teal },
-              { name: "risk_score (composite)", why: "Sums all boolean risk flags into a 0–9 score. Independently useful as a segment-priority metric for retention teams, with high scorers serving as the first call list regardless of model output.", color: P.purple },
+              { name: "risk_score (composite)", why: "Sums all boolean risk flags into a 0–9 score. I found this independently useful as a segment-priority metric for retention teams, with high scorers serving as the first call list regardless of model output.", color: P.purple },
             ].map(f => (
               <div key={f.name} style={{ background: P.surface, border: `1px solid ${P.border}`, borderRadius: 10, padding: "14px 16px", borderLeft: `3px solid ${f.color}` }}>
                 <div style={{ fontFamily: FONT_MONO, fontSize: 11.5, color: f.color, marginBottom: 6 }}>{f.name}</div>
@@ -465,7 +465,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
         <div id="telco-models" className="scroll-mt-28" style={{ marginBottom: 80 }}>
           <Section n={5} title="Model Selection & Benchmarking" />
           <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85, marginTop: 0, marginBottom: 24 }}>
-            Five classifiers were benchmarked on the same 70/30 stratified split. Overall accuracy is the headline metric, but for a churn use case, the more critical question is <em>how well does the model identify the 26.6% of customers who will leave?</em> Predicting the majority class (retained) well is trivially easy. The hard, valuable problem is catching churners before they go.
+            I benchmarked five classifiers on the same 70/30 stratified split. Overall accuracy is the headline metric, but for a churn use case, the more critical question I kept asking was: <em>how well does the model identify the 26.6% of customers who will leave?</em> Predicting the majority class (retained) well is trivially easy. The hard, valuable problem is catching churners before they go.
           </p>
 
           <div style={{ display: "flex", gap: 12, marginBottom: 20 }}>
@@ -476,7 +476,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
             ))}
           </div>
 
-          <ChartCard label={`Chart 4 — Model comparison: ${activeTab === "accuracy" ? "accuracy %" : "ROC-AUC %"} (highlighted = selected model)`}>
+          <ChartCard label={`Chart 4 : Model comparison: ${activeTab === "accuracy" ? "accuracy %" : "ROC-AUC %"} (highlighted = selected model)`}>
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={modelComparison} barCategoryGap="35%">
                 <CartesianGrid vertical={false} stroke={P.border} />
@@ -509,11 +509,11 @@ export default function TelcoChurnReport(props: WorkPageProps) {
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 20 }}>
-            <AnalysisBlock heading="Why GBM over Logistic Regression?">
-              Logistic Regression actually achieves <em>higher</em> churn recall (73% vs 48%) because it was explicitly class-weighted to penalise missing churners. But that comes at a cost: its churn precision drops to 55%, meaning roughly half of its positive predictions are false alarms. <strong style={{ color: P.text }}>For a retention team with limited outreach capacity, false alarms are expensive;</strong> every wasted contact consumes budget and risks annoying a customer who wasn't leaving. GBM's 65% precision means fewer misfires. Its superior overall accuracy (79.4% vs 77.0%) and identical ROC-AUC (83.6%) support it as the stronger generaliser.
+            <AnalysisBlock heading="Why I chose GBM over Logistic Regression">
+              Logistic Regression actually achieves <em>higher</em> churn recall (73% vs 48%) because I explicitly class-weighted it to penalise missing churners. But that comes at a cost: its churn precision drops to 55%, meaning roughly half of its positive predictions are false alarms. <strong style={{ color: P.text }}>For a retention team with limited outreach capacity, false alarms are expensive;</strong> every wasted contact consumes budget and risks annoying a customer who wasn't leaving. GBM's 65% precision means fewer misfires. Its superior overall accuracy (79.4% vs 77.0%) and identical ROC-AUC (83.6%) support it as the stronger generaliser.
             </AnalysisBlock>
-            <AnalysisBlock heading="Why SVM was disqualified immediately">
-              SVM achieved 90% precision on churners, the highest of any model. But its recall was just 9%, meaning it classified nearly every customer as retained and caught only roughly 50 of the 561 actual churners. Its 75.6% overall accuracy is almost entirely explained by correctly predicting the 73.4% majority class. <strong style={{ color: P.text }}>A model that misses 91% of churners has no operational value</strong>, regardless of how precise it is on the ones it does identify. High precision with near-zero recall is worse than useless for a proactive retention programme.
+            <AnalysisBlock heading="Why I disqualified SVM immediately">
+              SVM achieved 90% precision on churners, the highest of any model I tested. But its recall was just 9%, meaning it classified nearly every customer as retained and caught only roughly 50 of the 561 actual churners. Its 75.6% overall accuracy is almost entirely explained by correctly predicting the 73.4% majority class. <strong style={{ color: P.text }}>A model that misses 91% of churners has no operational value</strong>, regardless of how precise it is on the ones it does identify. High precision with near-zero recall is worse than useless for a proactive retention programme.
             </AnalysisBlock>
           </div>
         </div>
@@ -522,10 +522,10 @@ export default function TelcoChurnReport(props: WorkPageProps) {
         <div id="telco-importance" className="scroll-mt-28" style={{ marginBottom: 80 }}>
           <Section n={6} title="What the Model Learned Matters" />
           <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85, marginTop: 0, marginBottom: 24 }}>
-            Feature importances from the Random Forest model measure how much each variable reduces prediction uncertainty across all 500 decision trees (mean decrease in impurity). This is where the model either validates or challenges the intuitions built during EDA, and in this case, it validates them strongly.
+            I derived feature importances from the Random Forest model, measuring how much each variable reduces prediction uncertainty across all 500 decision trees (mean decrease in impurity). This is where the model either validates or challenges the intuitions I built during EDA and in this case, it validates them strongly.
           </p>
 
-          <ChartCard label="Chart 5 — Top 10 features by importance % (Random Forest, mean impurity reduction)">
+          <ChartCard label="Chart 5: Top 10 features by importance % (Random Forest, mean impurity reduction)">
             <ResponsiveContainer width="100%" height={340}>
               <BarChart data={featureImportance} layout="vertical" barCategoryGap="22%">
                 <CartesianGrid horizontal={false} stroke={P.border} />
@@ -543,9 +543,9 @@ export default function TelcoChurnReport(props: WorkPageProps) {
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginTop: 20 }}>
             {[
-              { title: "TotalCharges leads at 10.2% and here's a possible reason", color: P.accent, body: "TotalCharges may simultaneously encode two things: how long a customer has been a subscriber and their cumulative spend trajectory. A customer with high TotalCharges and low MonthlyCharges could be a long-tenured downgrader, a different risk profile from a short-tenure, high-charge new subscriber. That dual encoding may make it richer than either tenure or MonthlyCharges alone, which could help explain why it ranks first even though the other two also appear." },
-              { title: "Three financial features account for 28% of signal", color: P.orange, body: "TotalCharges (10.2%), tenure (9.6%), and MonthlyCharges (8.3%) together account for over 28% of the model's predictive power. This concentration may suggest churn is fundamentally tied to the financial dimension of the relationship. Age, gender, and household composition barely register. The model seems to point toward understanding the financial dynamic of the relationship as a key part of understanding churn risk." },
-              { title: "Contract & payment confirm EDA and enable action", color: P.teal, body: "Contract type (2yr: 2.2%, 1yr: 1.8%) and electronic check payment (2.1%) appear in the top 10, lending further weight to the EDA findings. Crucially, unlike TotalCharges, these features are directly actionable: a retention team can offer a contract-length incentive or assist with payment method migration, which are concrete interventions with potentially measurable outcomes." },
+              { title: "TotalCharges leads at 10.2% and here's my read on why", color: P.accent, body: "TotalCharges may simultaneously encode two things: how long a customer has been a subscriber and their cumulative spend trajectory. A customer with high TotalCharges and low MonthlyCharges could be a long-tenured downgrader which is a different risk profile from a short-tenure, high-charge new subscriber. That dual encoding may make it richer than either tenure or MonthlyCharges alone, which I think helps explain why it ranks first even though both of those also appear." },
+              { title: "Three financial features account for 28% of signal", color: P.orange, body: "TotalCharges (10.2%), tenure (9.6%), and MonthlyCharges (8.3%) together account for over 28% of the model's predictive power. This concentration tells me churn is fundamentally tied to the financial dimension of the relationship. Age, gender, and household composition barely register. The model seems to agree with my EDA intuition: understanding the financial dynamic is central to understanding churn risk." },
+              { title: "Contract & payment confirm my EDA and enable action", color: P.teal, body: "Contract type (2yr: 2.2%, 1yr: 1.8%) and electronic check payment (2.1%) appear in the top 10, lending further weight to what I found during EDA. Crucially, unlike TotalCharges, these features are directly actionable: a retention team can offer a contract-length incentive or assist with payment method migration which is concrete interventions with potentially measurable outcomes." },
             ].map(({ title, color, body }) => (
               <div key={title} style={{ background: P.surface, border: `1px solid ${P.border}`, borderRadius: 10, padding: "16px 18px", borderTop: `3px solid ${color}` }}>
                 <strong style={{ fontSize: 13.5, color: P.text, display: "block", marginBottom: 10, lineHeight: 1.4 }}>{title}</strong>
@@ -559,14 +559,14 @@ export default function TelcoChurnReport(props: WorkPageProps) {
         <div id="telco-tuning" className="scroll-mt-28" style={{ marginBottom: 80 }}>
           <Section n={7} title="Hyperparameter Tuning" />
           <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85, marginTop: 0, marginBottom: 20 }}>
-            Default GBM settings are designed for balanced, medium-scale datasets. This dataset is neither: it has a 73/27 class imbalance and structured categorical patterns that respond differently to learning rate and tree depth. A <Mono>GridSearchCV</Mono> with 3-fold cross-validation across 32 parameter combinations was run to find settings that generalise well, not just fit the training data.
+            Default GBM settings are designed for balanced, medium-scale datasets. This dataset is neither: it has a 73/27 class imbalance and structured categorical patterns that respond differently to learning rate and tree depth. I ran a <Mono>GridSearchCV</Mono> with 3-fold cross-validation across 32 parameter combinations to find settings that generalise well, not just fit the training data.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 24 }}>
             <div>
               {[
                 { param: "learning_rate = 0.05", why: "A slower learning rate forces the model to take smaller, more considered steps at each boosting round, which may reduce the risk of overfitting the minority churn class. At the default 0.1, the model converged faster but showed slightly worse generalisation on the validation folds." },
                 { param: "max_depth = 3", why: "Shallow trees are the principled choice for gradient boosting. Each tree only needs to correct the residual errors of the previous one; it doesn't need to be a complete model in itself. Depth 3 (maximum 8 leaf nodes per tree) keeps individual learners deliberately weak so the ensemble can be strong without memorising training noise." },
-                { param: "n_estimators = 100", why: "100 boosting rounds at learning_rate=0.05 provides sufficient convergence. Testing 200 estimators showed diminishing returns on the CV score, adding computation time without improving generalisation, which may be a signal that the model has reached its learning plateau." },
+                { param: "n_estimators = 100", why: "100 boosting rounds at learning_rate=0.05 provides sufficient convergence. I tested 200 estimators and found diminishing returns on the CV score, which I took as a signal the model had reached its learning plateau." },
                 { param: "subsample = 1.0", why: "Stochastic subsampling (e.g. 0.8, using 80% of rows per round) is sometimes beneficial because it introduces variance-reducing randomness. Here it consistently reduced CV performance, suggesting the dataset's structure may be regular enough that using all rows per round is more informative than sampling." },
               ].map(({ param, why }) => (
                 <div key={param} style={{ display: "flex", gap: 14, marginBottom: 18, alignItems: "flex-start" }}>
@@ -582,11 +582,11 @@ export default function TelcoChurnReport(props: WorkPageProps) {
               <TableRow label="Total model fits" value="96" />
               <TableRow label="Best CV score" value="80.1%" highlight />
               <TableRow label="Final test accuracy" value="79.4%" highlight />
-              <TableRow label="Generalisation gap" value="0.7% — healthy" />
+              <TableRow label="Generalisation gap" value="0.7% : healthy" />
             </div>
           </div>
           <Callout color={P.teal} icon="✓">
-            <strong style={{ color: P.text }}>A 0.7% gap between CV score (80.1%) and test accuracy (79.4%) is a healthy result.</strong> It suggests the model generalises well to unseen data and hasn't memorised the training set. Gaps above 3–5% would flag overfitting; gaps of zero would suggest the CV setup was leaking data. This sits in the right zone.
+            <strong style={{ color: P.text }}>A 0.7% gap between CV score (80.1%) and test accuracy (79.4%) is a healthy result.</strong> It tells me the model generalises well to unseen data and hasn't memorised the training set. Gaps above 3–5% would flag overfitting; gaps of zero would suggest the CV setup was leaking data. This sits in the right zone.
           </Callout>
         </div>
 
@@ -594,11 +594,11 @@ export default function TelcoChurnReport(props: WorkPageProps) {
         <div id="telco-evaluation" className="scroll-mt-28" style={{ marginBottom: 80 }}>
           <Section n={8} title="Final Model Evaluation" />
           <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85, marginTop: 0, marginBottom: 24 }}>
-            The tuned GBM was evaluated on the held-out 30% test set, comprising 2,110 subscribers the model had never seen: 1,549 retained and 561 churners. The results reflect a model that is confident and accurate on the majority class, and appropriately conservative about flagging churners at the default threshold.
+            I evaluated the tuned GBM on the held-out 30% test set, comprising 2,110 subscribers the model had never seen: 1,549 retained and 561 churners. The results reflect a model that is confident and accurate on the majority class, and appropriately conservative about flagging churners at the default threshold.
           </p>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-            <ChartCard label="Chart 6 — Per-class precision, recall & F1-score (%)">
+            <ChartCard label="Chart 6 : Per-class precision, recall & F1-score (%)">
               <ResponsiveContainer width="100%" height={210}>
                 <BarChart data={classReport} barCategoryGap="30%">
                   <CartesianGrid vertical={false} stroke={P.border} />
@@ -613,7 +613,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
             </ChartCard>
 
             <div style={{ background: P.card, border: `1px solid ${P.border}`, borderRadius: 12, padding: "24px" }}>
-              <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: P.textDim, marginBottom: 16 }}>Chart 7 — Confusion matrix (test set, n=2,110)</div>
+              <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: P.textDim, marginBottom: 16 }}>Chart 7 : Confusion matrix (test set, n=2,110)</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 14 }}>
                 {[
                   { label: "True Negatives",  value: CM.TN, sub: "91% of retained correctly predicted as staying", color: P.teal },
@@ -634,8 +634,8 @@ export default function TelcoChurnReport(props: WorkPageProps) {
             </div>
           </div>
 
-          <AnalysisBlock heading="Reading the results honestly - what does 79.4% accuracy mean?">
-            A 79.4% accuracy headline looks strong. But in a 73/27 imbalanced dataset, a model that simply predicted "retained" for <em>every</em> customer would score 73.4% accuracy with zero practical value. The more meaningful number is the <strong style={{ color: P.text }}>48% churn recall</strong>: the model catches roughly half of actual churners at the default threshold. The other half (292 customers) are predicted to stay but will leave. This may be a consequence of class imbalance; the model has been exposed to 2.7× more "stay" examples than "leave" examples, so it's naturally conservative about predicting churn. The ROC-AUC of 83.6% is the more honest performance indicator; it measures how well the model <em>ranks</em> customers by churn probability across all possible thresholds, and 83.6% reflects genuinely strong ranking ability. The binary threshold is a dial that can be tuned; the underlying discriminative power is what matters.
+          <AnalysisBlock heading="Reading the results and what does 79.4% accuracy actually mean?">
+            A 79.4% accuracy headline looks strong. But in a 73/27 imbalanced dataset, a model that simply predicted "retained" for <em>every</em> customer would score 73.4% accuracy with zero practical value. The more meaningful number to me is the <strong style={{ color: P.text }}>48% churn recall</strong>: the model catches roughly half of actual churners at the default threshold. The other half (292 customers) are predicted to stay but will leave. This is likely a consequence of class imbalance; the model has been exposed to 2.7× more "stay" examples than "leave" examples, so it's naturally conservative about predicting churn. The ROC-AUC of 83.6% is the more honest performance indicator; it measures how well the model <em>ranks</em> customers by churn probability across all possible thresholds, and 83.6% reflects genuinely strong ranking ability. The binary threshold is a dial I can tune; the underlying discriminative power is what matters.
           </AnalysisBlock>
         </div>
 
@@ -646,9 +646,9 @@ export default function TelcoChurnReport(props: WorkPageProps) {
             <div style={{ background: P.card, border: `1px solid ${P.border}`, borderRadius: 12, padding: "24px" }}>
               <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: P.rose, marginBottom: 18 }}>Known limitations</div>
               {[
-                { title: "Class imbalance is unaddressed in the final model", body: "The 73/27 split wasn't corrected with SMOTE or explicit class weighting in the final GBM, which may be why churn recall sits at 48%. This was a deliberate tradeoff: oversampling can cause the model to learn synthetic patterns rather than real-world structure. The more appropriate fix is likely sweeping the classification threshold against a business cost function, rather than blindly applying SMOTE." },
-                { title: "Snapshot data with no behavioural trajectory", body: "The dataset is a single point-in-time cross-section. There's no usage trajectory: a customer whose usage doubled last month looks identical to one whose usage halved. Longitudinal features (charge trend over time, support ticket frequency, usage deltas) would likely strengthen the model's early-warning capability." },
-                { title: "No per-customer explainability (SHAP)", body: "Feature importances describe what matters globally across all customers. They don't tell a retention agent <em>why this specific customer</em> was flagged. Without SHAP values, the model is an output without a story, which is critical for agent trust and for crafting personalised, credible retention offers rather than generic discounts." },
+                { title: "Class imbalance is unaddressed in the final model", body: "The 73/27 split wasn't corrected with SMOTE or explicit class weighting in the final GBM, which is likely why churn recall sits at 48%. This was a deliberate tradeoff: oversampling can cause the model to learn synthetic patterns rather than real-world structure. The more appropriate fix is probably sweeping the classification threshold against a business cost function, rather than blindly applying SMOTE." },
+                { title: "Snapshot data with no behavioural trajectory", body: "The dataset is a single point-in-time cross-section. There's no usage trajectory: a customer whose usage doubled last month looks identical to one whose usage halved. Longitudinal features (charge trend over time, support ticket frequency, usage deltas) would likely strengthen the model's early-warning capability significantly." },
+                { title: "No per-customer explainability (SHAP)", body: "Feature importances describe what matters globally across all customers. They don't tell a retention agent why this specific customer was flagged. Without SHAP values, the model is an output without a story which is critical for agent trust and for crafting personalised, credible retention offers rather than generic discounts." },
                 { title: "TotalCharges complexity is partially opaque", body: "About 33% of rows show TotalCharges differing from tenure × MonthlyCharges by more than $50, implying mid-cycle plan changes, credits, or prorated billing that the model treats as a black box. Decomposing this delta into an engineered feature could potentially capture upgrade/downgrade behaviour as a direct churn signal." },
               ].map(({ title, body }) => (
                 <div key={title} style={{ marginBottom: 18, paddingBottom: 18, borderBottom: `1px solid ${P.border}` }}>
@@ -660,10 +660,10 @@ export default function TelcoChurnReport(props: WorkPageProps) {
             <div style={{ background: P.card, border: `1px solid ${P.border}`, borderRadius: 12, padding: "24px" }}>
               <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: P.teal, marginBottom: 18 }}>High-value next steps</div>
               {[
-                { title: "Threshold optimisation with a business cost function", body: "Define the cost of a missed churner (lost customer LTV) and the cost of a false alarm (wasted outreach spend). Sweep the classification threshold from 30% to 70% and plot expected net ROI at each point. This converts an ML probability score into a direct, defensible business recommendation, and could make the model deployable by a non-technical retention team." },
+                { title: "Threshold optimisation with a business cost function", body: "I'd want to define the cost of a missed churner (lost customer LTV) and the cost of a false alarm (wasted outreach spend), then sweep the classification threshold from 30% to 70% and plot expected net ROI at each point. This converts an ML probability score into a direct, defensible business recommendation and could make the model deployable by a non-technical retention team." },
                 { title: "SHAP for individual-level explanations", body: "Adding SHAP would let the model explain each prediction: 'This customer is high-risk primarily because of their month-to-month contract and fiber subscription without security add-ons.' That specificity enables personalised retention offers and builds trust with agents who currently have no reason to rely on a black-box score." },
-                { title: "LTV-weighted customer prioritisation", body: "Not all at-risk customers are equally worth retaining. A customer spending $110/month for 5 years is far more valuable than one spending $20/month in month 2. Multiplying the model's churn probability score by estimated LTV creates a ranked contact list that could maximise revenue recovery per dollar of outreach, rather than spending it uniformly." },
-                { title: "Longitudinal features from usage data", body: "If usage logs or billing history over time are accessible, features like charge_delta_3m (change in monthly charges over 3 months), support_calls_6m, or plan_downgrades_12m could capture the behavioural trajectory that snapshot data entirely misses, and may push model performance significantly past the current ceiling." },
+                { title: "LTV-weighted customer prioritisation", body: "Not all at-risk customers are equally worth retaining. A customer spending $110/month for 5 years is far more valuable than one spending $20/month in month 2. Multiplying the model's churn probability score by estimated LTV would create a ranked contact list that maximises revenue recovery per dollar of outreach, rather than spending it uniformly." },
+                { title: "Longitudinal features from usage data", body: "If usage logs or billing history over time are accessible, features like charge_delta_3m (change in monthly charges over 3 months), support_calls_6m, or plan_downgrades_12m could capture the behavioural trajectory that snapshot data entirely misses and may push model performance significantly past the current ceiling." },
               ].map(({ title, body }) => (
                 <div key={title} style={{ marginBottom: 18, paddingBottom: 18, borderBottom: `1px solid ${P.border}` }}>
                   <strong style={{ fontSize: 13.5, color: P.text, display: "block", marginBottom: 6 }}>{title}</strong>

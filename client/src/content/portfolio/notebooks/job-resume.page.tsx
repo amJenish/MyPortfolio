@@ -173,40 +173,40 @@ const expDetails: Record<ExpTab, { title: string; dim: string; f1: string; color
     dim: "10 features",
     f1: "60%",
     color: P.rose,
-    body: "A shallow feature vector built from basic text statistics and coarse semantic similarity: cosine similarity between generic sentence embeddings, embedding norms, mean and variance of embedding components, and token counts for both resume and job description. No task-specific learning is involved.",
-    why: "This experiment establishes a performance floor. An F1 of 60% suggests that basic structural properties of text carry some compatibility signal, but they appear far too coarse to capture what actually makes a candidate a good fit for a role.",
+    body: "I built a shallow feature vector from basic text statistics and coarse semantic similarity: cosine similarity between generic sentence embeddings, embedding norms, mean and variance of embedding components, and token counts for both resume and job description. No task-specific learning was involved.",
+    why: "This experiment establishes a performance floor. An F1 of 60% tells me that basic structural properties of text carry some compatibility signal, but they're far too coarse to capture what actually makes a candidate a good fit for a role.",
   },
   "2": {
     title: "Frozen MiniLM + 1536-D Interactions",
     dim: "1536 features",
     f1: "69%",
     color: P.orange,
-    body: "A pretrained MiniLM encoder produces 384-dimensional embeddings for both the resume and the job description. These are combined into a 1536-dimensional interaction vector by concatenating the raw embeddings, their absolute difference, and their elementwise product. The encoder is frozen throughout.",
-    why: "The jump from 60% to 69% suggests that general-purpose transformer embeddings encode meaningfully richer semantic structure than surface text statistics. The absolute difference component may capture mismatches between skills and requirements, while the elementwise product highlights dimensions where both texts strongly agree.",
+    body: "I used a pretrained MiniLM encoder to produce 384-dimensional embeddings for both the resume and the job description. These were combined into a 1536-dimensional interaction vector by concatenating the raw embeddings, their absolute difference, and their elementwise product. The encoder was frozen throughout.",
+    why: "The jump from 60% to 69% told me that general-purpose transformer embeddings encode meaningfully richer semantic structure than surface text statistics. The absolute difference component may capture mismatches between skills and requirements, while the elementwise product highlights dimensions where both texts strongly agree.",
   },
   "3": {
     title: "Fine-Tuned MiniLM Bi-Encoder",
     dim: "1536 features",
     f1: "84%",
     color: P.accent,
-    body: "The MiniLM encoder is fine-tuned on compatibility labels using a cosine similarity objective. Compatible pairs are encouraged to have embeddings close together; incompatible pairs are pushed apart with a margin-based loss. The downstream interaction features remain identical to Experiment 2, isolating the effect of the reshaped embedding space.",
-    why: "The F1 jump from 69% to 84% under a fixed classifier and fixed feature construction is the largest single gain in the entire study. It strongly suggests that the embedding space, once reshaped around compatibility rather than general language understanding, becomes dramatically more informative. The representation appears to be the primary bottleneck, not the classifier.",
+    body: "I fine-tuned the MiniLM encoder on compatibility labels using a cosine similarity objective. Compatible pairs are encouraged to have embeddings close together; incompatible pairs are pushed apart with a margin-based loss. The downstream interaction features remained identical to Experiment 2, isolating the effect of the reshaped embedding space.",
+    why: "The F1 jump from 69% to 84% under a fixed classifier and fixed feature construction is the largest single gain across my entire study. It strongly suggests that the embedding space, once reshaped around compatibility rather than general language understanding, becomes dramatically more informative. The representation was the primary bottleneck, not the classifier.",
   },
   "4": {
     title: "Structured 28-D Compatibility Features",
     dim: "28 features",
     f1: "≈84%",
     color: P.teal,
-    body: "Using spaCy noun-chunk extraction and regular expressions, structured compatibility signals are derived: skill overlap, Jaccard similarity between skill sets, the gap between required and observed years of experience, education-level alignment, and sentence-level similarity scores from the fine-tuned bi-encoder. These are condensed into a 28-dimensional, human-interpretable feature vector.",
-    why: "Adding structured features under the same linear classifier produces no significant gain. This may indicate that the information is largely already captured by the fine-tuned embeddings, or that the relationships between these structured features are inherently nonlinear in ways a logistic regression boundary cannot exploit.",
+    body: "Using spaCy noun-chunk extraction and regular expressions, I derived structured compatibility signals: skill overlap, Jaccard similarity between skill sets, the gap between required and observed years of experience, education-level alignment, and sentence-level similarity scores from the fine-tuned bi-encoder. These were condensed into a 28-dimensional, human-interpretable feature vector.",
+    why: "Adding structured features under the same linear classifier produced no significant gain. My read is that the information is largely already captured by the fine-tuned embeddings, or that the relationships between these structured features are inherently nonlinear in ways a logistic regression boundary can't exploit.",
   },
   "5": {
     title: "Nonlinear Classifiers on 28-D Features",
     dim: "28 features",
     f1: "88% (MLP)",
     color: P.purple,
-    body: "The 28-dimensional representation is held fixed while the classifier architecture varies. Seven nonlinear models are evaluated: MLP, Random Forest, XGBoost, LightGBM, GradientBoosting, HistGradientBoosting, and CatBoost. The MLP achieves the best F1 of 88%, with XGBoost and LightGBM close behind at 86%.",
-    why: "The improvement from 84% (LR) to 88% (MLP) on the same feature set suggests that the structured compatibility features contain nonlinear interactions a linear classifier cannot access. High semantic similarity combined with a missing critical skill may still signal poor fit, and a nonlinear boundary appears better suited to capture that logic.",
+    body: "I held the 28-dimensional representation fixed and varied the classifier architecture across seven nonlinear models: MLP, Random Forest, XGBoost, LightGBM, GradientBoosting, HistGradientBoosting, and CatBoost. The MLP achieved the best F1 of 88%, with XGBoost and LightGBM close behind at 86%.",
+    why: "The improvement from 84% (LR) to 88% (MLP) on the same feature set suggests that the structured compatibility features contain nonlinear interactions a linear classifier can't access. High semantic similarity combined with a missing critical skill may still signal poor fit, and a nonlinear boundary appears better suited to capture that logic.",
   },
 };
 
@@ -230,10 +230,10 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
             Resume–Job Matching:<br /><span style={{ color: P.accent }}>Representation vs. Classifier</span>
           </h1>
           <p style={{ fontSize: 17, color: P.textDim, maxWidth: 680, lineHeight: 1.8, margin: "0 0 14px" }}>
-            When an ML system improves, it's often unclear whether credit belongs to a better representation or a more expressive classifier. This project builds a controlled framework to answer that question in the context of Applicant Tracking Systems: <strong style={{ color: P.text }}>how much of the gain comes from learning better embeddings, and how much from choosing a more powerful model?</strong>
+            When an ML system improves, it's often unclear whether credit belongs to a better representation or a more expressive classifier. I built a controlled framework to answer that question in the context of Applicant Tracking Systems: <strong style={{ color: P.text }}>how much of the gain comes from learning better embeddings, and how much from choosing a more powerful model?</strong>
           </p>
           <p style={{ fontSize: 15, color: P.textDim, maxWidth: 680, lineHeight: 1.7, margin: "0 0 36px" }}>
-            Across five staged experiments, representation learning alone lifted F1 from <strong style={{ color: P.text }}>60% to 84%</strong> under a fixed linear classifier. Switching to a nonlinear MLP then pushed it further to <strong style={{ color: P.text }}>88%</strong>, suggesting the two contributions are sequential rather than interchangeable.
+            Across five staged experiments, I found that representation learning alone lifted F1 from <strong style={{ color: P.text }}>60% to 84%</strong> under a fixed linear classifier. Switching to a nonlinear MLP then pushed it further to <strong style={{ color: P.text }}>88%</strong>, suggesting the two contributions are sequential rather than interchangeable.
           </p>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             {["Python", "PyTorch", "HuggingFace", "MiniLM", "spaCy", "scikit-learn", "XGBoost", "LightGBM"].map(t => (
@@ -262,7 +262,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
                 Applicant Tracking Systems are under growing pressure to automate the compatibility screening between candidate resumes and job descriptions. Recent transformer-based approaches have improved performance substantially, but the attribution is typically muddied: systems improve their representation and their classifier simultaneously, making it hard to say which change is responsible for which gain.
               </p>
               <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85 }}>
-                This project separates those two axes cleanly. In the first four experiments, the classifier is held constant as a Logistic Regression model while the representation changes. Only in the fifth experiment does the classifier vary, on a fixed representation. The goal is to isolate each contribution and understand the order in which they matter.
+                I designed this project to separate those two axes cleanly. In my first four experiments, I held the classifier constant as a Logistic Regression while the representation changed. Only in the fifth experiment did I vary the classifier, on a fixed representation. The goal was to isolate each contribution and understand the order in which they matter.
               </p>
             </div>
             <div style={{ background: P.card, border: `1px solid ${P.border}`, borderRadius: 12, overflow: "hidden" }}>
@@ -285,26 +285,26 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
         <div id="rjm-data" className="scroll-mt-28" style={{ marginBottom: 80 }}>
           <Section n={2} title="Dataset & Preprocessing" />
           <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85, marginTop: 0, marginBottom: 20 }}>
-            The dataset is <Mono>facehuggerapoorv/resume-jd-match</Mono> from Hugging Face. Each row contains a single packed text field with both a job description and a resume enclosed in <Mono>{"<<...>>"}</Mono> delimiters, alongside a three-way compatibility label. The preprocessing pipeline unpacks, cleans, and standardizes these fields before any feature extraction takes place.
+            I used <Mono>facehuggerapoorv/resume-jd-match</Mono> from Hugging Face. Each row contains a single packed text field with both a job description and a resume enclosed in <Mono>{"<<...>>"}</Mono> delimiters, alongside a three-way compatibility label. My preprocessing pipeline unpacks, cleans, and standardizes these fields before any feature extraction takes place.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
             <div>
               <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85, marginTop: 0 }}>
-                A notable quality issue in the raw data is that many resumes lack punctuation entirely, which may interfere with sentence-level embedding models that rely on syntactic boundaries. Rather than ignoring this, a pretrained punctuation restoration model (<Mono>oliverguhr/fullstop-punctuation-multilang-large</Mono>) is applied to both resumes and job descriptions in batches, re-inserting periods, commas, and question marks based on predicted token boundaries.
+                A notable quality issue I found in the raw data is that many resumes lack punctuation entirely, which may interfere with sentence-level embedding models that rely on syntactic boundaries. Rather than ignoring this, I applied a pretrained punctuation restoration model (<Mono>oliverguhr/fullstop-punctuation-multilang-large</Mono>) to both resumes and job descriptions in batches, re-inserting periods, commas, and question marks based on predicted token boundaries.
               </p>
               <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85 }}>
-                A custom spacing normalizer is then applied to handle compounded text artifacts: camelCase boundaries are split, spacing after punctuation is enforced, and symbols like <Mono>&</Mono>, <Mono>/</Mono>, and parentheses are padded correctly. The goal is to produce clean, natural-reading text before handing it to downstream encoders.
+                I then applied a custom spacing normalizer to handle compounded text artifacts: camelCase boundaries are split, spacing after punctuation is enforced, and symbols like <Mono>&</Mono>, <Mono>/</Mono>, and parentheses are padded correctly. The goal was to produce clean, natural-reading text before handing it to downstream encoders.
               </p>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <Callout color={P.teal} icon="①">
-                <strong style={{ color: P.text }}>Label binarization.</strong> The original three-way labels ("no fit", "potential fit", "good fit") are collapsed to binary: anything other than "no fit" is treated as a positive match. This reflects the practical ATS decision of whether to shortlist a candidate.
+                <strong style={{ color: P.text }}>Label binarization.</strong> I collapsed the original three-way labels ("no fit", "potential fit", "good fit") to binary: anything other than "no fit" is treated as a positive match. This reflects the practical ATS decision of whether to shortlist a candidate.
               </Callout>
               <Callout color={P.orange} icon="②">
-                <strong style={{ color: P.text }}>Punctuation restoration.</strong> Resumes in the dataset frequently lack punctuation, which may degrade sentence-embedding quality. The <Mono>fullstop</Mono> model restores these boundaries before any encoding takes place.
+                <strong style={{ color: P.text }}>Punctuation restoration.</strong> Resumes in the dataset frequently lack punctuation, which may degrade sentence-embedding quality. I applied the <Mono>fullstop</Mono> model to restore these boundaries before any encoding takes place.
               </Callout>
               <Callout color={P.purple} icon="③">
-                <strong style={{ color: P.text }}>Feature standardization.</strong> All numeric feature vectors (handcrafted stats, interaction vectors, structured compatibility features) are scaled using <Mono>StandardScaler</Mono> before being passed to any classifier. No stemming or lemmatization is applied, as transformer-based encoders handle lexical variation internally.
+                <strong style={{ color: P.text }}>Feature standardization.</strong> I scaled all numeric feature vectors (handcrafted stats, interaction vectors, structured compatibility features) using <Mono>StandardScaler</Mono> before passing them to any classifier. I didn't apply stemming or lemmatization, as transformer-based encoders handle lexical variation internally.
               </Callout>
             </div>
           </div>
@@ -314,7 +314,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
         <div id="rjm-design" className="scroll-mt-28" style={{ marginBottom: 80 }}>
           <Section n={3} title="Experimental Design" />
           <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85, marginTop: 0, marginBottom: 28 }}>
-            The study is organized around two phases. Phase one (Experiments 1–4) holds the classifier fixed as a Logistic Regression and varies only the representation, so that performance differences can be attributed to the feature space rather than the model. Phase two (Experiment 5) holds the representation fixed and varies the classifier, testing whether nonlinear decision boundaries can recover signal that a linear model cannot access.
+            I organised the study around two phases. In phase one (Experiments 1–4), I held the classifier fixed as a Logistic Regression and varied only the representation, so that performance differences could be attributed to the feature space rather than the model. In phase two (Experiment 5), I held the representation fixed and varied the classifier, testing whether nonlinear decision boundaries could recover signal that a linear model couldn't access.
           </p>
 
           {/* Experiment selector */}
@@ -348,7 +348,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
                   </div>
                 </div>
                 <p style={{ fontSize: 14, color: P.textDim, lineHeight: 1.8, margin: "0 0 16px" }}>{d.body}</p>
-                <AnalysisBlock heading="Interpretation">
+                <AnalysisBlock heading="My interpretation">
                   {d.why}
                 </AnalysisBlock>
               </div>
@@ -356,7 +356,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
           })()}
 
           <Callout color={P.accent} icon="→">
-            <strong style={{ color: P.text }}>Why Logistic Regression as the fixed classifier?</strong> A linear model cannot implicitly learn complex nonlinear interactions between features. Any performance improvement observed across Experiments 1–4 is therefore more cleanly attributable to the quality of the representation rather than to the classifier's ability to compensate for a poor feature space.
+            <strong style={{ color: P.text }}>Why I used Logistic Regression as the fixed classifier.</strong> A linear model can't implicitly learn complex nonlinear interactions between features. Any performance improvement I observed across Experiments 1–4 was therefore more cleanly attributable to the quality of the representation rather than to the classifier's ability to compensate for a poor feature space.
           </Callout>
         </div>
 
@@ -364,13 +364,13 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
         <div id="rjm-results" className="scroll-mt-28" style={{ marginBottom: 80 }}>
           <Section n={4} title="Results Across All Experiments" />
           <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85, marginTop: 0, marginBottom: 24 }}>
-            The F1 trajectory across experiments tells a clear story: representation learning does most of the work, fine-tuning is the single largest lever, and structured symbolic features add interpretability without necessarily adding performance under a linear model. Nonlinear classifiers then unlock the remaining latent signal once the representation is sufficiently rich.
+            The F1 trajectory across my experiments tells a clear story: representation learning does most of the work, fine-tuning is the single largest lever, and structured symbolic features add interpretability without necessarily adding performance under a linear model. Nonlinear classifiers then unlock the remaining latent signal once the representation is sufficiently rich.
           </p>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
             <ChartCard
-              label="Chart 1 — F1-score progression across experiments"
-              note={<>The sharpest jump occurs between Experiment 2 and Experiment 3, where fine-tuning lifts F1 from <strong style={{ color: P.orange }}>69%</strong> to <strong style={{ color: P.accent }}>84%</strong> under the same classifier and feature construction. The final MLP closes at <strong style={{ color: P.purple }}>88%</strong>.</>}
+              label="Chart 1 : F1-score progression across experiments"
+              note={<>The sharpest jump I observed occurs between Experiment 2 and Experiment 3, where fine-tuning lifts F1 from <strong style={{ color: P.orange }}>69%</strong> to <strong style={{ color: P.accent }}>84%</strong> under the same classifier and feature construction. The final MLP closes at <strong style={{ color: P.purple }}>88%</strong>.</>}
             >
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={f1Progression} barCategoryGap="35%">
@@ -384,14 +384,14 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
-              <AnalysisBlock heading="What the plateau tells us">
-                Experiment 4 matches Experiment 3's F1 of 84% despite richer, more interpretable features. This may suggest the structured signals are largely already encoded in the fine-tuned embedding space, or that the linear classifier cannot exploit their nonlinear interactions. The plateau is what motivates Experiment 5.
+              <AnalysisBlock heading="What the plateau told me">
+                Experiment 4 matches Experiment 3's F1 of 84% despite richer, more interpretable features. My interpretation is that the structured signals are largely already encoded in the fine-tuned embedding space, or that the linear classifier can't exploit their nonlinear interactions. That plateau is what motivated me to run Experiment 5.
               </AnalysisBlock>
             </ChartCard>
 
             <ChartCard
-              label="Chart 2 — Marginal gain by source of improvement"
-              note={<>Fine-tuning the encoder accounts for roughly <strong style={{ color: P.accent }}>15%</strong> of F1 improvement, the largest single contribution. Using frozen embeddings adds <strong style={{ color: P.orange }}>9%</strong>, while the final nonlinear classifier contributes <strong style={{ color: P.purple }}>4%</strong>. Structured features alone add zero under a linear model.</>}
+              label="Chart 2 : Marginal gain by source of improvement"
+              note={<>Fine-tuning the encoder accounts for roughly <strong style={{ color: P.accent }}>15%</strong> of F1 improvement, the largest single contribution I found. Using frozen embeddings adds <strong style={{ color: P.orange }}>9%</strong>, while the final nonlinear classifier contributes <strong style={{ color: P.purple }}>4%</strong>. Structured features alone add zero under a linear model.</>}
             >
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={gainBreakdown} layout="vertical" barCategoryGap="28%">
@@ -405,7 +405,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
                 </BarChart>
               </ResponsiveContainer>
               <AnalysisBlock heading="The sequential nature of the gains">
-                The ordering matters: trying a nonlinear classifier on the Experiment 1 features would likely yield little benefit, since the feature space itself would still be too impoverished. Representation quality appears to need to be addressed first, and classifier expressiveness becomes useful only once the feature space is sufficiently rich.
+                The ordering matters here: trying a nonlinear classifier on the Experiment 1 features would likely have yielded little benefit, since the feature space itself would still have been too impoverished. I found I needed to address representation quality first, and classifier expressiveness only became useful once the feature space was sufficiently rich.
               </AnalysisBlock>
             </ChartCard>
           </div>
@@ -438,12 +438,12 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
         <div id="rjm-classifiers" className="scroll-mt-28" style={{ marginBottom: 80 }}>
           <Section n={5} title="Classifier Comparison in Experiment 5" />
           <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85, marginTop: 0, marginBottom: 24 }}>
-            With the 28-dimensional structured representation fixed, seven nonlinear classifiers are evaluated. The choice of a compact 28-dimensional space over the 1536-dimensional embeddings is deliberate: it avoids the confounding effects of very high-dimensional inputs and makes the classifier comparison cleaner and more interpretable.
+            With the 28-dimensional structured representation fixed, I evaluated seven nonlinear classifiers. I deliberately chose the compact 28-dimensional space over the 1536-dimensional embeddings to avoid the confounding effects of very high-dimensional inputs and make the classifier comparison cleaner and more interpretable.
           </p>
 
           <ChartCard
-            label="Chart 3 — F1-score by classifier (Experiment 5, fixed 28-D representation)"
-            note={<>The MLP leads at <strong style={{ color: P.purple }}>88%</strong>, followed by XGBoost and LightGBM at 86%. Tree-based ensembles cluster around 83–84%. A logistic regression on the same features achieves 84%, showing that even relatively straightforward nonlinear models outperform the linear baseline by a meaningful margin.</>}
+            label="Chart 3 : F1-score by classifier (Experiment 5, fixed 28-D representation)"
+            note={<>The MLP leads at <strong style={{ color: P.purple }}>88%</strong>, followed by XGBoost and LightGBM at 86%. Tree-based ensembles cluster around 83–84%. Logistic regression on the same features achieves 84%, showing that even relatively straightforward nonlinear models outperform the linear baseline by a meaningful margin.</>}
           >
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={classifierComparison} barCategoryGap="30%">
@@ -460,11 +460,11 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
           </ChartCard>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 20 }}>
-            <AnalysisBlock heading="Why the MLP leads the tree ensembles">
-              The 28-dimensional structured features include skill overlap, experience gaps, and semantic similarity scores that may interact in smooth, continuous ways rather than along sharp thresholds. MLPs are well-suited to capturing such smooth nonlinear interactions, while tree-based methods tend to partition feature space along axis-aligned boundaries. The gap is modest (88% vs 86%), so this should be treated as a directional observation rather than a definitive conclusion.
+            <AnalysisBlock heading="Why I think the MLP leads the tree ensembles">
+              The 28-dimensional structured features include skill overlap, experience gaps, and semantic similarity scores that may interact in smooth, continuous ways rather than along sharp thresholds. MLPs are well-suited to capturing such smooth nonlinear interactions, while tree-based methods tend to partition feature space along axis-aligned boundaries. The gap is modest (88% vs 86%), so I treat this as a directional observation rather than a definitive conclusion.
             </AnalysisBlock>
-            <AnalysisBlock heading="Why compact 28-D was preferred over 1536-D for Exp 5">
-              Experiments 3 and 4 achieve similar F1 under Logistic Regression. Rather than running Experiment 5 on the 1536-dimensional embeddings (which would confound classifier comparisons with very high-dimensional input effects), the more compact 28-D representation was chosen. It is also far more interpretable, which aligns with the goal of understanding what each classifier is doing with the features it receives.
+            <AnalysisBlock heading="Why I preferred compact 28-D over 1536-D for Exp 5">
+              Experiments 3 and 4 achieve similar F1 under Logistic Regression. Rather than running Experiment 5 on the 1536-dimensional embeddings which would have confounded classifier comparisons with very high-dimensional input effects, I chose the more compact 28-D representation. It's also far more interpretable, which aligned with my goal of understanding what each classifier is actually doing with the features it receives.
             </AnalysisBlock>
           </div>
         </div>
@@ -473,14 +473,14 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
         <div id="rjm-findings" className="scroll-mt-28" style={{ marginBottom: 80 }}>
           <Section n={6} title="Key Findings" />
           <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85, marginTop: 0, marginBottom: 24 }}>
-            Five experiments across two phases produce a coherent picture of how representation learning and classifier complexity interact in a text-matching task.
+            My five experiments across two phases produce a coherent picture of how representation learning and classifier complexity interact in a text-matching task.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
             {[
-              { icon: "📐", color: P.accent, title: "Representation learning is the dominant driver", body: "Fine-tuning the MiniLM bi-encoder on compatibility labels accounts for 15% of F1 improvement under a fixed linear classifier. That is roughly three times the gain achieved by switching to the best nonlinear classifier later. The quality of the feature space appears to matter more than the sophistication of the classifier, at least up to a point." },
-              { icon: "🔧", color: P.orange, title: "Fine-tuning, not frozen embeddings, is the key step", body: "Frozen MiniLM embeddings improve over the handcrafted baseline (69% vs 60%), but the representation is not yet shaped around compatibility. Fine-tuning explicitly reshapes the embedding space so that compatible pairs cluster together and incompatible pairs are pushed apart, which may explain why the improvement under a fixed classifier is so much larger for Experiment 3 than Experiment 2." },
-              { icon: "📊", color: P.teal, title: "Structured features add interpretability, not necessarily performance", body: "The 28-D structured compatibility features (skill overlap, experience gap, Jaccard similarity, education alignment) add human-readable signal without improving F1 under a linear classifier. The pairplot and PCA projection of the feature space show heavily overlapping, nonlinearly separable class boundaries, which may explain why logistic regression cannot exploit these features despite them appearing intuitively informative." },
-              { icon: "🧠", color: P.purple, title: "Classifier complexity is useful, but only once the representation is ready", body: "Applying the MLP to a rich representation yields 88% F1. Applied to the Experiment 1 feature space, a nonlinear classifier would likely provide much smaller gains. The implication is that the order matters: investing in representation quality first, and then introducing classifier complexity, may be the more efficient path in text matching tasks." },
+              { icon: "📐", color: P.accent, title: "Representation learning is the dominant driver", body: "Fine-tuning the MiniLM bi-encoder on compatibility labels accounts for 15% of F1 improvement under a fixed linear classifier. That is roughly three times the gain I achieved by switching to the best nonlinear classifier later. The quality of the feature space mattered far more than the sophistication of the classifier, at least up to a point." },
+              { icon: "🔧", color: P.orange, title: "Fine-tuning, not frozen embeddings, was the key step", body: "Frozen MiniLM embeddings improved over my handcrafted baseline (69% vs 60%), but the representation isn't yet shaped around compatibility. Fine-tuning explicitly reshapes the embedding space so that compatible pairs cluster together and incompatible pairs are pushed apart. Which is why I saw such a much larger improvement in Experiment 3 than Experiment 2 under the same classifier." },
+              { icon: "📊", color: P.teal, title: "Structured features added interpretability, not performance", body: "The 28-D structured compatibility features I built (skill overlap, experience gap, Jaccard similarity, education alignment) added human-readable signal without improving F1 under a linear classifier. When I looked at the pairplot and PCA projection of the feature space, I could see heavily overlapping, nonlinearly separable class boundaries which helps explain why logistic regression couldn't exploit these features despite them seeming intuitively informative." },
+              { icon: "🧠", color: P.purple, title: "Classifier complexity is useful, but only once the representation is ready", body: "Applying the MLP to a rich representation yielded 88% F1. Applied to the Experiment 1 feature space, a nonlinear classifier would likely have given much smaller gains. The order matters: I found that investing in representation quality first, then introducing classifier complexity, was the more efficient path in this text matching task." },
             ].map(({ icon, color, title, body }) => (
               <div key={title} style={{ background: P.surface, border: `1px solid ${P.border}`, borderRadius: 10, padding: "20px", borderTop: `3px solid ${color}` }}>
                 <div style={{ display: "flex", gap: 10, marginBottom: 10, alignItems: "flex-start" }}>
@@ -492,7 +492,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
             ))}
           </div>
           <Callout color={P.accent} icon="★">
-            <strong style={{ color: P.text }}>The central takeaway:</strong> in a resume–job matching setting, the choice of representation appears to matter far more than the choice of classifier, at least until representational capacity is no longer the bottleneck. This may have practical implications for ATS system design: optimising the encoder for the task is likely to yield larger returns than trying more powerful classifiers on a poorly suited feature space.
+            <strong style={{ color: P.text }}>My central takeaway:</strong> in a resume–job matching setting, the choice of representation appears to matter far more than the choice of classifier, at least until representational capacity is no longer the bottleneck. This may have practical implications for ATS system design: optimising the encoder for the task is likely to yield larger returns than trying more powerful classifiers on a poorly suited feature space.
           </Callout>
         </div>
 
@@ -503,10 +503,10 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
             <div style={{ background: P.card, border: `1px solid ${P.border}`, borderRadius: 12, padding: "24px" }}>
               <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: P.rose, marginBottom: 18 }}>Known limitations</div>
               {[
-                { title: "Single dataset with binary labels", body: "All experiments use one dataset binarized to a fit / no-fit decision. The real hiring process involves more nuanced degrees of fit, and it is unclear whether the same findings would hold on other datasets with different label distributions or domain characteristics." },
-                { title: "No fairness-aware evaluation", body: "The study evaluates only predictive performance. ATS systems operating in real hiring contexts would also need to assess whether the model's predictions are systematically skewed by demographic signals that may be present in resume text, which this framework does not address." },
+                { title: "Single dataset with binary labels", body: "All my experiments use one dataset binarized to a fit / no-fit decision. The real hiring process involves more nuanced degrees of fit, and I'm not confident the same findings would hold on other datasets with different label distributions or domain characteristics." },
+                { title: "No fairness-aware evaluation", body: "I evaluated only predictive performance. ATS systems operating in real hiring contexts would also need to assess whether the model's predictions are systematically skewed by demographic signals that may be present in resume text which is something my framework doesn't address." },
                 { title: "Margin hyperparameter for fine-tuning is fixed", body: "The margin hyperparameter in the contrastive loss for Experiment 3 is set to a single value. Sweeping this hyperparameter might reveal a better-calibrated embedding space and could potentially push the fine-tuned representation further." },
-                { title: "MLP architecture not fully ablated", body: "Experiment 5 evaluates the MLP as a single configuration. The number of layers, hidden dimensions, learning rate, and regularisation strength are not swept, so it is possible that a more carefully tuned MLP would outperform the reported 88% figure by a larger margin than is currently visible." },
+                { title: "MLP architecture not fully ablated", body: "I evaluated the MLP as a single configuration. The number of layers, hidden dimensions, learning rate, and regularisation strength aren't swept, so it's possible that a more carefully tuned MLP would outperform the reported 88% figure by a larger margin than is currently visible." },
               ].map(({ title, body }) => (
                 <div key={title} style={{ marginBottom: 18, paddingBottom: 18, borderBottom: `1px solid ${P.border}` }}>
                   <strong style={{ fontSize: 13.5, color: P.text, display: "block", marginBottom: 6 }}>{title}</strong>
@@ -518,9 +518,9 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
               <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: P.teal, marginBottom: 18 }}>High-value next steps</div>
               {[
                 { title: "Multi-level compatibility scoring", body: "Restoring the original three-way label (no fit / potential fit / good fit) as an ordinal prediction task could make the system more useful in practice, where recruiters benefit from ranked shortlists rather than binary gates." },
-                { title: "Cross-domain generalization", body: "Testing the same experimental framework on resumes and job descriptions from different industries could reveal whether the fine-tuned representation generalises or overfits to domain-specific vocabulary patterns present in the training data." },
-                { title: "SHAP for per-prediction explainability", body: "The 28-D structured features are interpretable in isolation, but a retention team (or recruiter) would benefit from knowing which features drove a specific prediction. SHAP values applied to the MLP output would bridge that gap and could increase trust in automated shortlisting." },
-                { title: "Fairness-aware training objectives", body: "Incorporating a fairness constraint into the fine-tuning objective, such as ensuring that predictions are conditionally independent of demographic proxies present in resume text, would be a natural extension of the framework and would make the system closer to production-deployable." },
+                { title: "Cross-domain generalization", body: "Testing the same experimental framework on resumes and job descriptions from different industries could reveal whether the fine-tuned representation generalises or overfits to domain-specific vocabulary patterns present in my training data." },
+                { title: "SHAP for per-prediction explainability", body: "The 28-D structured features are interpretable in isolation, but a recruiter would benefit from knowing which features drove a specific prediction. Adding SHAP values to the MLP output would bridge that gap and could increase trust in automated shortlisting." },
+                { title: "Fairness-aware training objectives", body: "Incorporating a fairness constraint into the fine-tuning objective such as ensuring predictions are conditionally independent of demographic proxies present in resume text would be a natural extension of my framework and would make the system closer to production-deployable." },
               ].map(({ title, body }) => (
                 <div key={title} style={{ marginBottom: 18, paddingBottom: 18, borderBottom: `1px solid ${P.border}` }}>
                   <strong style={{ fontSize: 13.5, color: P.text, display: "block", marginBottom: 6 }}>{title}</strong>

@@ -223,10 +223,10 @@ export default function HousingPriceReport(props: WorkPageProps) {
             Ames Housing:<br /><span style={{ color: P.accent }}>Predicting Sale Price</span>
           </h1>
           <p style={{ fontSize: 17, color: P.textDim, maxWidth: 680, lineHeight: 1.8, margin: "0 0 14px" }}>
-            A regression project on the Ames Housing dataset, predicting residential sale prices from 80+ structural, locational, and quality features. The central question: <strong style={{ color: P.text }}>how much predictive power can be extracted from systematic feature engineering versus throwing all raw variables at a gradient booster?</strong>
+            A regression project on the Ames Housing dataset, predicting residential sale prices from 80+ structural, locational, and quality features. The central question I set out to answer: <strong style={{ color: P.text }}>how much predictive power can be extracted from systematic feature engineering versus throwing all raw variables at a gradient booster?</strong>
           </p>
           <p style={{ fontSize: 15, color: P.textDim, maxWidth: 680, lineHeight: 1.7, margin: "0 0 36px" }}>
-            A baseline Linear Regression achieved R² of <strong style={{ color: P.text }}>87.4%</strong>. Careful feature selection and engineering on a hand-curated 23-feature subset, combined with XGBoost and hyperparameter tuning, pushed that to <strong style={{ color: P.text }}>92.6%</strong> on the held-out test set.
+            My baseline Linear Regression achieved R² of <strong style={{ color: P.text }}>87.4%</strong>. Careful feature selection and engineering on a hand-curated 23-feature subset, combined with XGBoost and hyperparameter tuning, pushed that to <strong style={{ color: P.text }}>92.6%</strong> on the held-out test set.
           </p>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             {["Python", "XGBoost", "CatBoost", "scikit-learn", "pandas", "seaborn", "RandomizedSearchCV"].map(t => (
@@ -255,7 +255,7 @@ export default function HousingPriceReport(props: WorkPageProps) {
                 The Ames Housing dataset describes 1,460 residential property sales in Ames, Iowa. With 80 features spanning structural type, lot characteristics, basement configuration, garage details, exterior materials, interior quality ratings, and neighbourhood information, it poses a classic challenge in applied regression: most of the signal is concentrated in a small number of features, and the rest ranges from mildly informative to pure noise.
               </p>
               <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85 }}>
-                The goal is to predict <Mono>SalePrice</Mono> as accurately as possible. Two parallel strategies are explored: first, a comprehensive approach using all engineered features (73 after transformation); second, a curated approach that distils the data down to 23 high-signal, carefully constructed features. Understanding which approach performs better, and by how much, is itself an informative finding.
+                My goal was to predict <Mono>SalePrice</Mono> as accurately as possible. I explored two parallel strategies: first, a comprehensive approach using all engineered features (73 after transformation); second, a curated approach that distils the data down to 23 high-signal, carefully constructed features. Understanding which approach performed better, and by how much, was itself an informative finding.
               </p>
             </div>
             <div style={{ background: P.card, border: `1px solid ${P.border}`, borderRadius: 12, overflow: "hidden" }}>
@@ -264,7 +264,7 @@ export default function HousingPriceReport(props: WorkPageProps) {
                 ["Source",              "Kaggle Ames Housing Competition"],
                 ["Training rows",       "1,460 properties"],
                 ["Raw features",        "80 (35 numeric, 43 categorical, 3 float)"],
-                ["Target variable",     "SalePrice — continuous, right-skewed"],
+                ["Target variable",     "SalePrice - continuous, right-skewed"],
                 ["Price range",         "$34,900 to $755,000"],
                 ["Train / test split",  "80% / 20%, random state 42"],
                 ["Numeric dtypes",      "int64 (35 cols), float64 (3 cols)"],
@@ -278,20 +278,20 @@ export default function HousingPriceReport(props: WorkPageProps) {
         <div id="housing-cleaning" className="scroll-mt-28" style={{ marginBottom: 80 }}>
           <Section n={2} title="Data Cleaning & Quality Decisions" />
           <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85, marginTop: 0, marginBottom: 20 }}>
-            The most important observation during cleaning is that the vast majority of missing values in this dataset are not missing data at all. They are semantically meaningful absences. A null in <Mono>GarageType</Mono> does not mean the garage type was not recorded; it means the property has no garage. The same logic applies to basements, fireplaces, pools, fences, and alley access. Treating these as missing would introduce a false signal into the model.
+            The most important thing I noticed during cleaning is that the vast majority of missing values in this dataset are not missing data at all. They are semantically meaningful absences. A null in <Mono>GarageType</Mono> does not mean the garage type was not recorded; it means the property has no garage. The same logic applies to basements, fireplaces, pools, fences, and alley access. Treating these as missing would introduce a false signal into the model.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <Callout color={P.teal} icon="✓">
-              <strong style={{ color: P.text }}>Absence-aware imputation.</strong> All null values in feature groups where absence is meaningful (garage, basement, pool, fireplace, fence, alley) were filled with explicit string labels such as <Mono>No Garage</Mono>, <Mono>No Basement</Mono>, and <Mono>No Pool</Mono>. This preserves the real-world information instead of discarding it via zero-fill or median imputation.
+              <strong style={{ color: P.text }}>Absence-aware imputation.</strong> I filled all null values in feature groups where absence is meaningful (garage, basement, pool, fireplace, fence, alley) with explicit string labels such as <Mono>No Garage</Mono>, <Mono>No Basement</Mono>, and <Mono>No Pool</Mono>. This preserves the real-world information instead of discarding it via zero-fill or median imputation.
             </Callout>
             <Callout color={P.orange} icon="⚠">
-              <strong style={{ color: P.text }}>LotFrontage: an imputation limitation.</strong> 259 properties (17.7%) have no recorded <Mono>LotFrontage</Mono>. These were filled with 0. A more rigorous alternative may have been neighbourhood-median imputation, since frontage is highly correlated with lot configuration and zoning. The zero-fill introduces a potential downward bias on this feature for imputed rows.
+              <strong style={{ color: P.text }}>LotFrontage: an imputation limitation.</strong> 259 properties (17.7%) have no recorded <Mono>LotFrontage</Mono>. I filled these with 0. A more rigorous alternative would have been neighbourhood-median imputation, since frontage is highly correlated with lot configuration and zoning. The zero-fill likely introduces a potential downward bias on this feature for imputed rows.
             </Callout>
             <Callout color={P.purple} icon="①">
-              <strong style={{ color: P.text }}>Categorical encoding strategy.</strong> Ordinal features such as <Mono>ExterQual</Mono>, <Mono>BsmtQual</Mono>, <Mono>KitchenQual</Mono>, and garage/basement condition were mapped to integer scales (0 to 5) reflecting their documented quality ladder. Nominal features with many categories were either one-hot encoded or dropped in favour of engineered alternatives.
+              <strong style={{ color: P.text }}>Categorical encoding strategy.</strong> I mapped ordinal features such as <Mono>ExterQual</Mono>, <Mono>BsmtQual</Mono>, <Mono>KitchenQual</Mono>, and garage/basement condition to integer scales (0 to 5) reflecting their documented quality ladder. Nominal features with many categories were either one-hot encoded or dropped in favour of engineered alternatives.
             </Callout>
             <Callout color={P.teal} icon="②">
-              <strong style={{ color: P.text }}>Near-constant features flagged for removal.</strong> Two features were identified as carrying essentially no discriminative signal. <Mono>Utilities</Mono> is <Mono>AllPub</Mono> for 99.9% of properties. <Mono>PoolQC</Mono> is <Mono>No Pool</Mono> for 99.5%. Both were dropped from the curated feature set, as near-zero variance features can add noise without benefit in a gradient boosting context.
+              <strong style={{ color: P.text }}>Near-constant features flagged for removal.</strong> I identified two features as carrying essentially no discriminative signal. <Mono>Utilities</Mono> is <Mono>AllPub</Mono> for 99.9% of properties. <Mono>PoolQC</Mono> is <Mono>No Pool</Mono> for 99.5%. I dropped both from the curated feature set, as near-zero variance features can add noise without benefit in a gradient boosting context.
             </Callout>
           </div>
         </div>
@@ -300,12 +300,12 @@ export default function HousingPriceReport(props: WorkPageProps) {
         <div id="housing-missing" className="scroll-mt-28" style={{ marginBottom: 80 }}>
           <Section n={3} title="Missing Value Structure" />
           <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85, marginTop: 0, marginBottom: 24 }}>
-            Missing values are heavily concentrated in a small number of features, and the distribution pattern is informative. The top four missing features all describe amenities that simply are not present on most properties, not gaps in data collection. This structural missingness is distinct from the more traditional random missing-at-random pattern and demands different treatment.
+            Missing values are heavily concentrated in a small number of features, and the distribution pattern is informative. The top four missing features all describe amenities that simply are not present on most properties which <area shape="rect" coords="" href="" alt="" /> not gaps in data collection. This structural missingness is distinct from the more traditional random missing-at-random pattern and demands different treatment.
           </p>
 
           <ChartCard
-            label="Chart 1 — Missing value counts by feature (top 9 affected columns)"
-            note={<>The column with the most missing values, <strong style={{ color: P.rose }}>PoolQC</strong>, is missing for 99.5% of the dataset because almost no properties have a pool. <strong style={{ color: P.orange }}>MiscFeature</strong> follows at 96.3%. These are not data quality problems. They are distributional facts about the dataset that should be preserved, not patched.</>}
+            label="Chart 1 : Missing value counts by feature (top 9 affected columns)"
+            note={<>The column with the most missing values, <strong style={{ color: P.rose }}>PoolQC</strong>, is missing for 99.5% of the dataset because almost no properties have a pool. <strong style={{ color: P.orange }}>MiscFeature</strong> follows at 96.3%. These aren't data quality problems, they're distributional facts about the dataset which I chose to preserve rather than patch.</>}
           >
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={missingValues} layout="vertical" barCategoryGap="28%">
@@ -318,8 +318,8 @@ export default function HousingPriceReport(props: WorkPageProps) {
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
-            <AnalysisBlock heading="What the pattern tells us">
-              The missingness is not uniformly distributed across features. It clusters around physical amenities (pool, alley, fence, fireplace) and a single structural descriptor (lot frontage). Basement and garage nulls are comparatively small and reliably represent the 5% of properties without those structures. The electrical column has a single null, likely a transcription omission, which was imputed as <Mono>None</Mono>.
+            <AnalysisBlock heading="What the pattern told me">
+              The missingness isn't uniformly distributed across features. It clusters around physical amenities (pool, alley, fence, fireplace) and a single structural descriptor (lot frontage). Basement and garage nulls are comparatively small and reliably represent the 5% of properties without those structures. The electrical column has a single null which is likely a transcription omission which I imputed as <Mono>None</Mono>.
             </AnalysisBlock>
           </ChartCard>
         </div>
@@ -328,13 +328,13 @@ export default function HousingPriceReport(props: WorkPageProps) {
         <div id="housing-eda" className="scroll-mt-28" style={{ marginBottom: 80 }}>
           <Section n={4} title="Exploratory Data Analysis" />
           <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85, marginTop: 0, marginBottom: 28 }}>
-            EDA was used to identify which features deserve careful engineering, which can be used directly, and which appear to be noise. Several patterns emerged that have direct implications for feature design and model interpretation.
+            I used EDA to identify which features deserve careful engineering, which can be used directly, and which appear to be noise. Several patterns emerged that have direct implications for feature design and model interpretation.
           </p>
 
           {/* Chart 2: Sale Condition */}
           <ChartCard
-            label="Chart 2 — Mean sale price by sale condition ($K)"
-            note={<>Partial sales, typically new construction sold before completion, average <strong style={{ color: P.purple }}>$272K</strong>, which is $97K above normal arm's-length transactions at $175K. Abnormal sales average <strong style={{ color: P.rose }}>$147K</strong>, considerably below normal. Sale condition may be worth including as a flag in the model given how strongly it stratifies price.</>}
+            label="Chart 2 : Mean sale price by sale condition ($K)"
+            note={<>Partial sales, typically new construction sold before completion average <strong style={{ color: P.purple }}>$272K</strong>, which is $97K above normal arm's-length transactions at $175K. Abnormal sales average <strong style={{ color: P.rose }}>$147K</strong>, considerably below normal. I found sale condition worth flagging in the model given how strongly it stratifies price.</>}
           >
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={saleConditionPrices} barCategoryGap="32%">
@@ -347,15 +347,15 @@ export default function HousingPriceReport(props: WorkPageProps) {
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
-            <AnalysisBlock heading="A caution on partial sales">
-              Partial sales represent new construction and may reflect the builder's asking price rather than the resale market. Including <Mono>SaleCondition</Mono> directly as a feature is potentially risky depending on whether the test set contains partial sales. In the final feature set it was not included, though it may be worth exploring as a flag feature for improved segmentation.
+            <AnalysisBlock heading="A caution I noted on partial sales">
+              Partial sales represent new construction and may reflect the builder's asking price rather than the resale market. Including <Mono>SaleCondition</Mono> directly as a feature is potentially risky depending on whether the test set contains partial sales. I ultimately didn't include it in the final feature set, though it may be worth exploring as a flag feature for improved segmentation.
             </AnalysisBlock>
           </ChartCard>
 
           {/* Chart 3: Foundation comparison */}
           <ChartCard
-            label="Chart 3 — PConc vs CBlock foundations across four metrics"
-            note={<>Poured concrete foundations (PConc) are associated with substantially higher sale prices than concrete block (CBlock). However, a t-test from the notebook confirms this difference is statistically significant on quality (p less than 0.05), living area, and garage capacity. Foundation type appears to be a proxy for construction era and overall build quality rather than an independent driver.</>}
+            label="Chart 3 : PConc vs CBlock foundations across four metrics"
+            note={<>Poured concrete foundations (PConc) are associated with substantially higher sale prices than concrete block (CBlock). However, a t-test I ran confirmed this difference is statistically significant on quality (p less than 0.05), living area, and garage capacity. Foundation type looks to me more like a proxy for construction era and overall build quality than an independent driver.</>}
             >
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={foundationComparison} barCategoryGap="30%">
@@ -368,8 +368,8 @@ export default function HousingPriceReport(props: WorkPageProps) {
                 <Bar dataKey="CBlock" name="CBlock" fill={P.muted}  radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
-            <AnalysisBlock heading="Confounding between foundation and era">
-              PConc foundations were overwhelmingly adopted after 1980, as confirmed by the decade-by-decade foundation analysis in the notebook. CBlock was the dominant material in the 1940 to 1980 period. When controlling for <Mono>OverallQual</Mono>, the raw price gap between foundation types narrows considerably. This suggests foundation type is partly a signal for <em>when</em> the house was built rather than independently predicting price. Era-foundation interaction terms were engineered to capture this explicitly.
+            <AnalysisBlock heading="Confounding between foundation and era that I identified">
+              PConc foundations were overwhelmingly adopted after 1980, as I confirmed through a decade-by-decade foundation analysis. CBlock was the dominant material in the 1940 to 1980 period. When I controlled for <Mono>OverallQual</Mono>, the raw price gap between foundation types narrowed considerably which suggests foundation type is partly a signal for <em>when</em> the house was built rather than independently predicting price. I engineered era-foundation interaction terms to capture this explicitly.
             </AnalysisBlock>
           </ChartCard>
 
@@ -382,7 +382,7 @@ export default function HousingPriceReport(props: WorkPageProps) {
                 </button>
               ))}
             </div>
-            <ChartCard label={`Chart 4 — Lot shape analysis: ${LOT_TAB_LABELS[activeLotTab]}`}>
+            <ChartCard label={`Chart 4 : Lot shape analysis: ${LOT_TAB_LABELS[activeLotTab]}`}>
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={lotShapeData} barCategoryGap="40%">
                   <CartesianGrid vertical={false} stroke={P.border} />
@@ -396,8 +396,8 @@ export default function HousingPriceReport(props: WorkPageProps) {
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
-              <AnalysisBlock heading="The irregular lot paradox">
-                Irregular lots (IR1 through IR3) have higher absolute mean sale prices, but the picture reverses on price per square foot of lot area: regular lots fetch $22.13 per sqft versus $10.71 for IR3 lots. This is consistent with irregular lots tending to be larger, meaning the price premium is partly explained by scale. The analysis also shows that irregular lots are associated with higher average <Mono>OverallQual</Mono>, suggesting they may be disproportionately occupied by newer, higher-end construction. The relationship is not straightforward enough to use lot shape as a direct price predictor without further controls.
+              <AnalysisBlock heading="The irregular lot paradox I found">
+                Irregular lots (IR1 through IR3) have higher absolute mean sale prices, but the picture reverses on price per square foot of lot area: regular lots fetch $22.13 per sqft versus $10.71 for IR3 lots. This is consistent with irregular lots tending to be larger, meaning the price premium is partly explained by scale. I also noticed that irregular lots are associated with higher average <Mono>OverallQual</Mono>, suggesting they may be disproportionately occupied by newer, higher-end construction. The relationship was not straightforward enough for me to use lot shape as a direct price predictor without further controls.
               </AnalysisBlock>
             </ChartCard>
           </div>
@@ -407,10 +407,10 @@ export default function HousingPriceReport(props: WorkPageProps) {
             <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: P.textDim, marginBottom: 18 }}>Additional EDA findings</div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
               {[
-                { icon: "📅", title: "Garage type strongly tracks construction era", body: "Built-in garages average a construction year of 1995, attached garages 1983, detached garages 1947, and properties with no garage 1942. Garage type appears to function largely as a proxy for age and neighbourhood development period. Using GarageType directly in the model risks encoding temporal effects already captured by HouseAge and foundation-era interactions." },
-                { icon: "🏗", title: "Foundation type shifted sharply after 1980", body: "The decade-by-decade foundation breakdown shows CBlock as dominant from the 1930s through 1970s, with PConc adoption accelerating through the 1980s and becoming the majority by the 1990s. This confirmed that PConc in an early-era house is an unusual signal worth flagging separately from PConc in a modern build." },
-                { icon: "📐", title: "OverallQual dominates the feature space", body: "The Random Forest importance analysis showed OverallQual capturing 62.2% of mean impurity reduction, with GrLivArea second at 12.7%. The remaining 68 features share roughly 25% of importance. This concentration suggests the dataset is fundamentally asking a simpler question than its 80 columns imply: how big is the house and how well is it built?" },
-                { icon: "📊", title: "Functional degeneration does not strongly correlate with quality", body: "The crosstab analysis between Functional and OverallQual showed that 'Typical' functionality dominates at 93.2% across virtually all quality levels, with only slight differences at the extremes. No clear pattern emerged that would make Functional a useful continuous predictor; it was converted to a binary flag for functional issues instead." },
+                { icon: "📅", title: "Garage type strongly tracks construction era", body: "I found that built-in garages average a construction year of 1995, attached garages 1983, detached garages 1947, and properties with no garage 1942. Garage type appears to function largely as a proxy for age and neighbourhood development period. Using GarageType directly in the model risks encoding temporal effects already captured by HouseAge and my foundation-era interactions." },
+                { icon: "🏗", title: "Foundation type shifted sharply after 1980", body: "My decade-by-decade foundation breakdown shows CBlock as dominant from the 1930s through 1970s, with PConc adoption accelerating through the 1980s and becoming the majority by the 1990s. This confirmed for me that PConc in an early-era house is an unusual signal worth flagging separately from PConc in a modern build." },
+                { icon: "📐", title: "OverallQual dominates the feature space", body: "My Random Forest importance analysis showed OverallQual capturing 62.2% of mean impurity reduction, with GrLivArea second at 12.7%. The remaining 68 features share roughly 25% of importance. This concentration told me the dataset is fundamentally asking a simpler question than its 80 columns imply: how big is the house and how well is it built?" },
+                { icon: "📊", title: "Functional degeneration doesn't strongly correlate with quality", body: "My crosstab analysis between Functional and OverallQual showed that 'Typical' functionality dominates at 93.2% across virtually all quality levels, with only slight differences at the extremes. No clear pattern emerged that would make Functional a useful continuous predictor, so I converted it to a binary flag for functional issues instead." },
               ].map(({ icon, title, body }) => (
                 <div key={title} style={{ background: P.surface, border: `1px solid ${P.border}`, borderRadius: 10, padding: "16px 18px" }}>
                   <div style={{ display: "flex", gap: 10, marginBottom: 8, alignItems: "flex-start" }}>
@@ -428,19 +428,19 @@ export default function HousingPriceReport(props: WorkPageProps) {
         <div id="housing-features" className="scroll-mt-28" style={{ marginBottom: 80 }}>
           <Section n={5} title="Feature Engineering" />
           <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85, marginTop: 0, marginBottom: 20 }}>
-            Feature engineering was pursued through two parallel workstreams. The first produced a comprehensive 73-feature matrix covering all feature groups (basement, exterior, garage, interior, structure, site, dimensions). The second produced a curated 23-feature set informed by importance analysis and domain reasoning. All engineered features are grounded in EDA findings from the notebook; none are speculative constructions.
+            I pursued feature engineering through two parallel workstreams. The first produced a comprehensive 73-feature matrix covering all feature groups (basement, exterior, garage, interior, structure, site, dimensions). The second produced a curated 23-feature set informed by importance analysis and domain reasoning. Every feature I engineered is grounded in my EDA findings which none are speculative constructions.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
             {[
-              { name: "BsmtHeight", why: "Rather than ordinal-encoding BsmtQual directly, basement ceiling height was approximated numerically (Ex: 100in, Gd: 95in, TA: 85in, Fa: 75in, Po: 65in, None: 55in). This provides a continuous measure of basement utility rather than a rank.", color: P.teal },
-              { name: "HouseAge", why: "YrSold minus YearBuilt. A direct continuous measure of property age at time of sale. This proved more informative than YearBuilt alone because two houses built in the same year but sold 20 years apart are in very different market conditions.", color: P.teal },
-              { name: "PorchArea", why: "Sum of OpenPorchSF, EnclosedPorch, 3SsnPorch, and ScreenPorch. Four separate porch columns were collapsed into a single outdoor living space signal, with a binary hasPorch flag to preserve the presence/absence distinction.", color: P.orange },
+              { name: "BsmtHeight", why: "Rather than ordinal-encoding BsmtQual directly, I approximated basement ceiling height numerically (Ex: 100in, Gd: 95in, TA: 85in, Fa: 75in, Po: 65in, None: 55in). This provides a continuous measure of basement utility rather than a rank.", color: P.teal },
+              { name: "HouseAge", why: "YrSold minus YearBuilt. A direct continuous measure of property age at time of sale. I found this more informative than YearBuilt alone because two houses built in the same year but sold 20 years apart are in very different market conditions.", color: P.teal },
+              { name: "PorchArea", why: "Sum of OpenPorchSF, EnclosedPorch, 3SsnPorch, and ScreenPorch. I collapsed four separate porch columns into a single outdoor living space signal, with a binary hasPorch flag to preserve the presence/absence distinction.", color: P.orange },
               { name: "TotalBathrooms", why: "Full bathrooms plus half-weight for half-baths, across both floors. This produces a single continuous measure of bathroom provision rather than four partially correlated columns, reducing multicollinearity.", color: P.orange },
-              { name: "PConc_in_Early_Era", why: "Binary flag: poured concrete foundation on a pre-1940s build. Rare combination (fewer than 5% of the dataset) that likely signals renovation or structural upgrade. The foundation-era interaction was motivated by the observed confounding between foundation type and construction decade.", color: P.rose },
-              { name: "PConc_in_Modern_Era", why: "Binary flag: poured concrete foundation on a post-1980 build. The expected condition for modern construction. Separating this from the early-era case allows the model to treat them as distinct signals rather than conflating old and new PConc.", color: P.rose },
-              { name: "exterior_1_age_score", why: "House age divided by an exterior material durability score (Stone: 1.0, BrkFace: 0.9, VinylSd: 0.6, WdShing: 0.4, AsbShng: 0.3). Higher values indicate more wear relative to the material's expected lifespan. This combines three raw columns into one continuous maintenance-burden signal.", color: P.purple },
-              { name: "NeighborhoodAvgPrice", why: "Target-encoded neighbourhood using training-set average sale prices only. Neighbourhood is the strongest locational signal in the dataset, and target encoding converts it into a continuous measure directly aligned with the prediction target. Calculated post-split to prevent leakage.", color: P.accent },
-              { name: "is_single_fam_detached", why: "Binary flag for BldgType equal to 1Fam, which accounts for 83.6% of the dataset. Single-family detached homes command different price dynamics from duplexes and townhouses. The flag separates these rather than relying on OHE of a 5-level categorical.", color: P.accent },
+              { name: "PConc_in_Early_Era", why: "Binary flag: poured concrete foundation on a pre-1940s build. Rare combination (fewer than 5% of the dataset) that likely signals renovation or structural upgrade. I was motivated to engineer this by the confounding I observed between foundation type and construction decade.", color: P.rose },
+              { name: "PConc_in_Modern_Era", why: "Binary flag: poured concrete foundation on a post-1980 build which is the expected condition for modern construction. Separating this from the early-era case allows the model to treat them as distinct signals rather than conflating old and new PConc.", color: P.rose },
+              { name: "exterior_1_age_score", why: "House age divided by an exterior material durability score (Stone: 1.0, BrkFace: 0.9, VinylSd: 0.6, WdShing: 0.4, AsbShng: 0.3). Higher values indicate more wear relative to the material's expected lifespan. I combined three raw columns into one continuous maintenance-burden signal.", color: P.purple },
+              { name: "NeighborhoodAvgPrice", why: "Target-encoded neighbourhood using training-set average sale prices only. Neighbourhood is the strongest locational signal in the dataset, and I computed this post-split to prevent leakage, converting it into a continuous measure directly aligned with the prediction target.", color: P.accent },
+              { name: "is_single_fam_detached", why: "Binary flag for BldgType equal to 1Fam, which accounts for 83.6% of the dataset. I found single-family detached homes command different price dynamics from duplexes and townhouses. The flag separates these rather than relying on OHE of a 5-level categorical.", color: P.accent },
             ].map(f => (
               <div key={f.name} style={{ background: P.surface, border: `1px solid ${P.border}`, borderRadius: 10, padding: "14px 16px", borderLeft: `3px solid ${f.color}` }}>
                 <div style={{ fontFamily: FONT_MONO, fontSize: 11.5, color: f.color, marginBottom: 6 }}>{f.name}</div>
@@ -449,7 +449,7 @@ export default function HousingPriceReport(props: WorkPageProps) {
             ))}
           </div>
           <Callout color={P.orange} icon="⚠">
-            <strong style={{ color: P.text }}>On the comprehensive vs curated feature sets:</strong> the 73-feature matrix includes duplicated columns (TotalBsmtSF and GarageArea appear twice due to how the sub-dataframes were concatenated). This was confirmed in cell 125, where the final column list shows these duplicates. The effect on model performance appears minimal given XGBoost's robustness to redundant features, but it is a code artifact that would warrant cleanup before production use.
+            <strong style={{ color: P.text }}>On the comprehensive vs curated feature sets:</strong> the 73-feature matrix includes duplicated columns (TotalBsmtSF and GarageArea appear twice due to how I concatenated the sub-dataframes). I confirmed this in cell 125, where the final column list shows these duplicates. The effect on model performance appears minimal given XGBoost's robustness to redundant features, but it's a code artifact I'd clean up before any production use.
           </Callout>
         </div>
 
@@ -457,12 +457,12 @@ export default function HousingPriceReport(props: WorkPageProps) {
         <div id="housing-models" className="scroll-mt-28" style={{ marginBottom: 80 }}>
           <Section n={6} title="Model Selection & Benchmarking" />
           <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85, marginTop: 0, marginBottom: 24 }}>
-            Five model configurations were benchmarked. Linear Regression and Random Forest serve as interpretable reference points. XGBoost is evaluated on both the 73-feature comprehensive set and the 23-feature curated set to test whether exhaustive feature creation is more effective than deliberate selection. CatBoost is included as a second gradient boosting baseline using the curated feature set.
+            I benchmarked five model configurations. Linear Regression and Random Forest serve as interpretable reference points. I evaluated XGBoost on both the 73-feature comprehensive set and the 23-feature curated set to test whether exhaustive feature creation is more effective than deliberate selection. CatBoost is included as a second gradient boosting baseline using the curated feature set.
           </p>
 
           <ChartCard
-            label="Chart 5 — R² score by model configuration (test set, 20% holdout)"
-            note={<>Linear Regression establishes a baseline at <strong style={{ color: P.rose }}>87.4%</strong>. Random Forest adds 2 points at <strong style={{ color: P.orange }}>89.5%</strong>. The two XGBoost configurations are close, with the curated 23-feature variant edging the 73-feature version by 0.4 points. CatBoost, without hyperparameter tuning, achieves <strong style={{ color: P.teal }}>91.4%</strong>.</>}
+            label="Chart 5 : R² score by model configuration (test set, 20% holdout)"
+            note={<>Linear Regression establishes my baseline at <strong style={{ color: P.rose }}>87.4%</strong>. Random Forest adds 2 points at <strong style={{ color: P.orange }}>89.5%</strong>. The two XGBoost configurations are close, with the curated 23-feature variant edging the 73-feature version by 0.4 points. CatBoost, without hyperparameter tuning, achieves <strong style={{ color: P.teal }}>91.4%</strong>.</>}
           >
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={modelComparison} barCategoryGap="32%">
@@ -497,11 +497,11 @@ export default function HousingPriceReport(props: WorkPageProps) {
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 20 }}>
-            <AnalysisBlock heading="Why curated features matched or beat the comprehensive set">
-              The 73-feature comprehensive set includes duplicate columns, near-zero-variance features, and several engineered scores of uncertain quality (such as the exterior durability-age interaction, which involves domain assumptions not validated against external benchmarks). The curated 23-feature set discards these and focuses on signals confirmed by importance analysis. XGBoost's built-in regularisation likely compensates for both sets, but the curated set may provide cleaner gradients.
+            <AnalysisBlock heading="Why my curated features matched or beat the comprehensive set">
+              The 73-feature comprehensive set includes duplicate columns, near-zero-variance features, and several engineered scores of uncertain quality (such as the exterior durability-age interaction, which involves domain assumptions I couldn't validate against external benchmarks). My curated 23-feature set discards these and focuses on signals I confirmed through importance analysis. XGBoost's built-in regularisation likely compensates for both sets, but the curated set may provide cleaner gradients.
             </AnalysisBlock>
-            <AnalysisBlock heading="Why Linear Regression performs reasonably well">
-              An R² of 87.4% from a linear model suggests the relationship between the selected features and SalePrice is substantially linear in the transformed feature space. Much of the nonlinearity may already be handled by the ordinal encodings and the engineered features. The 5-point gap between Linear Regression and tuned XGBoost represents the value of capturing interaction effects and local nonlinearities that a linear boundary cannot model.
+            <AnalysisBlock heading="Why Linear Regression performed reasonably well">
+              An R² of 87.4% from a linear model suggests the relationship between the features I selected and SalePrice is substantially linear in the transformed feature space. Much of the nonlinearity may already be handled by the ordinal encodings and the engineered features. The 5-point gap between Linear Regression and tuned XGBoost represents the value of capturing interaction effects and local nonlinearities that a linear boundary cannot model.
             </AnalysisBlock>
           </div>
         </div>
@@ -510,10 +510,10 @@ export default function HousingPriceReport(props: WorkPageProps) {
         <div id="housing-importance" className="scroll-mt-28" style={{ marginBottom: 80 }}>
           <Section n={7} title="What the Model Learned Matters" />
           <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85, marginTop: 0, marginBottom: 24 }}>
-            Feature importances were derived from the Random Forest model (mean decrease in impurity across 100 trees). These importances were computed on the full 73-feature matrix and informed the feature selection for the curated set. Two findings stand out: the extreme dominance of <Mono>OverallQual</Mono>, and the appearance of the engineered <Mono>BsmtHeight</Mono> and <Mono>exterior_1_age_score</Mono> features in the top 10.
+            I derived feature importances from the Random Forest model (mean decrease in impurity across 100 trees), computed on the full 73-feature matrix. These importances informed my feature selection for the curated set. Two things stood out immediately: the extreme dominance of <Mono>OverallQual</Mono>, and the appearance of my engineered <Mono>BsmtHeight</Mono> and <Mono>exterior_1_age_score</Mono> features in the top 10.
           </p>
 
-          <ChartCard label="Chart 6 — Top 10 features by importance % (Random Forest, mean impurity reduction)">
+          <ChartCard label="Chart 6 : Top 10 features by importance % (Random Forest, mean impurity reduction)">
             <ResponsiveContainer width="100%" height={320}>
               <BarChart data={featureImportance} layout="vertical" barCategoryGap="22%">
                 <CartesianGrid horizontal={false} stroke={P.border} />
@@ -531,9 +531,9 @@ export default function HousingPriceReport(props: WorkPageProps) {
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginTop: 20 }}>
             {[
-              { title: "OverallQual at 62.2% is a concentration risk", color: P.accent, body: "A single feature accounting for nearly two-thirds of model importance is both informative and concerning. It suggests the model is heavily reliant on a single 10-point rating that is itself a human judgment. If that rating is inconsistently applied across appraisers or neighbourhoods, model performance may degrade on out-of-distribution data in ways that R² on the test set would not reveal." },
-              { title: "GrLivArea at 12.7% confirms size as the second axis", color: P.orange, body: "Above-grade living area is the strongest purely dimensional predictor, outperforming TotalBsmtSF, 1stFlrSF, and 2ndFlrSF individually. This is consistent with real-estate market intuition: buyers primarily price on usable, above-ground, finished space. The engineered BsmtHeight feature's appearance at rank 10 suggests basement quality adds marginal signal beyond raw area." },
-              { title: "BsmtHeight and exterior_1_age_score validate the engineering approach", color: P.teal, body: "Two engineered features appear in the top 10, which validates the hypothesis that domain-informed transformations can extract signal that raw columns alone do not surface. exterior_1_age_score (rank 11 in the full importance table) combines age and material durability into a single wear-burden signal. Its presence suggests the model finds it informative, though the specific durability weights are domain assumptions rather than data-derived values." },
+              { title: "OverallQual at 62.2% is a concentration risk I need to flag", color: P.accent, body: "A single feature accounting for nearly two-thirds of model importance is both informative and concerning. It tells me the model is heavily reliant on a single 10-point rating that is itself a human judgment. If that rating is inconsistently applied across appraisers or neighbourhoods, model performance may degrade on out-of-distribution data in ways that R² on the test set would not reveal." },
+              { title: "GrLivArea at 12.7% confirms size as the second axis", color: P.orange, body: "Above-grade living area is the strongest purely dimensional predictor I found, outperforming TotalBsmtSF, 1stFlrSF, and 2ndFlrSF individually. This is consistent with real-estate market intuition: buyers primarily price on usable, above-ground, finished space. My engineered BsmtHeight feature's appearance at rank 10 suggests basement quality adds marginal signal beyond raw area." },
+              { title: "BsmtHeight and exterior_1_age_score validate my engineering approach", color: P.teal, body: "Two features I engineered appear in the top 10, which validates my hypothesis that domain-informed transformations can extract signal that raw columns alone don't surface. exterior_1_age_score (rank 11 in the full importance table) combines age and material durability into a single wear-burden signal. Its presence tells me the model found it informative, though the specific durability weights are domain assumptions rather than data-derived values." },
             ].map(({ title, color, body }) => (
               <div key={title} style={{ background: P.surface, border: `1px solid ${P.border}`, borderRadius: 10, padding: "16px 18px", borderTop: `3px solid ${color}` }}>
                 <strong style={{ fontSize: 13.5, color: P.text, display: "block", marginBottom: 10, lineHeight: 1.4 }}>{title}</strong>
@@ -547,15 +547,15 @@ export default function HousingPriceReport(props: WorkPageProps) {
         <div id="housing-tuning" className="scroll-mt-28" style={{ marginBottom: 80 }}>
           <Section n={8} title="Hyperparameter Tuning" />
           <p style={{ fontSize: 15, color: P.textDim, lineHeight: 1.85, marginTop: 0, marginBottom: 20 }}>
-            Two rounds of <Mono>RandomizedSearchCV</Mono> were run: one on the 73-feature comprehensive set and one on the 23-feature curated set. Each ran 50 random combinations with 5-fold cross-validation (250 total fits per search). The curated-feature search produced the better test score.
+            I ran two rounds of <Mono>RandomizedSearchCV</Mono>: one on the 73-feature comprehensive set and one on the 23-feature curated set. Each ran 50 random combinations with 5-fold cross-validation (250 total fits per search). The curated-feature search produced the better test score.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 24 }}>
             <div>
               {[
                 { param: "n_estimators = 800", why: "More boosting rounds allow the model to continue correcting residuals on a shallow, well-regularised tree. At learning_rate = 0.05, 800 rounds provided better convergence than the default 500 without visible overfitting on the validation folds." },
                 { param: "max_depth = 3", why: "Shallow trees keep individual learners weak and the ensemble strong. For this dataset, where two features dominate importance, deep trees would likely overfit to interactions between minor features that have limited generalisability." },
-                { param: "learning_rate = 0.05", why: "A moderate rate that balances convergence speed with generalisation. The grid search also tested 0.03 and 0.01; 0.05 with 800 estimators achieved the best CV score in the curated-feature run." },
-                { param: "gamma = 0.2", why: "A small minimum loss reduction requirement for further tree splits. This acts as a soft regulariser that prevents trivially small gains from being exploited, which may be particularly helpful given the large number of near-zero-importance features in the full set." },
+                { param: "learning_rate = 0.05", why: "A moderate rate that balances convergence speed with generalisation. I also tested 0.03 and 0.01; 0.05 with 800 estimators achieved the best CV score in the curated-feature run." },
+                { param: "gamma = 0.2", why: "A small minimum loss reduction requirement for further tree splits. This acts as a soft regulariser that prevents trivially small gains from being exploited, which I found particularly helpful given the large number of near-zero-importance features in the full set." },
               ].map(({ param, why }) => (
                 <div key={param} style={{ display: "flex", gap: 14, marginBottom: 18, alignItems: "flex-start" }}>
                   <Mono>{param}</Mono>
@@ -575,7 +575,7 @@ export default function HousingPriceReport(props: WorkPageProps) {
             </div>
           </div>
           <Callout color={P.orange} icon="⚠">
-            <strong style={{ color: P.text }}>The CV score (88.3%) is notably lower than the test R² (92.6%).</strong> A positive gap of this magnitude is unusual. Typical cross-validation scores slightly exceed test scores because the full training set is used for the final fit. The inverse here may indicate that the random 80/20 test split captured a particularly "easy" subset of the data, or that the target encoding was computed differently between the CV folds and the final train/test split, creating a mild form of leakage. This warrants further investigation before treating 92.6% as a reliable out-of-sample estimate.
+            <strong style={{ color: P.text }}>The CV score (88.3%) is notably lower than the test R² (92.6%).</strong> A positive gap of this magnitude is unusual, and I want to flag it honestly. Typical cross-validation scores slightly exceed test scores because the full training set is used for the final fit. The inverse here may indicate that the random 80/20 test split captured a particularly "easy" subset of the data, or that my target encoding was computed differently between the CV folds and the final train/test split, creating a mild form of leakage. This warrants further investigation before treating 92.6% as a reliable out-of-sample estimate.
           </Callout>
         </div>
 
@@ -586,10 +586,10 @@ export default function HousingPriceReport(props: WorkPageProps) {
             <div style={{ background: P.card, border: `1px solid ${P.border}`, borderRadius: 12, padding: "24px" }}>
               <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: P.rose, marginBottom: 18 }}>Known limitations</div>
               {[
-                { title: "Positive CV to test gap raises leakage concerns", body: "The best CV R² of 88.3% being substantially below the test R² of 92.6% is an atypical result. Neighbourhood target encoding was implemented post-split for the final fit but may not have been applied consistently across all CV folds. If a fold's validation set saw neighbourhood averages computed from data that included those same rows, a mild leakage exists. This should be verified by implementing target encoding strictly within each CV fold." },
-                { title: "Duplicate columns in the comprehensive feature matrix", body: "The concat operation that assembled the 73-feature matrix from sub-dataframes resulted in TotalBsmtSF and GarageArea appearing twice. This is confirmed in the column list output in cell 125. While XGBoost is generally tolerant of redundant features, this artifact should be resolved before any production use or further ensemble work." },
-                { title: "Exterior durability weights are domain assumptions", body: "The durability_map used to create exterior_1_age_score assigns scores such as Stone: 1.0, VinylSd: 0.6, AsbShng: 0.3 based on domain reasoning alone. These weights were not derived from data. The feature appears in the top 10 importance ranking, so its influence is meaningful. An incorrect durability ordering could introduce systematic error into predictions for specific exterior types." },
-                { title: "Single geographic market", body: "The dataset covers Ames, Iowa residential sales from 2006 to 2010. A model trained on this data may not transfer to other markets, time periods, or property types. The 2006 to 2010 window also includes the beginning of the US housing correction, which may mean some price relationships in the data differ from a stable market." },
+                { title: "Positive CV to test gap raises leakage concerns", body: "The best CV R² of 88.3% being substantially below the test R² of 92.6% is an atypical result that I can't fully explain. My neighbourhood target encoding was implemented post-split for the final fit but may not have been applied consistently across all CV folds. If a fold's validation set saw neighbourhood averages computed from data that included those same rows, a mild leakage exists. I'd want to verify this by implementing target encoding strictly within each CV fold." },
+                { title: "Duplicate columns in the comprehensive feature matrix", body: "The concat operation I used to assemble the 73-feature matrix from sub-dataframes resulted in TotalBsmtSF and GarageArea appearing twice. I confirmed this in the column list output in cell 125. While XGBoost is generally tolerant of redundant features, I'd resolve this before any production use or further ensemble work." },
+                { title: "Exterior durability weights are domain assumptions", body: "The durability_map I used to create exterior_1_age_score assigns scores such as Stone: 1.0, VinylSd: 0.6, AsbShng: 0.3 based on my domain reasoning alone which is not from the data. The feature appears in the top 10 importance ranking, so its influence is meaningful. If my durability ordering is wrong for some materials, it could introduce systematic error into predictions for specific exterior types." },
+                { title: "Single geographic market", body: "The dataset covers Ames, Iowa residential sales from 2006 to 2010. A model I trained on this data may not transfer to other markets, time periods, or property types. The 2006 to 2010 window also includes the beginning of the US housing correction, which may mean some price relationships differ from a stable market." },
               ].map(({ title, body }) => (
                 <div key={title} style={{ marginBottom: 18, paddingBottom: 18, borderBottom: `1px solid ${P.border}` }}>
                   <strong style={{ fontSize: 13.5, color: P.text, display: "block", marginBottom: 6 }}>{title}</strong>
@@ -601,9 +601,9 @@ export default function HousingPriceReport(props: WorkPageProps) {
               <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: P.teal, marginBottom: 18 }}>High-value next steps</div>
               {[
                 { title: "Log-transform the target variable", body: "SalePrice has a right-skewed distribution typical of real-estate data. Log-transforming the target before training would make the model optimise on percentage errors rather than absolute errors, which is generally more appropriate for a price prediction task where a $10K error on a $100K property is very different from the same error on a $500K property. RMSLE is the standard metric for Kaggle housing competitions for this reason." },
-                { title: "Stacking XGBoost with LightGBM and Ridge", body: "The README notes stacking as a potential +1 to 2% R² improvement. A level-1 stack using out-of-fold predictions from XGBoost, LightGBM, and a Ridge regression meta-learner could capture complementary signal: XGBoost and LightGBM handle nonlinear interactions while Ridge smooths the final prediction surface." },
-                { title: "Validate target encoding with proper CV fold isolation", body: "Neighbourhood target encoding should be implemented as a scikit-learn pipeline step, computed only from training fold rows during cross-validation. This ensures the CV score accurately reflects generalisation performance and allows the CV-to-test gap to be correctly interpreted." },
-                { title: "SHAP values for prediction-level explainability", body: "With OverallQual dominating at 62.2% global importance, SHAP values would reveal whether individual predictions are also OverallQual-dominated or whether other features take over for specific property types (e.g., high-quality homes where structural details matter more). Per-prediction explanations also make the model auditable and can expose systematic errors by neighbourhood or property class." },
+                { title: "Stacking XGBoost with LightGBM and Ridge", body: "A level-1 stack using out-of-fold predictions from XGBoost, LightGBM, and a Ridge regression meta-learner could capture complementary signal: XGBoost and LightGBM handle nonlinear interactions while Ridge smooths the final prediction surface. I'd expect a +1 to 2% R² improvement from this." },
+                { title: "Validate target encoding with proper CV fold isolation", body: "I'd want to implement neighbourhood target encoding as a scikit-learn pipeline step, computed only from training fold rows during cross-validation. This would ensure the CV score accurately reflects generalisation performance and let me correctly interpret the CV-to-test gap I observed." },
+                { title: "SHAP values for prediction-level explainability", body: "With OverallQual dominating at 62.2% global importance, SHAP values would reveal whether individual predictions are also OverallQual-dominated or whether other features take over for specific property types. Per-prediction explanations also make the model auditable and can expose systematic errors by neighbourhood or property class that aggregate metrics would hide." },
               ].map(({ title, body }) => (
                 <div key={title} style={{ marginBottom: 18, paddingBottom: 18, borderBottom: `1px solid ${P.border}` }}>
                   <strong style={{ fontSize: 13.5, color: P.text, display: "block", marginBottom: 6 }}>{title}</strong>
