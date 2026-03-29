@@ -72,14 +72,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         Skip to content
       </a>
 
-      <header className="sticky top-0 z-50 border-b border-border/80 bg-background/90 backdrop-blur-md shadow-[0_1px_0_hsl(165_90%_50%_/_0.06)_inset]">
+      <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
         <div className="mx-auto flex h-[3.25rem] w-full max-w-[min(100%,88rem)] items-center gap-3 px-4 sm:px-6 lg:px-8">
           <Link href="/" className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">
             <span className="flex flex-col leading-tight">
-              <span className="text-sm font-semibold tracking-tight text-foreground">
+              <span className="text-sm font-extrabold tracking-tight text-foreground">
                 Jenish Paudel
               </span>
-              <span className="text-xs uppercase tracking-wider text-muted-foreground">
+              <span className="font-mono text-[11px] text-muted-foreground">
                 Portfolio
               </span>
             </span>
@@ -98,21 +98,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     whileHover={navHover}
                     whileTap={navTap}
                     className={cn(
-                      "relative inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors rounded-md",
+                      "relative inline-flex items-center gap-1.5 rounded-md px-3 py-2 font-mono text-xs transition-colors",
                       "focus-visible:ring-2 focus-visible:ring-ring",
                       isActive
-                        ? "text-foreground"
-                        : "text-muted-foreground hover:text-foreground",
+                        ? "border-l-2 border-primary pl-[10px] text-primary"
+                        : "border-l-2 border-transparent text-muted-foreground hover:text-foreground",
                     )}
                   >
-                    <Icon className="h-4 w-4 opacity-85" aria-hidden />
+                    <Icon className="h-4 w-4 opacity-90" aria-hidden />
                     {item.label}
-                    {isActive && (
-                      <span
-                        className="absolute bottom-1 left-3 right-3 h-0.5 rounded-full bg-primary"
-                        aria-hidden
-                      />
-                    )}
                   </motion.span>
                 </Link>
               );
@@ -196,9 +190,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       <Link key={item.href} href={item.href}>
                         <span
                           className={cn(
-                            "flex items-center gap-3 rounded-lg border border-transparent px-4 py-3 text-sm font-medium",
+                            "flex items-center gap-3 rounded-lg border border-transparent px-4 py-3 font-mono text-xs",
                             isActive
-                              ? "border-primary/25 bg-primary/10 text-foreground"
+                              ? "border-l-2 border-l-primary bg-primary/[0.06] pl-[14px] text-primary"
                               : "text-muted-foreground hover:bg-muted/50",
                           )}
                         >

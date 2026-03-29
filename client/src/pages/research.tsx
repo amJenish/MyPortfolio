@@ -39,7 +39,7 @@ export default function PaperworkPage() {
             Papers &amp; PDFs
           </h1>
           <p className="leading-relaxed text-muted-foreground">
-            Long-form write-ups with short on-site summaries—open a PDF for the full document.
+            Long-form write-ups. Open a PDF for the full document.
           </p>
         </ScrollReveal>
 

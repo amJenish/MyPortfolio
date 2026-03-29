@@ -3,34 +3,36 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, Cell, Legend,
 } from "recharts";
-import { FONT_MONO, FONT_SANS, notebookNeutrals } from "./notebookTheme";
+import { C, FONT_MONO, FONT_SANS } from "./notebookTheme";
+import type { WorkPageProps } from "../workPageTypes";
+import { WorkReportShell } from "@/components/work/WorkReportShell";
 
-/** Chart accents unchanged for visual pop */
 const P = {
-  ...notebookNeutrals,
-  accent: "#f5a623",
+  ...C,
+  accent: C.amber,
   accentDim: "#b8770f",
-  teal: "#2dd4bf",
-  rose: "#fb7185",
-  orange: "#fb923c",
-  purple: "#a78bfa",
+  teal: C.teal,
+  rose: C.red,
+  orange: C.amber,
+  purple: C.teal,
+  muted: C.textDim,
 };
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
 
 const tenureChurn = [
-  { group: "0–6 mo",   rate: 53.3, fill: "#fb7185" },
-  { group: "7–12 mo",  rate: 35.9, fill: "#f97316" },
-  { group: "13–24 mo", rate: 28.7, fill: "#f5a623" },
-  { group: "25–48 mo", rate: 20.4, fill: "#2dd4bf" },
-  { group: "49–72 mo", rate: 9.5,  fill: "#22d3ee" },
+  { group: "0–6 mo",   rate: 53.3, fill: C.red },
+  { group: "7–12 mo",  rate: 35.9, fill: C.amber },
+  { group: "13–24 mo", rate: 28.7, fill: C.amber },
+  { group: "25–48 mo", rate: 20.4, fill: C.teal },
+  { group: "49–72 mo", rate: 9.5,  fill: C.teal },
 ];
 
 const paymentChurn = [
-  { method: "E-Check",       rate: 45.3, fill: "#fb7185" },
-  { method: "Mailed check",  rate: 19.2, fill: "#f5a623" },
-  { method: "Bank transfer", rate: 16.7, fill: "#2dd4bf" },
-  { method: "Credit card",   rate: 15.3, fill: "#22d3ee" },
+  { method: "E-Check",       rate: 45.3, fill: C.red },
+  { method: "Mailed check",  rate: 19.2, fill: C.amber },
+  { method: "Bank transfer", rate: 16.7, fill: C.teal },
+  { method: "Credit card",   rate: 15.3, fill: C.teal },
 ];
 
 const monthlyChargeData = [
@@ -157,7 +159,7 @@ function KPI({ label, value, sub, color }: { label: string; value: ReactNode; su
 
 function Mono({ children }: { children: ReactNode }): React.JSX.Element {
   return (
-    <code style={{ fontFamily: FONT_MONO, fontSize: 11.5, background: "#0d1926", color: P.teal, padding: "2px 7px", borderRadius: 4, border: `1px solid ${P.border}` }}>{children}</code>
+    <code style={{ fontFamily: FONT_MONO, fontSize: 11.5, background: C.codeBg, color: P.teal, padding: "2px 7px", borderRadius: 4, border: `1px solid ${P.border}` }}>{children}</code>
   );
 }
 
@@ -216,15 +218,16 @@ export const workPageSections = [
 
 // ── MAIN ──────────────────────────────────────────────────────────────────────
 
-export default function TelcoChurnReport() {
+export default function TelcoChurnReport(props: WorkPageProps) {
   const [activeTab, setActiveTab] = useState<ModelMetricTab>("accuracy");
 
   return (
-    <div style={{ background: P.bg, minHeight: "100vh", color: P.text, fontFamily: FONT_SANS }}>
+    <WorkReportShell {...props}>
+    <div style={{ color: P.text, fontFamily: FONT_SANS }}>
       {/* ── HERO ── */}
       <div style={{ borderBottom: `1px solid ${P.border}`, padding: "72px 0 56px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle at 1px 1px, #1e2d3d 1px, transparent 0)", backgroundSize: "28px 28px", opacity: 0.5 }} />
-        <div style={{ position: "absolute", top: "-20%", left: "60%", width: 600, height: 600, background: "radial-gradient(ellipse, #f5a62308 0%, transparent 65%)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", inset: 0, backgroundImage: `radial-gradient(circle at 1px 1px, ${P.border} 1px, transparent 0)`, backgroundSize: "28px 28px", opacity: 0.5 }} />
+        <div style={{ position: "absolute", top: "-20%", left: "60%", width: 600, height: 600, background: `radial-gradient(ellipse, ${C.amber}08 0%, transparent 65%)`, pointerEvents: "none" }} />
         <div style={{ maxWidth: 980, margin: "0 auto", padding: "0 40px", position: "relative" }}>
           <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: P.accent, marginBottom: 20 }}>
             Machine Learning · Customer Analytics · Binary Classification
@@ -671,18 +674,14 @@ export default function TelcoChurnReport() {
           </div>
         </div>
 
-        {/* FOOTER */}
-        <div style={{ borderTop: `1px solid ${P.border}`, paddingTop: 32, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+        <div style={{ borderTop: `1px solid ${P.border}`, paddingTop: 32 }}>
           <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: P.muted }}>
             Dataset: IBM Watson Telco Churn · Stack: Python, scikit-learn, pandas, NumPy, seaborn, matplotlib
-          </div>
-          <div style={{ display: "flex", gap: 20 }}>
-            <a href="https://github.com/amJenish/Telco-Customer-Churn-Prediction" style={{ fontFamily: FONT_MONO, fontSize: 11, color: P.accent, textDecoration: "none" }}>↗ GitHub</a>
-            <a href="https://nbviewer.org/github/amJenish/Telco-Customer-Churn-Prediction/blob/main/Analysis%20and%20Modeling.ipynb" style={{ fontFamily: FONT_MONO, fontSize: 11, color: P.accent, textDecoration: "none" }}>↗ Notebook</a>
           </div>
         </div>
 
       </div>
     </div>
+    </WorkReportShell>
   );
 }

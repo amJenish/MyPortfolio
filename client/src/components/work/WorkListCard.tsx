@@ -37,8 +37,8 @@ export function WorkListCard({
     <Link href={href} className="block h-full min-h-0 focus-visible:outline-none">
       <article
         className={cn(
-          "group relative flex h-full min-h-[10rem] flex-col rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6",
-          "transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-md",
+          "group relative flex h-full min-h-[10rem] flex-col rounded-[10px] border border-border bg-card p-5 sm:p-6",
+          "transition-[transform,background-color,border-color] duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:bg-card-hover",
           "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background",
           variant === "ml" && "border-l-[3px] border-l-primary/70 pl-[calc(1.25rem-3px)] sm:pl-[calc(1.5rem-3px)]",
           articleClassName,

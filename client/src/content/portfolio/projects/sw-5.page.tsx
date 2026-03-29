@@ -1,14 +1,10 @@
 import type { ReactNode } from "react";
-import {
-  WorkExecutiveSummary,
-  WorkFooterLinks,
-  WorkFramingQuestion,
-  WorkProsCons,
-  WorkSectionLabel,
-} from "../_shared";
+import { C } from "@/lib/theme";
+import { WorkSectionLabel } from "../_shared";
+import type { WorkPageProps } from "../workPageTypes";
+import { WorkReportShell } from "@/components/work/WorkReportShell";
 
-/** Matches @theme accent — pipeline nodes that use “primary” teal */
-const PIPELINE_ACCENT = "hsl(165 62% 52%)";
+const PIPELINE_ACCENT = C.teal;
 
 function PipelineNode({ accent, children }: { accent: string; children: ReactNode }) {
   return (
@@ -46,31 +42,34 @@ export const workPageSections = [
   { id: "stack",      label: "6. Technical Stack" },
 ] as const;
 
-export default function Sw5Page() {
+export default function Sw5Page(props: WorkPageProps) {
   return (
-    <div className="work-report-body space-y-10 text-sm leading-relaxed text-foreground sm:text-base">
+    <WorkReportShell {...props}>
+    <div className="theme-body work-report-body mx-auto max-w-[min(100%,60rem)] space-y-10 px-4 pb-16 text-sm sm:px-6 sm:text-base">
 
-      <WorkExecutiveSummary
-        paragraphs={[
-          "A full-stack Retrieval-Augmented Generation system designed for querying academic documents in natural language. The core challenge it solves is not retrieval itself but retrieval precision: standard RAG pipelines embed raw document text, which may be dense, poorly formatted, or domain-specific in ways that create a mismatch against the clean language of user queries. This system addresses that by embedding LLM-generated summaries rather than raw chunks, narrowing the semantic gap between what is stored and what is searched.",
-          "Documents move through a two-stage pipeline: an ingestion pipeline that parses, semantically chunks, summarizes, and indexes each document section; and a query pipeline that rewrites the user's question, retrieves the most relevant chunks, and generates a grounded response via LLaMA 3.2 through the Groq API. Session state is managed through a ResearchSession object that scopes retrieval to the documents uploaded within a given session and maintains query history for follow-up questions. The backend is a FastAPI application with modular service boundaries, containerized with Docker Compose."
-        ]}
-        bullets={[
-          "Summarize-then-embed produces cleaner vector representations than embedding raw document text.",
-          "SemanticChunker splits by topical coherence rather than fixed token count, preserving contextual boundaries.",
-          "Query rewriting translates conversational questions into retrieval-optimized queries before embedding.",
-          "ResearchSession scopes retrieval to the active document set and maintains context across follow-up questions.",
-          "ElasticSearch dense vector index preserves the option for hybrid keyword and vector retrieval in future iterations."
-        ]}
-      />
+      <section className="scroll-mt-28 space-y-4">
+        <WorkSectionLabel number={1} title="Overview" id="summary" />
+        <p className="text-report-body">
+          A full-stack Retrieval-Augmented Generation system designed for querying academic documents in natural language. The core challenge it solves is not retrieval itself but retrieval precision: standard RAG pipelines embed raw document text, which may be dense, poorly formatted, or domain-specific in ways that create a mismatch against the clean language of user queries. This system addresses that by embedding LLM-generated summaries rather than raw chunks, narrowing the semantic gap between what is stored and what is searched.
+        </p>
+        <p className="text-report-body">
+          Documents move through a two-stage pipeline: an ingestion pipeline that parses, semantically chunks, summarizes, and indexes each document section; and a query pipeline that rewrites the user&apos;s question, retrieves the most relevant chunks, and generates a grounded response via LLaMA 3.2 through the Groq API. Session state is managed through a ResearchSession object that scopes retrieval to the documents uploaded within a given session and maintains query history for follow-up questions. The backend is a FastAPI application with modular service boundaries, containerized with Docker Compose.
+        </p>
+        <ul className="list-disc space-y-2 pl-5 text-muted-foreground leading-[1.6]">
+          <li>Summarize-then-embed produces cleaner vector representations than embedding raw document text.</li>
+          <li>SemanticChunker splits by topical coherence rather than fixed token count, preserving contextual boundaries.</li>
+          <li>Query rewriting translates conversational questions into retrieval-optimized queries before embedding.</li>
+          <li>ResearchSession scopes retrieval to the active document set and maintains context across follow-up questions.</li>
+          <li>ElasticSearch dense vector index preserves the option for hybrid keyword and vector retrieval in future iterations.</li>
+        </ul>
+        <p className="border-l-2 border-primary/50 pl-4 text-left leading-[1.6] text-muted-foreground">
+          Standard RAG pipelines embed raw document text, which often produces a semantic mismatch against the clean, concise language of user queries. How can the ingestion and retrieval steps be designed together to minimize that gap, while keeping responses strictly grounded in source material?
+        </p>
+      </section>
 
-      <WorkFramingQuestion>
-        Standard RAG pipelines embed raw document text, which often produces a semantic mismatch against the clean, concise language of user queries. How can the ingestion and retrieval steps be designed together to minimize that gap, while keeping responses strictly grounded in source material?
-      </WorkFramingQuestion>
-
-      {/* ── 01 CORE FEATURES ── */}
+      {/* ── 02 CORE FEATURES ── */}
       <section className="space-y-4">
-        <WorkSectionLabel number={1} title="Core Features" id="built" />
+        <WorkSectionLabel number={2} title="Core Features" id="built" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
             <div className={cardTitleAccent}>Document Ingestion</div>
@@ -173,7 +172,7 @@ export default function Sw5Page() {
 
       {/* ── 03 INGESTION PIPELINE ── */}
       <section className="space-y-4">
-        <WorkSectionLabel number={3} title="Ingestion Pipeline" id="ingestion" />
+        <WorkSectionLabel number={4} title="Ingestion Pipeline" id="ingestion" />
 
         <p className="text-muted-foreground">
           The ingestion pipeline has three meaningful stages after initial PDF parsing, each of which involves a design choice that affects downstream retrieval quality.
@@ -214,7 +213,7 @@ export default function Sw5Page() {
 
       {/* ── 04 RETRIEVAL PIPELINE ── */}
       <section className="space-y-4">
-        <WorkSectionLabel number={4} title="Retrieval Pipeline" id="retrieval" />
+        <WorkSectionLabel number={5} title="Retrieval Pipeline" id="retrieval" />
 
         <p className="text-muted-foreground">
           The query pipeline has two non-trivial stages before the LLM call: query rewriting and vector retrieval. Both are worth examining because they reflect specific assumptions about where retrieval tends to fail.
@@ -267,7 +266,7 @@ export default function Sw5Page() {
 
       {/* ── 05 ENGINEERING DECISIONS ── */}
       <section className="space-y-4">
-        <WorkSectionLabel number={5} title="Engineering Decisions" id="choices" />
+        <WorkSectionLabel number={6} title="Engineering Decisions" id="choices" />
 
         <p className="text-muted-foreground">
           Each of the four major design choices below had alternatives that were considered. The decisions are worth explaining not just as choices made, but as tradeoffs within specific constraints.
@@ -320,7 +319,7 @@ export default function Sw5Page() {
 
       {/* ── 06 TECHNICAL STACK ── */}
       <section className="space-y-4">
-        <WorkSectionLabel number={6} title="Technical Stack" id="stack" />
+        <WorkSectionLabel number={7} title="Technical Stack" id="stack" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-3">
@@ -366,24 +365,30 @@ export default function Sw5Page() {
           </div>
         </div>
 
-        <WorkProsCons
-          pros={[
-            "Implemented summarize-then-embed so queries in plain language align better with indexed vectors on dense PDFs.",
-            "Used semantic chunking so sections stay topically whole instead of split at arbitrary token boundaries.",
-            "Chose ElasticSearch so hybrid keyword + vector retrieval stays available without a storage migration later.",
-            "Added query rewriting with session context to support follow-ups and pronouns.",
-            "Kept ingestion, RAG orchestration, and session logic in separate modules so each stage can evolve on its own.",
-          ]}
-          cons={[
-            "I'd profile ingestion cost and batching now that every chunk pays for a summarization call.",
-            "Planning to add parsers beyond PDF (e.g. DOCX/HTML) when the use case needs them.",
-            "Want to experiment with chunk budgets and re-ranking when queries span very long documents.",
-            "Next: a small eval set and metrics for retrieval hit-rate and groundedness.",
-          ]}
-        />
+        <div className="mt-8 space-y-6">
+          <div>
+            <h3 className="mb-2 text-left text-sm font-semibold text-foreground">What went well</h3>
+            <ul className="list-disc space-y-2 pl-5 text-muted-foreground leading-[1.6]">
+              <li>Implemented summarize-then-embed so queries in plain language align better with indexed vectors on dense PDFs.</li>
+              <li>Used semantic chunking so sections stay topically whole instead of split at arbitrary token boundaries.</li>
+              <li>Chose ElasticSearch so hybrid keyword + vector retrieval stays available without a storage migration later.</li>
+              <li>Added query rewriting with session context to support follow-ups and pronouns.</li>
+              <li>Kept ingestion, RAG orchestration, and session logic in separate modules so each stage can evolve on its own.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="mb-2 text-left text-sm font-semibold text-foreground">Future improvements</h3>
+            <ul className="list-disc space-y-2 pl-5 text-muted-foreground leading-[1.6]">
+              <li>I&apos;d profile ingestion cost and batching now that every chunk pays for a summarization call.</li>
+              <li>Planning to add parsers beyond PDF (e.g. DOCX/HTML) when the use case needs them.</li>
+              <li>Want to experiment with chunk budgets and re-ranking when queries span very long documents.</li>
+              <li>Next: a small eval set and metrics for retrieval hit-rate and groundedness.</li>
+            </ul>
+          </div>
+        </div>
       </section>
 
-      <WorkFooterLinks github="https://github.com/amJenish/Study-Assistant-AI-with-RAG-and-LLM" />
     </div>
+    </WorkReportShell>
   );
 }

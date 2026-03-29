@@ -5,27 +5,30 @@ import {
   ReferenceLine,
 } from "recharts";
 
-import { FONT_MONO, FONT_SANS, notebookNeutrals } from "./notebookTheme";
+import { C, FONT_MONO, FONT_SANS } from "./notebookTheme";
+import type { WorkPageProps } from "../workPageTypes";
+import { WorkReportShell } from "@/components/work/WorkReportShell";
 
 const P = {
-  ...notebookNeutrals,
-  accent: "#f5a623",
+  ...C,
+  accent: C.amber,
   accentDim: "#b8770f",
-  teal: "#2dd4bf",
-  rose: "#fb7185",
-  orange: "#fb923c",
-  purple: "#a78bfa",
+  teal: C.teal,
+  rose: C.red,
+  orange: C.amber,
+  purple: C.teal,
+  muted: C.textDim,
 };
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
 
 // Model comparison: actual results from the notebook
 const modelComparison = [
-  { model: "Linear Reg.", r2: 87.4, fill: "#fb7185" },
-  { model: "Random Forest", r2: 89.5, fill: "#f97316" },
-  { model: "CatBoost", r2: 91.4, fill: "#2dd4bf" },
-  { model: "XGB Full (73)", r2: 92.2, fill: "#f5a623" },
-  { model: "XGB Selected ★", r2: 92.6, fill: "#a78bfa" },
+  { model: "Linear Reg.", r2: 87.4, fill: C.red },
+  { model: "Random Forest", r2: 89.5, fill: C.amber },
+  { model: "CatBoost", r2: 91.4, fill: C.teal },
+  { model: "XGB Full (73)", r2: 92.2, fill: C.amber },
+  { model: "XGB Selected ★", r2: 92.6, fill: C.teal },
 ];
 
 // Feature importance from RF (cell 137), capped at top 10, deduplicated
@@ -44,15 +47,15 @@ const featureImportance = [
 
 // Missing value counts from df.isnull().sum() output
 const missingValues = [
-  { feature: "Alley",       missing: 1369, pct: 93.8, fill: "#fb7185" },
-  { feature: "PoolQC",      missing: 1453, pct: 99.5, fill: "#fb7185" },
-  { feature: "MiscFeature", missing: 1406, pct: 96.3, fill: "#f97316" },
-  { feature: "Fence",       missing: 1179, pct: 80.8, fill: "#f97316" },
-  { feature: "FireplaceQu", missing: 690,  pct: 47.3, fill: "#f5a623" },
-  { feature: "MasVnrType",  missing: 872,  pct: 59.7, fill: "#f5a623" },
-  { feature: "LotFrontage", missing: 259,  pct: 17.7, fill: "#2dd4bf" },
-  { feature: "Garage*",     missing: 81,   pct: 5.5,  fill: "#7a95b0" },
-  { feature: "Basement*",   missing: 37,   pct: 2.5,  fill: "#7a95b0" },
+  { feature: "Alley",       missing: 1369, pct: 93.8, fill: C.red },
+  { feature: "PoolQC",      missing: 1453, pct: 99.5, fill: C.red },
+  { feature: "MiscFeature", missing: 1406, pct: 96.3, fill: C.amber },
+  { feature: "Fence",       missing: 1179, pct: 80.8, fill: C.amber },
+  { feature: "FireplaceQu", missing: 690,  pct: 47.3, fill: C.amber },
+  { feature: "MasVnrType",  missing: 872,  pct: 59.7, fill: C.amber },
+  { feature: "LotFrontage", missing: 259,  pct: 17.7, fill: C.teal },
+  { feature: "Garage*",     missing: 81,   pct: 5.5,  fill: C.textDim },
+  { feature: "Basement*",   missing: 37,   pct: 2.5,  fill: C.textDim },
 ];
 
 // PConc vs CBlock from cell 152 output
@@ -65,12 +68,12 @@ const foundationComparison = [
 
 // SaleCondition from cell 172 output
 const saleConditionPrices = [
-  { condition: "AdjLand",  mean: 104, fill: "#fb7185" },
-  { condition: "Abnorml",  mean: 147, fill: "#f97316" },
-  { condition: "Family",   mean: 150, fill: "#f5a623" },
-  { condition: "Alloca",   mean: 167, fill: "#2dd4bf" },
-  { condition: "Normal",   mean: 175, fill: "#2dd4bf" },
-  { condition: "Partial",  mean: 272, fill: "#a78bfa" },
+  { condition: "AdjLand",  mean: 104, fill: C.red },
+  { condition: "Abnorml",  mean: 147, fill: C.amber },
+  { condition: "Family",   mean: 150, fill: C.amber },
+  { condition: "Alloca",   mean: 167, fill: C.teal },
+  { condition: "Normal",   mean: 175, fill: C.teal },
+  { condition: "Partial",  mean: 272, fill: C.teal },
 ];
 
 // Lot shape analysis from cell 167 output
@@ -135,7 +138,7 @@ function KPI({ label, value, sub, color }: { label: string; value: ReactNode; su
 
 function Mono({ children }: { children: ReactNode }): React.JSX.Element {
   return (
-    <code style={{ fontFamily: FONT_MONO, fontSize: 11.5, background: "#0d1926", color: P.teal, padding: "2px 7px", borderRadius: 4, border: `1px solid ${P.border}` }}>{children}</code>
+    <code style={{ fontFamily: FONT_MONO, fontSize: 11.5, background: C.codeBg, color: P.teal, padding: "2px 7px", borderRadius: 4, border: `1px solid ${P.border}` }}>{children}</code>
   );
 }
 
@@ -201,16 +204,17 @@ export const workPageSections = [
 
 // ── MAIN ──────────────────────────────────────────────────────────────────────
 
-export default function HousingPriceReport() {
+export default function HousingPriceReport(props: WorkPageProps) {
   const [activeLotTab, setActiveLotTab] = useState<LotTab>("avgPrice");
 
   return (
-    <div style={{ background: P.bg, minHeight: "100vh", color: P.text, fontFamily: FONT_SANS }}>
+    <WorkReportShell {...props}>
+    <div style={{ color: P.text, fontFamily: FONT_SANS }}>
 
       {/* ── HERO ── */}
       <div style={{ borderBottom: `1px solid ${P.border}`, padding: "72px 0 56px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle at 1px 1px, #1e2d3d 1px, transparent 0)", backgroundSize: "28px 28px", opacity: 0.5 }} />
-        <div style={{ position: "absolute", top: "-20%", left: "60%", width: 600, height: 600, background: "radial-gradient(ellipse, #f5a62308 0%, transparent 65%)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", inset: 0, backgroundImage: `radial-gradient(circle at 1px 1px, ${P.border} 1px, transparent 0)`, backgroundSize: "28px 28px", opacity: 0.5 }} />
+        <div style={{ position: "absolute", top: "-20%", left: "60%", width: 600, height: 600, background: `radial-gradient(ellipse, ${C.amber}08 0%, transparent 65%)`, pointerEvents: "none" }} />
         <div style={{ maxWidth: 980, margin: "0 auto", padding: "0 40px", position: "relative" }}>
           <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: P.accent, marginBottom: 20 }}>
             Machine Learning · Regression · Feature Engineering · Gradient Boosting
@@ -387,7 +391,7 @@ export default function HousingPriceReport() {
                   <Tooltip content={<Tip />} cursor={{ fill: "#ffffff06" }} />
                   <Bar dataKey={activeLotTab} name={LOT_TAB_LABELS[activeLotTab]} radius={[5, 5, 0, 0]}>
                     {lotShapeData.map((d, i) => (
-                      <Cell key={i} fill={["#fb7185","#f5a623","#2dd4bf","#a78bfa"][i]} />
+                      <Cell key={i} fill={[C.red, C.amber, C.teal, C.teal][i]} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -610,19 +614,14 @@ export default function HousingPriceReport() {
           </div>
         </div>
 
-        {/* FOOTER */}
-        <div style={{ borderTop: `1px solid ${P.border}`, paddingTop: 32, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+        <div style={{ borderTop: `1px solid ${P.border}`, paddingTop: 32 }}>
           <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: P.muted }}>
-            Dataset: Kaggle Ames Housing · Stack: Python, XGBoost, CatBoost, scikit-learn, pandas, seaborn, matplotlib
-          </div>
-          <div style={{ display: "flex", gap: 20 }}>
-            <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: P.textDim }}>
-              Western University · Department of Computer Science
-            </span>
+            Dataset: Kaggle Ames Housing · Stack: Python, XGBoost, CatBoost, scikit-learn, pandas, seaborn, matplotlib · Western University · Department of Computer Science
           </div>
         </div>
 
       </div>
     </div>
+    </WorkReportShell>
   );
 }

@@ -1,13 +1,10 @@
 import type { ReactNode } from "react";
-import {
-  WorkExecutiveSummary,
-  WorkFooterLinks,
-  WorkFramingQuestion,
-  WorkProsCons,
-  WorkSectionLabel,
-} from "../_shared";
+import { C } from "@/lib/theme";
+import { WorkSectionLabel } from "../_shared";
+import type { WorkPageProps } from "../workPageTypes";
+import { WorkReportShell } from "@/components/work/WorkReportShell";
 
-const PIPELINE_ACCENT = "hsl(165 62% 52%)";
+const PIPELINE_ACCENT = C.teal;
 
 function PipelineNode({ accent, children }: { accent: string; children: ReactNode }) {
   return (
@@ -45,32 +42,35 @@ export const workPageSections = [
   { id: "stack",        label: "6. Technical Stack" },
 ] as const;
 
-export default function StudentEnrollmentPage() {
+export default function StudentEnrollmentPage(props: WorkPageProps) {
   return (
-    <div className="work-report-body space-y-10 text-sm leading-relaxed text-foreground sm:text-base">
+    <WorkReportShell {...props}>
+    <div className="theme-body work-report-body mx-auto max-w-[min(100%,60rem)] space-y-10 px-4 pb-16 text-sm sm:px-6 sm:text-base">
 
-      <WorkExecutiveSummary
-        paragraphs={[
-          "A servlet-based academic administration platform built in Java that manages the full lifecycle of student enrollment: from program selection and prerequisite validation through schedule conflict detection and course registration. The system supports three distinct user roles (Student, Professor, Administrator), each with scoped permissions and a dedicated service boundary. The architecture follows a strict layered separation between HTTP handling, business logic, and data access.",
-          "The backend is structured around a DAO pattern with thirteen dedicated data access objects, nine service classes, and a shared helper layer that handles cross-cutting concerns like data validation and query construction. All database interaction goes through JDBC with prepared statements, and stored procedures handle the more complex multi-table queries. The application is deployed as a Java Servlet application where each servlet maps to a specific domain action, acting as the routing and controller layer above the service tier."
-        ]}
-        bullets={[
-          "Thirteen DAO classes provide a clean separation between business logic and SQL, with no raw queries leaking into the service layer.",
-          "Enrollment validation enforces prerequisite completion and seat availability atomically before any registration is committed.",
-          "Schedule conflict detection runs at registration time to prevent students from booking overlapping course offerings.",
-          "Role-based access control is enforced at the servlet layer so unauthenticated or underprivileged requests cannot reach service or DAO code.",
-          "PasswordHasher handles credential storage so plaintext passwords are never written to the database.",
-          "LoggedUserInformation maintains session state so each request is authorized against the currently authenticated user's role."
-        ]}
-      />
+      <section className="scroll-mt-28 space-y-4">
+        <WorkSectionLabel number={1} title="Overview" id="summary" />
+        <p className="text-report-body">
+          A servlet-based academic administration platform built in Java that manages the full lifecycle of student enrollment: from program selection and prerequisite validation through schedule conflict detection and course registration. The system supports three distinct user roles (Student, Professor, Administrator), each with scoped permissions and a dedicated service boundary. The architecture follows a strict layered separation between HTTP handling, business logic, and data access.
+        </p>
+        <p className="text-report-body">
+          The backend is structured around a DAO pattern with thirteen dedicated data access objects, nine service classes, and a shared helper layer that handles cross-cutting concerns like data validation and query construction. All database interaction goes through JDBC with prepared statements, and stored procedures handle the more complex multi-table queries. The application is deployed as a Java Servlet application where each servlet maps to a specific domain action, acting as the routing and controller layer above the service tier.
+        </p>
+        <ul className="list-disc space-y-2 pl-5 text-muted-foreground leading-[1.6]">
+          <li>Thirteen DAO classes provide a clean separation between business logic and SQL, with no raw queries leaking into the service layer.</li>
+          <li>Enrollment validation enforces prerequisite completion and seat availability atomically before any registration is committed.</li>
+          <li>Schedule conflict detection runs at registration time to prevent students from booking overlapping course offerings.</li>
+          <li>Role-based access control is enforced at the servlet layer so unauthenticated or underprivileged requests cannot reach service or DAO code.</li>
+          <li>PasswordHasher handles credential storage so plaintext passwords are never written to the database.</li>
+          <li>LoggedUserInformation maintains session state so each request is authorized against the currently authenticated user&apos;s role.</li>
+        </ul>
+        <p className="border-l-2 border-primary/50 pl-4 text-left leading-[1.6] text-muted-foreground">
+          Academic enrollment systems need to enforce complex interdependencies across entities: a student cannot register for a course without its prerequisites, cannot double-book a time slot, and cannot exceed a course&apos;s seat cap. How should these constraints be implemented so they remain enforceable as the system scales, without leaking business logic into the database or the HTTP layer?
+        </p>
+      </section>
 
-      <WorkFramingQuestion>
-        Academic enrollment systems need to enforce complex interdependencies across entities: a student cannot register for a course without its prerequisites, cannot double-book a time slot, and cannot exceed a course's seat cap. How should these constraints be implemented so they remain enforceable as the system scales, without leaking business logic into the database or the HTTP layer?
-      </WorkFramingQuestion>
-
-      {/* ── 01 CORE FEATURES ── */}
+      {/* ── 02 CORE FEATURES ── */}
       <section className="space-y-4">
-        <WorkSectionLabel number={1} title="Core Features" id="built" />
+        <WorkSectionLabel number={2} title="Core Features" id="built" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
           <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
@@ -181,7 +181,7 @@ export default function StudentEnrollmentPage() {
 
       {/* ── 03 DATA LAYER ── */}
       <section className="space-y-4">
-        <WorkSectionLabel number={3} title="Data Layer" id="datalayer" />
+        <WorkSectionLabel number={4} title="Data Layer" id="datalayer" />
 
         <p className="text-muted-foreground">
           The DAO layer contains thirteen classes, one per domain entity. Each DAO encapsulates all SQL for its entity: reads, writes, updates, and any joins that are logically owned by that entity. Service classes compose multiple DAOs to execute multi-step operations, but they do not write SQL themselves.
@@ -243,7 +243,7 @@ export default function StudentEnrollmentPage() {
 
       {/* ── 04 BUSINESS LOGIC ── */}
       <section className="space-y-4">
-        <WorkSectionLabel number={4} title="Business Logic" id="bizlogic" />
+        <WorkSectionLabel number={5} title="Business Logic" id="bizlogic" />
 
         <p className="text-muted-foreground">
           The three most complex business rules in the system are prerequisite enforcement, schedule conflict detection, and seat management. Each is implemented in the service layer rather than the servlet or database layer, which keeps them testable and composable without requiring a live HTTP context or a database trigger.
@@ -302,7 +302,7 @@ export default function StudentEnrollmentPage() {
 
       {/* ── 05 SECURITY & ACCESS CONTROL ── */}
       <section className="space-y-4">
-        <WorkSectionLabel number={5} title="Security & Access Control" id="security" />
+        <WorkSectionLabel number={6} title="Security & Access Control" id="security" />
 
         <p className="text-muted-foreground">
           The <span className="font-mono text-xs text-foreground/80 bg-muted/30 px-1 rounded">security/</span> package contains three components that collectively handle authentication state, credential safety, and database access. Each addresses a distinct concern rather than bundling them into a single utility class.
@@ -352,7 +352,7 @@ export default function StudentEnrollmentPage() {
 
       {/* ── 06 TECHNICAL STACK ── */}
       <section className="space-y-4">
-        <WorkSectionLabel number={6} title="Technical Stack" id="stack" />
+        <WorkSectionLabel number={7} title="Technical Stack" id="stack" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-3">
@@ -406,24 +406,30 @@ export default function StudentEnrollmentPage() {
           </div>
         </div>
 
-        <WorkProsCons
-          pros={[
-            "Structured fourteen DAOs so every query lives in the data layer. Nothing leaks into services or servlets.",
-            "Centralized enrollment rules (prerequisites, seats, schedule conflicts) in the service tier before commits.",
-            "Enforced roles at the servlet edge so downstream layers stay focused on domain logic.",
-            "Modeled Course vs CourseOffering so prerequisite rules live once in the catalogue, not per offering.",
-          ]}
-          cons={[
-            "I'd introduce a front controller or a small MVC layer if the route surface keeps growing. Less servlet boilerplate.",
-            "Next hardening step: swap the single JDBC connection for a pool (e.g. HikariCP) before expecting real concurrency.",
-            "Want to add unit tests around the validation-heavy service methods. They're a natural fit for JUnit.",
-            "Would pair stored procedures with Flyway/Liquibase-style migrations for safer schema evolution.",
-            "If this became a JSON API, I'd standardize error payloads and versioning before external clients depend on it.",
-          ]}
-        />
+        <div className="mt-8 space-y-6">
+          <div>
+            <h3 className="mb-2 text-left text-sm font-semibold text-foreground">What went well</h3>
+            <ul className="list-disc space-y-2 pl-5 text-muted-foreground leading-[1.6]">
+              <li>Structured fourteen DAOs so every query lives in the data layer. Nothing leaks into services or servlets.</li>
+              <li>Centralized enrollment rules (prerequisites, seats, schedule conflicts) in the service tier before commits.</li>
+              <li>Enforced roles at the servlet edge so downstream layers stay focused on domain logic.</li>
+              <li>Modeled Course vs CourseOffering so prerequisite rules live once in the catalogue, not per offering.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="mb-2 text-left text-sm font-semibold text-foreground">Future improvements</h3>
+            <ul className="list-disc space-y-2 pl-5 text-muted-foreground leading-[1.6]">
+              <li>I&apos;d introduce a front controller or a small MVC layer if the route surface keeps growing. Less servlet boilerplate.</li>
+              <li>Next hardening step: swap the single JDBC connection for a pool (e.g. HikariCP) before expecting real concurrency.</li>
+              <li>Want to add unit tests around the validation-heavy service methods. They&apos;re a natural fit for JUnit.</li>
+              <li>Would pair stored procedures with Flyway/Liquibase-style migrations for safer schema evolution.</li>
+              <li>If this became a JSON API, I&apos;d standardize error payloads and versioning before external clients depend on it.</li>
+            </ul>
+          </div>
+        </div>
       </section>
 
-      <WorkFooterLinks github="https://github.com/amJenish/student-enrollment-system" />
     </div>
+    </WorkReportShell>
   );
 }

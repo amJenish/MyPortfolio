@@ -1,13 +1,16 @@
-/** Shared neutrals + fonts for telco-style notebook report pages (aligns with global @theme) */
-export const FONT_SANS = `"Inter", system-ui, sans-serif`;
-export const FONT_MONO = `"JetBrains Mono", ui-monospace, monospace`;
+/**
+ * Re-export theme tokens for notebook pages using inline styles.
+ * Prefer importing `C` / fonts from `@/lib/theme` in new code.
+ */
+export { C, FONT_MONO, FONT_SANS } from "@/lib/theme";
 
+/** @deprecated use C from @/lib/theme */
 export const notebookNeutrals = {
-  bg: "hsl(224 20% 6%)",
-  surface: "hsl(224 18% 10%)",
-  card: "hsl(224 18% 11%)",
-  border: "hsl(224 14% 20%)",
-  text: "hsl(210 25% 92%)",
-  textDim: "hsl(210 14% 62%)",
-  muted: "hsl(210 12% 48%)",
+  bg: "#09100f",
+  surface: "#0f1a18",
+  card: "#132019",
+  border: "#1e2e2a",
+  text: "#e8f0ee",
+  textDim: "#8fa89f",
+  muted: "#5a746d",
 } as const;

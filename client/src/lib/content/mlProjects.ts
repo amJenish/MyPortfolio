@@ -18,6 +18,8 @@ export const kaggleProjects: KaggleProject[] = [
     githubUrl: "https://github.com/amJenish/Telco-Customer-Churn-Prediction",
     tags: ["Python", "pandas", "scikit-learn"],
     reportSlug: "telco-churn",
+    notebookUrl:
+      "https://nbviewer.org/github/amJenish/Telco-Customer-Churn-Prediction/blob/main/Analysis%20and%20Modeling.ipynb",
     cardMetrics: [
       { label: "AUC", value: "83.6%" },
       { label: "Acc", value: "79.5%" },
@@ -32,6 +34,8 @@ export const kaggleProjects: KaggleProject[] = [
     githubUrl: "https://github.com/amJenish/House-Prices-Advanced-Regression",
     tags: ["Python", "XGBoost", "pandas"],
     reportSlug: "house-prices",
+    notebookUrl:
+      "https://nbviewer.org/github/amJenish/House-Prices-Advanced-Regression/blob/main/House%20Prices%20Advanced%20Regression%20Techniques.ipynb",
     cardMetrics: [{ label: "Test R²", value: "~92%" }],
     highlights: [],
   },
@@ -44,6 +48,7 @@ export const kaggleProjects: KaggleProject[] = [
     tags: ["Python", "NLP", "scikit-learn", "SentenceTransformers", "pandas", "PyTorch","TensorFlow", "NLP", "spaCy", "XGBoost"],
     
     reportSlug: "job-resume",
+    notebookUrl: "https://nbviewer.org/github/amJenish/Job-Resume-Matching/blob/main/Main.ipynb",
     cardMetrics: [{ label: "Acc (val)", value: "~87%" }],
     highlights: [],
   }

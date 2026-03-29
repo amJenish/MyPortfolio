@@ -1,19 +1,16 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
-import {
-  WorkExecutiveSummary,
-  WorkFooterLinks,
-  WorkFramingQuestion,
-  WorkProsCons,
-  WorkSectionLabel,
-} from "../_shared";
+import { C } from "@/lib/theme";
+import { WorkSectionLabel } from "../_shared";
+import type { WorkPageProps } from "../workPageTypes";
+import { WorkReportShell } from "@/components/work/WorkReportShell";
 
-const TEAL    = "hsl(165 62% 52%)";
-const ORANGE  = "#f97316";
-const AMBER   = "#f5a623";
-const PURPLE  = "#a78bfa";
-const ROSE    = "#fb7185";
-const MUTED   = "#4a6178";
+const TEAL = C.teal;
+const ORANGE = C.amber;
+const AMBER = C.amber;
+const PURPLE = C.teal;
+const ROSE = C.red;
+const MUTED = C.textDim;
 
 function PipelineNode({ accent, children, wide }: { accent: string; children: ReactNode; wide?: boolean }) {
   return (
@@ -119,35 +116,38 @@ export const workPageSections = [
   { id: "stack",        label: "6. Technical Stack" },
 ] as const;
 
-export default function GeeseMapPage() {
+export default function GeeseMapPage(props: WorkPageProps) {
   const [activeService, setActiveService] = useState<ServiceKey>("PostService");
   const detail = serviceDetails[activeService];
 
   return (
-    <div className="work-report-body space-y-10 text-sm leading-relaxed text-foreground sm:text-base">
+    <WorkReportShell {...props}>
+    <div className="theme-body work-report-body mx-auto max-w-[min(100%,80rem)] space-y-10 px-4 pb-16 text-sm sm:px-6 sm:text-base">
 
-      <WorkExecutiveSummary
-        paragraphs={[
-          "A microservices-based backend that powers a location-aware social heatmap. Users upload photos taken at a location; the system verifies the image content, extracts GPS and timestamp metadata from EXIF data, and aggregates the resulting post records into a heatmap dataset. Each of these concerns is handled by a dedicated service, with PostService acting as the orchestrator that sequences the upstream calls and persists the final record.",
-          "The system comprises six deployable units: five domain services (AccountService, ImageUploadService, ImageVerificationService, MetadataExtractionService, PostService) and a ServiceRegistry for service discovery. A sixth unit, APIGateway, was scaffolded but is not operational. Each service has its own Dockerfile and Spring Boot application context, communicates over HTTP, and is independently deployable. ImageVerificationService is written in Python to take advantage of the Roboflow ML ecosystem; the remaining services are Java and Spring Boot."
-        ]}
-        bullets={[
-          "Five independently deployable services, each owning a single domain responsibility.",
-          "ImageVerificationService uses the Roboflow API to validate image content before a post is accepted.",
-          "MetadataExtractionService reads EXIF GPS and timestamp data from uploaded images, producing the location signal for the heatmap.",
-          "IBM Cloud Object Storage is used for image persistence; ImageUploadService is the only service with bucket credentials.",
-          "PostService orchestrates the full post creation pipeline via inter-service HTTP calls configured through RestClientConfig.",
-          "ServiceRegistry (Eureka) provides service discovery; the non-operational APIGateway was intended as the unified entry point."
-        ]}
-      />
+      <section className="scroll-mt-28 space-y-4">
+        <WorkSectionLabel number={1} title="Overview" id="summary" />
+        <p className="text-report-body">
+          A microservices-based backend that powers a location-aware social heatmap. Users upload photos taken at a location; the system verifies the image content, extracts GPS and timestamp metadata from EXIF data, and aggregates the resulting post records into a heatmap dataset. Each of these concerns is handled by a dedicated service, with PostService acting as the orchestrator that sequences the upstream calls and persists the final record.
+        </p>
+        <p className="text-report-body">
+          The system comprises six deployable units: five domain services (AccountService, ImageUploadService, ImageVerificationService, MetadataExtractionService, PostService) and a ServiceRegistry for service discovery. A sixth unit, APIGateway, was scaffolded but is not operational. Each service has its own Dockerfile and Spring Boot application context, communicates over HTTP, and is independently deployable. ImageVerificationService is written in Python to take advantage of the Roboflow ML ecosystem; the remaining services are Java and Spring Boot.
+        </p>
+        <ul className="list-disc space-y-2 pl-5 text-muted-foreground leading-[1.6]">
+          <li>Five independently deployable services, each owning a single domain responsibility.</li>
+          <li>ImageVerificationService uses the Roboflow API to validate image content before a post is accepted.</li>
+          <li>MetadataExtractionService reads EXIF GPS and timestamp data from uploaded images, producing the location signal for the heatmap.</li>
+          <li>IBM Cloud Object Storage is used for image persistence; ImageUploadService is the only service with bucket credentials.</li>
+          <li>PostService orchestrates the full post creation pipeline via inter-service HTTP calls configured through RestClientConfig.</li>
+          <li>ServiceRegistry (Eureka) provides service discovery; the non-operational APIGateway was intended as the unified entry point.</li>
+        </ul>
+        <p className="border-l-2 border-primary/50 pl-4 text-left leading-[1.6] text-muted-foreground">
+          A single-service backend for this system would couple image storage, ML verification, metadata extraction, and post persistence into one deployment. How should these concerns be separated so that each can be developed, scaled, and replaced independently, without turning the orchestration layer into a tangle of cross-cutting logic?
+        </p>
+      </section>
 
-      <WorkFramingQuestion>
-        A single-service backend for this system would couple image storage, ML verification, metadata extraction, and post persistence into one deployment. How should these concerns be separated so that each can be developed, scaled, and replaced independently, without turning the orchestration layer into a tangle of cross-cutting logic?
-      </WorkFramingQuestion>
-
-      {/* ── 01 SYSTEM CAPABILITIES ── */}
+      {/* ── 02 SYSTEM CAPABILITIES ── */}
       <section className="space-y-4">
-        <WorkSectionLabel number={1} title="System Capabilities" id="built" />
+        <WorkSectionLabel number={2} title="System Capabilities" id="built" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
           <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
@@ -274,7 +274,7 @@ export default function GeeseMapPage() {
 
       {/* ── 03 POST CREATION FLOW ── */}
       <section className="space-y-6">
-        <WorkSectionLabel number={3} title="Post Creation Flow" id="flow" />
+        <WorkSectionLabel number={4} title="Post Creation Flow" id="flow" />
 
         <p className="text-muted-foreground">
           Creating a post is the central operation of the system and the only flow that involves all five services. PostService is the sole orchestrator: it receives the initial request, sequences the upstream calls, and decides at each step whether to proceed or abort. The flow is sequential rather than parallel, meaning a failure at any stage short-circuits the remainder.
@@ -371,7 +371,7 @@ export default function GeeseMapPage() {
 
       {/* ── 04 SERVICE DEEP DIVES ── */}
       <section className="space-y-4">
-        <WorkSectionLabel number={4} title="Service Deep Dives" id="services" />
+        <WorkSectionLabel number={5} title="Service Deep Dives" id="services" />
 
         <p className="text-muted-foreground">
           Each service is a self-contained Spring Boot (or Python) application with its own application context, database connection if needed, and Dockerfile. Selecting a service below shows its internal structure and the reasoning behind its design.
@@ -435,7 +435,7 @@ export default function GeeseMapPage() {
 
       {/* ── 05 ENGINEERING DECISIONS ── */}
       <section className="space-y-4">
-        <WorkSectionLabel number={5} title="Engineering Decisions" id="choices" />
+        <WorkSectionLabel number={6} title="Engineering Decisions" id="choices" />
 
         <p className="text-muted-foreground">
           Several architectural decisions shaped how the system was structured. Each one had a concrete alternative and a reason for the choice made.
@@ -498,7 +498,7 @@ export default function GeeseMapPage() {
 
       {/* ── 06 TECHNICAL STACK ── */}
       <section className="space-y-4">
-        <WorkSectionLabel number={6} title="Technical Stack" id="stack" />
+        <WorkSectionLabel number={7} title="Technical Stack" id="stack" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-3">
@@ -552,27 +552,33 @@ export default function GeeseMapPage() {
           </div>
         </div>
 
-        <WorkProsCons
-          pros={[
-            "I kept each service's responsibility genuinely narrow: no service touches another's database, and the only orchestration logic lives in PostService where it belongs.",
-            "I isolated IBM COS credentials to ImageUploadService, meaning a credential leak in any other service cannot expose the storage bucket.",
-            "I chose Python for ImageVerificationService based on ecosystem fit rather than language consistency, and structured it as a separate HTTP service so the runtime isolation is clean.",
-            "I used typed exceptions in MetadataExtractionService (MissingGeoMetadataException vs MissingDateMetadaException) so the orchestrator can distinguish failure modes rather than catching a generic error.",
-            "I separated secrets into secretinfo.properties in ImageUploadService so the main application config can be committed to source control safely.",
-            "I registered services with Eureka so PostService resolves addresses by name through RestClientConfig rather than using hardcoded URLs."
-          ]}
-          cons={[
-            "I would complete the APIGateway so that auth validation, CORS policy, and routing are enforced at the boundary rather than duplicated across every service's CorsConfig.",
-            "I would add a circuit breaker (Resilience4j) around PostService's upstream calls so a slow or unavailable ImageVerificationService does not cause post creation to hang indefinitely.",
-            "I would add a cleanup mechanism for orphaned COS objects when post creation fails after the upload step but before the database write.",
-            "I would introduce a Docker Compose file so the full service mesh can be started and torn down in a single command for local development and integration testing.",
-            "I would add integration tests that spin up real service instances and exercise the full post creation pipeline end to end, rather than relying solely on unit-level coverage.",
-            "I would version the inter-service HTTP contracts so a breaking change in ImageVerificationService's response schema does not silently corrupt PostService's parsing logic."
-          ]}
-        />
+        <div className="mt-8 space-y-6">
+          <div>
+            <h3 className="mb-2 text-left text-sm font-semibold text-foreground">What went well</h3>
+            <ul className="list-disc space-y-2 pl-5 text-muted-foreground leading-[1.6]">
+              <li>I kept each service&apos;s responsibility genuinely narrow: no service touches another&apos;s database, and the only orchestration logic lives in PostService where it belongs.</li>
+              <li>I isolated IBM COS credentials to ImageUploadService, meaning a credential leak in any other service cannot expose the storage bucket.</li>
+              <li>I chose Python for ImageVerificationService based on ecosystem fit rather than language consistency, and structured it as a separate HTTP service so the runtime isolation is clean.</li>
+              <li>I used typed exceptions in MetadataExtractionService (MissingGeoMetadataException vs MissingDateMetadaException) so the orchestrator can distinguish failure modes rather than catching a generic error.</li>
+              <li>I separated secrets into secretinfo.properties in ImageUploadService so the main application config can be committed to source control safely.</li>
+              <li>I registered services with Eureka so PostService resolves addresses by name through RestClientConfig rather than using hardcoded URLs.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="mb-2 text-left text-sm font-semibold text-foreground">Future improvements</h3>
+            <ul className="list-disc space-y-2 pl-5 text-muted-foreground leading-[1.6]">
+              <li>I would complete the APIGateway so that auth validation, CORS policy, and routing are enforced at the boundary rather than duplicated across every service&apos;s CorsConfig.</li>
+              <li>I would add a circuit breaker (Resilience4j) around PostService&apos;s upstream calls so a slow or unavailable ImageVerificationService does not cause post creation to hang indefinitely.</li>
+              <li>I would add a cleanup mechanism for orphaned COS objects when post creation fails after the upload step but before the database write.</li>
+              <li>I would introduce a Docker Compose file so the full service mesh can be started and torn down in a single command for local development and integration testing.</li>
+              <li>I would add integration tests that spin up real service instances and exercise the full post creation pipeline end to end, rather than relying solely on unit-level coverage.</li>
+              <li>I would version the inter-service HTTP contracts so a breaking change in ImageVerificationService&apos;s response schema does not silently corrupt PostService&apos;s parsing logic.</li>
+            </ul>
+          </div>
+        </div>
       </section>
 
-      <WorkFooterLinks github="https://github.com/amJenish/Geese-Map" />
     </div>
+    </WorkReportShell>
   );
 }

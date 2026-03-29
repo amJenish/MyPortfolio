@@ -4,36 +4,39 @@ import {
   ResponsiveContainer, Cell, LineChart, Line, ReferenceLine,
 } from "recharts";
 
-import { FONT_MONO, FONT_SANS, notebookNeutrals } from "./notebookTheme";
+import { C, FONT_MONO, FONT_SANS } from "./notebookTheme";
+import type { WorkPageProps } from "../workPageTypes";
+import { WorkReportShell } from "@/components/work/WorkReportShell";
 
 const P = {
-  ...notebookNeutrals,
-  accent: "#f5a623",
+  ...C,
+  accent: C.amber,
   accentDim: "#b8770f",
-  teal: "#2dd4bf",
-  rose: "#fb7185",
-  orange: "#fb923c",
-  purple: "#a78bfa",
+  teal: C.teal,
+  rose: C.red,
+  orange: C.amber,
+  purple: C.teal,
+  muted: C.textDim,
 };
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
 
 const f1Progression = [
-  { exp: "Exp 1", label: "Handcrafted\n10-D (LR)", f1: 60, fill: "#fb7185" },
-  { exp: "Exp 2", label: "Frozen MiniLM\n1536-D (LR)", f1: 69, fill: "#f97316" },
-  { exp: "Exp 3", label: "Fine-tuned\nMiniLM (LR)", f1: 84, fill: "#f5a623" },
-  { exp: "Exp 4", label: "28-D Features\n(LR)", f1: 84, fill: "#2dd4bf" },
-  { exp: "Exp 5", label: "28-D Features\n+ MLP ★", f1: 88, fill: "#a78bfa" },
+  { exp: "Exp 1", label: "Handcrafted\n10-D (LR)", f1: 60, fill: C.red },
+  { exp: "Exp 2", label: "Frozen MiniLM\n1536-D (LR)", f1: 69, fill: C.amber },
+  { exp: "Exp 3", label: "Fine-tuned\nMiniLM (LR)", f1: 84, fill: C.amber },
+  { exp: "Exp 4", label: "28-D Features\n(LR)", f1: 84, fill: C.teal },
+  { exp: "Exp 5", label: "28-D Features\n+ MLP ★", f1: 88, fill: C.teal },
 ];
 
 const classifierComparison = [
-  { model: "MLP ★",               f1: 88, fill: "#a78bfa" },
-  { model: "XGBoost",             f1: 86, fill: "#f5a623" },
-  { model: "LightGBM",            f1: 86, fill: "#f5a623" },
-  { model: "GradBoost",           f1: 84, fill: "#2dd4bf" },
-  { model: "HistGradBoost",       f1: 84, fill: "#2dd4bf" },
-  { model: "RandomForest",        f1: 83, fill: "#7a95b0" },
-  { model: "CatBoost",            f1: 83, fill: "#7a95b0" },
+  { model: "MLP ★",               f1: 88, fill: C.teal },
+  { model: "XGBoost",             f1: 86, fill: C.amber },
+  { model: "LightGBM",            f1: 86, fill: C.amber },
+  { model: "GradBoost",           f1: 84, fill: C.teal },
+  { model: "HistGradBoost",       f1: 84, fill: C.teal },
+  { model: "RandomForest",        f1: 83, fill: C.textDim },
+  { model: "CatBoost",            f1: 83, fill: C.textDim },
 ];
 
 const featureDimensions = [
@@ -45,10 +48,10 @@ const featureDimensions = [
 ];
 
 const gainBreakdown = [
-  { source: "Frozen MiniLM (Exp 2 vs 1)", gain: 9, fill: "#f97316" },
-  { source: "Fine-tuning (Exp 3 vs 2)",   gain: 15, fill: "#f5a623" },
-  { source: "Structured features",        gain: 0, fill: "#4a6178" },
-  { source: "Nonlinear classifier",       gain: 4, fill: "#a78bfa" },
+  { source: "Frozen MiniLM (Exp 2 vs 1)", gain: 9, fill: C.amber },
+  { source: "Fine-tuning (Exp 3 vs 2)",   gain: 15, fill: C.amber },
+  { source: "Structured features",        gain: 0, fill: C.textDim },
+  { source: "Nonlinear classifier",       gain: 4, fill: C.teal },
 ];
 
 // ── SHARED UI ─────────────────────────────────────────────────────────────────
@@ -107,7 +110,7 @@ function KPI({ label, value, sub, color }: { label: string; value: ReactNode; su
 
 function Mono({ children }: { children: ReactNode }): React.JSX.Element {
   return (
-    <code style={{ fontFamily: FONT_MONO, fontSize: 11.5, background: "#0d1926", color: P.teal, padding: "2px 7px", borderRadius: 4, border: `1px solid ${P.border}` }}>{children}</code>
+    <code style={{ fontFamily: FONT_MONO, fontSize: 11.5, background: C.codeBg, color: P.teal, padding: "2px 7px", borderRadius: 4, border: `1px solid ${P.border}` }}>{children}</code>
   );
 }
 
@@ -209,15 +212,16 @@ const expDetails: Record<ExpTab, { title: string; dim: string; f1: string; color
 
 // ── MAIN ──────────────────────────────────────────────────────────────────────
 
-export default function ResumeJobMatchingReport() {
+export default function ResumeJobMatchingReport(props: WorkPageProps) {
   const [activeExp, setActiveExp] = useState<ExpTab>("3");
 
   return (
-    <div style={{ background: P.bg, minHeight: "100vh", color: P.text, fontFamily: FONT_SANS }}>
+    <WorkReportShell {...props}>
+    <div style={{ color: P.text, fontFamily: FONT_SANS }}>
       {/* ── HERO ── */}
       <div style={{ borderBottom: `1px solid ${P.border}`, padding: "72px 0 56px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle at 1px 1px, #1e2d3d 1px, transparent 0)", backgroundSize: "28px 28px", opacity: 0.5 }} />
-        <div style={{ position: "absolute", top: "-20%", left: "60%", width: 600, height: 600, background: "radial-gradient(ellipse, #a78bfa08 0%, transparent 65%)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", inset: 0, backgroundImage: `radial-gradient(circle at 1px 1px, ${P.border} 1px, transparent 0)`, backgroundSize: "28px 28px", opacity: 0.5 }} />
+        <div style={{ position: "absolute", top: "-20%", left: "60%", width: 600, height: 600, background: `radial-gradient(ellipse, ${C.teal}08 0%, transparent 65%)`, pointerEvents: "none" }} />
         <div style={{ maxWidth: 980, margin: "0 auto", padding: "0 40px", position: "relative" }}>
           <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: P.accent, marginBottom: 20 }}>
             NLP · Representation Learning · Binary Classification · ATS
@@ -527,19 +531,14 @@ export default function ResumeJobMatchingReport() {
           </div>
         </div>
 
-        {/* FOOTER */}
-        <div style={{ borderTop: `1px solid ${P.border}`, paddingTop: 32, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+        <div style={{ borderTop: `1px solid ${P.border}`, paddingTop: 32 }}>
           <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: P.muted }}>
-            Dataset: facehuggerapoorv/resume-jd-match · Stack: Python, PyTorch, HuggingFace Transformers, spaCy, scikit-learn, XGBoost, LightGBM, CatBoost
-          </div>
-          <div style={{ display: "flex", gap: 20 }}>
-            <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: P.textDim }}>
-              Western University · Department of Computer Science
-            </span>
+            Dataset: facehuggerapoorv/resume-jd-match · Stack: Python, PyTorch, HuggingFace Transformers, spaCy, scikit-learn, XGBoost, LightGBM, CatBoost · Western University · Department of Computer Science
           </div>
         </div>
 
       </div>
     </div>
+    </WorkReportShell>
   );
 }

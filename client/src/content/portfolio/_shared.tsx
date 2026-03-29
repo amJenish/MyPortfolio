@@ -308,8 +308,8 @@ export function WorkDataTable({ headers, rows }: { headers: string[]; rows: stri
   );
 }
 
-export const chartMuted = "hsl(210 14% 64%)";
-export const chartPrimary = "hsl(165 90% 45%)";
+export const chartMuted = "#5a746d";
+export const chartPrimary = "#2fd6bb";
 export const chartRose = "hsl(350 80% 58%)";
 export const chartTeal = "hsl(173 58% 45%)";
 export const chartViolet = "hsl(258 55% 58%)";
