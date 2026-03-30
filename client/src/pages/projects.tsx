@@ -17,7 +17,7 @@ export default function Projects() {
             Projects
           </h1>
           <p className="text-[0.9375rem] leading-relaxed text-muted-foreground">
-            Backend-heavy work, desktop tools, and one full-stack ML app. Each card links to a full write-up.
+            Backend-heavy work and full-stack applications building following SWE Principles. Each card links to a full write-up.
           </p>
           {/* Visual divider with gradient — reinforces section hierarchy */}
           <div className="h-1 w-24 rounded-full bg-gradient-to-r from-primary to-primary/20" aria-hidden />
