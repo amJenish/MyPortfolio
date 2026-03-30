@@ -189,7 +189,7 @@ export default function GeeseMapPage(props: WorkPageProps) {
               A microservices-based backend that powers a location-aware social heatmap. Users upload photos taken at a location; the system verifies the image content, extracts GPS and timestamp metadata from EXIF data, and aggregates the resulting post records into a heatmap dataset. Each concern is handled by a dedicated service.
             </Body>
             <Body style={{ maxWidth: 1280, marginBottom: 36, color: "var(--foreground)" }}>
-              The system comprises five domain services (AccountService, ImageUploadService, ImageVerificationService, MetadataExtractionService, PostService) and a ServiceRegistry for service discovery. ImageVerificationService is written in Python to take advantage of the Roboflow ML ecosystem; the remaining services are Java and Spring Boot.
+              The system comprises five domain services (AccountService, ImageUploadService, ImageVerificationService, MetadataExtractionService, PostService) and a ServiceRegistry for service discovery. ImageVerificationService is written in Python to take advantage of Roboflow's ML Model ; the remaining services are Java and Spring Boot.
             </Body>
 
             <CatalogTagPills tags={props.entry.tags} />
@@ -329,11 +329,11 @@ export default function GeeseMapPage(props: WorkPageProps) {
 
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {[
-                  { step: "①", desc: "Client POST /posts → PostService" },
-                  { step: "②", desc: "PostService → ImageUploadService → IBM COS → COS URL returned" },
-                  { step: "③", desc: "PostService → ImageVerificationService → Roboflow API → Pass / Fail verdict" },
-                  { step: "④", desc: "PostService → MetadataExtractionService → GPS + Timestamp" },
-                  { step: "⑤", desc: "PostService assembles Post entity → MySQL → PostDto returned to client" },
+                  { step: "1", desc: "Client POST /posts → PostService" },
+                  { step: "2", desc: "PostService → ImageVerificationService → Roboflow API → Pass / Fail verdict" },
+                  { step: "3", desc: "PostService → ImageUploadService → IBM COS → COS URL returned" },
+                  { step: "4", desc: "PostService → MetadataExtractionService → GPS + Timestamp" },
+                  { step: "5", desc: "PostService assembles Post entity → MySQL → PostDto returned to client" },
                 ].map((item, i) => (
                   <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
                     <div style={{ fontFamily: MONO, fontSize: 11, color: "var(--muted-foreground)", minWidth: 20, marginTop: 2 }}>{item.step}</div>
@@ -343,7 +343,7 @@ export default function GeeseMapPage(props: WorkPageProps) {
               </div>
 
               <Body style={{ fontSize: 12, marginTop: 16, color: "var(--foreground)" }}>
-                Steps ②–④ are sequential. If ImageVerificationService returns a fail verdict at step ③, PostService aborts without calling MetadataExtractionService or writing to MySQL. The image uploaded to COS in step ② persists regardless of whether the post is ultimately created.
+                Steps 2–4 are sequential. If ImageVerificationService returns a fail verdict at step 2, PostService aborts without calling MetadataExtractionService or writing to MySQL.
               </Body>
             </div>
 
