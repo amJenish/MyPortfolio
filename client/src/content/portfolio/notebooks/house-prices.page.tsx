@@ -6,20 +6,38 @@ import {
 } from "recharts";
 
 import { FONT_MONO, FONT_SANS } from "./notebookTheme";
+
+// ── STANDARD CHART COLORS ──────────────────────────────────────────────────
+
+const CHART_COLORS = {
+  primary: "#3b82f6",    // Blue
+  primaryDim: "#2563eb", // Darker blue for borders on primary accents
+  success: "#22c55e",    // Green
+  warning: "#f59e0b",    // Amber/Orange
+  danger: "#ef4444",     // Red
+  secondary: "#06b6d4",  // Cyan
+};
+
+const P = {
+  purple: "#a855f7",
+  bg: "var(--background)",
+} as const;
+
+
 import type { WorkPageProps } from "../workPageTypes";
 import { WorkReportShell } from "@/components/work/WorkReportShell";
 
-const P = { purple: "#a855f7" } as const;
+
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
 
 // Model comparison: actual results from the notebook
 const modelComparison = [
-  { model: "Linear Reg.", r2: 87.4, fill: "#ef4444" },
-  { model: "Random Forest", r2: 89.5, fill: "#f59e0b" },
-  { model: "CatBoost", r2: 91.4, fill: "#06b6d4" },
-  { model: "XGB Full (73)", r2: 92.2, fill: "#f59e0b" },
-  { model: "XGB Selected ★", r2: 92.6, fill: "#06b6d4" },
+  { model: "Linear Reg.", r2: 87.4, fill: CHART_COLORS.danger },
+  { model: "Random Forest", r2: 89.5, fill: CHART_COLORS.warning },
+  { model: "CatBoost", r2: 91.4, fill: CHART_COLORS.secondary },
+  { model: "XGB Full (73)", r2: 92.2, fill: CHART_COLORS.warning },
+  { model: "XGB Selected ★", r2: 92.6, fill: CHART_COLORS.secondary },
 ];
 
 // Feature importance from RF (cell 137), capped at top 10, deduplicated
@@ -38,13 +56,13 @@ const featureImportance = [
 
 // Missing value counts from df.isnull().sum() output
 const missingValues = [
-  { feature: "Alley",       missing: 1369, pct: 93.8, fill: "#ef4444" },
-  { feature: "PoolQC",      missing: 1453, pct: 99.5, fill: "#ef4444" },
-  { feature: "MiscFeature", missing: 1406, pct: 96.3, fill: "#f59e0b" },
-  { feature: "Fence",       missing: 1179, pct: 80.8, fill: "#f59e0b" },
-  { feature: "FireplaceQu", missing: 690,  pct: 47.3, fill: "#f59e0b" },
-  { feature: "MasVnrType",  missing: 872,  pct: 59.7, fill: "#f59e0b" },
-  { feature: "LotFrontage", missing: 259,  pct: 17.7, fill: "#06b6d4" },
+  { feature: "Alley",       missing: 1369, pct: 93.8, fill: CHART_COLORS.danger },
+  { feature: "PoolQC",      missing: 1453, pct: 99.5, fill: CHART_COLORS.danger },
+  { feature: "MiscFeature", missing: 1406, pct: 96.3, fill: CHART_COLORS.warning },
+  { feature: "Fence",       missing: 1179, pct: 80.8, fill: CHART_COLORS.warning },
+  { feature: "FireplaceQu", missing: 690,  pct: 47.3, fill: CHART_COLORS.warning },
+  { feature: "MasVnrType",  missing: 872,  pct: 59.7, fill: CHART_COLORS.warning },
+  { feature: "LotFrontage", missing: 259,  pct: 17.7, fill: CHART_COLORS.secondary },
   { feature: "Garage*",     missing: 81,   pct: 5.5,  fill: "var(--muted-foreground)" },
   { feature: "Basement*",   missing: 37,   pct: 2.5,  fill: "var(--muted-foreground)" },
 ];
@@ -59,12 +77,12 @@ const foundationComparison = [
 
 // SaleCondition from cell 172 output
 const saleConditionPrices = [
-  { condition: "AdjLand",  mean: 104, fill: "#ef4444" },
-  { condition: "Abnorml",  mean: 147, fill: "#f59e0b" },
-  { condition: "Family",   mean: 150, fill: "#f59e0b" },
-  { condition: "Alloca",   mean: 167, fill: "#06b6d4" },
-  { condition: "Normal",   mean: 175, fill: "#06b6d4" },
-  { condition: "Partial",  mean: 272, fill: "#06b6d4" },
+  { condition: "AdjLand",  mean: 104, fill: CHART_COLORS.danger },
+  { condition: "Abnorml",  mean: 147, fill: CHART_COLORS.warning },
+  { condition: "Family",   mean: 150, fill: CHART_COLORS.warning },
+  { condition: "Alloca",   mean: 167, fill: CHART_COLORS.secondary },
+  { condition: "Normal",   mean: 175, fill: CHART_COLORS.secondary },
+  { condition: "Partial",  mean: 272, fill: CHART_COLORS.secondary },
 ];
 
 // Lot shape analysis from cell 167 output
@@ -93,7 +111,7 @@ function Tip({
   if (!active || !payload?.length) return null;
   return (
     <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, padding: "10px 14px", borderRadius: 8, fontSize: 13, color: "var(--foreground)", fontFamily: FONT_MONO }}>
-      <div style={{ color: "#3b82f6", marginBottom: 4 }}>{label}</div>
+      <div style={{ color: CHART_COLORS.primary, marginBottom: 4 }}>{label}</div>
       {payload.map((p, i) => (
         <div key={i} style={{ color: p.color || "var(--foreground)" }}>
           {p.name}:{" "}
@@ -108,7 +126,7 @@ function Section({ n, title }: { n: number; title: string }): React.JSX.Element 
   const num = String(n).padStart(2, "0");
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 28 }}>
-      <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: "#3b82f6", border: `1px solid ${"#3b82f6"}`, padding: "2px 8px", borderRadius: 4, whiteSpace: "nowrap" }}>
+      <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: CHART_COLORS.primary, border: `1px solid ${CHART_COLORS.primaryDim}`, padding: "2px 8px", borderRadius: 4, whiteSpace: "nowrap" }}>
         {num}
       </span>
       <h2 style={{ fontFamily: FONT_SANS, fontSize: 24, color: "var(--foreground)", margin: 0, fontWeight: 700, letterSpacing: -0.5, whiteSpace: "nowrap" }}>{title}</h2>
@@ -119,9 +137,9 @@ function Section({ n, title }: { n: number; title: string }): React.JSX.Element 
 
 function KPI({ label, value, sub, color }: { label: string; value: ReactNode; sub?: string; color?: string }): React.JSX.Element {
   return (
-    <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 12, padding: "20px 24px", flex: 1, borderTop: `3px solid ${color || "#3b82f6"}` }}>
+    <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 12, padding: "20px 24px", flex: 1, borderTop: `3px solid ${color || CHART_COLORS.primary}` }}>
       <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: "var(--muted-foreground)", marginBottom: 8 }}>{label}</div>
-      <div style={{ fontFamily: FONT_SANS, fontSize: 36, color: color || "#3b82f6", fontWeight: 900, lineHeight: 1 }}>{value}</div>
+      <div style={{ fontFamily: FONT_SANS, fontSize: 36, color: color || CHART_COLORS.primary, fontWeight: 900, lineHeight: 1 }}>{value}</div>
       {sub ? <div style={{ marginTop: 6, fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.5 }}>{sub}</div> : null}
     </div>
   );
@@ -129,11 +147,11 @@ function KPI({ label, value, sub, color }: { label: string; value: ReactNode; su
 
 function Mono({ children }: { children: ReactNode }): React.JSX.Element {
   return (
-    <code style={{ fontFamily: FONT_MONO, fontSize: 11.5, background: "var(--muted)", color: "#06b6d4", padding: "2px 7px", borderRadius: 4, border: `1px solid ${"var(--border)"}` }}>{children}</code>
+    <code style={{ fontFamily: FONT_MONO, fontSize: 11.5, background: "var(--muted)", color: CHART_COLORS.secondary, padding: "2px 7px", borderRadius: 4, border: `1px solid ${"var(--border)"}` }}>{children}</code>
   );
 }
 
-function Callout({ color = "#3b82f6", icon, children }: { color?: string; icon?: ReactNode; children: ReactNode }): React.JSX.Element {
+function Callout({ color = CHART_COLORS.primary, icon, children }: { color?: string; icon?: ReactNode; children: ReactNode }): React.JSX.Element {
   return (
     <div style={{ background: `${color}12`, border: `1px solid ${color}40`, borderRadius: 10, padding: "14px 18px", marginTop: 16, display: "flex", gap: 12, alignItems: "flex-start" }}>
       {icon ? <span style={{ fontSize: 16, flexShrink: 0, marginTop: 1 }}>{icon}</span> : null}
@@ -144,8 +162,8 @@ function Callout({ color = "#3b82f6", icon, children }: { color?: string; icon?:
 
 function AnalysisBlock({ heading, children }: { heading?: string; children: ReactNode }): React.JSX.Element {
   return (
-    <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderLeft: `3px solid ${"#3b82f6"}`, borderRadius: "0 10px 10px 0", padding: "16px 20px", marginTop: 16 }}>
-      {heading ? <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: "#3b82f6", marginBottom: 8 }}>{heading}</div> : null}
+    <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderLeft: `3px solid ${CHART_COLORS.primary}`, borderRadius: "0 10px 10px 0", padding: "16px 20px", marginTop: 16 }}>
+      {heading ? <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: CHART_COLORS.primary, marginBottom: 8 }}>{heading}</div> : null}
       <div style={{ fontSize: 14, color: "var(--muted-foreground)", lineHeight: 1.8 }}>{children}</div>
     </div>
   );
@@ -163,9 +181,9 @@ function ChartCard({ label, note, children }: { label?: string; note?: ReactNode
 
 function TableRow({ label, value, highlight }: { label: string; value: string; highlight?: boolean }): React.JSX.Element {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 18px", borderBottom: `1px solid ${"var(--border)"}`, fontSize: 13, color: highlight ? "#3b82f6" : "var(--muted-foreground)", background: highlight ? `${"#3b82f6"}08` : "transparent" }}>
+    <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 18px", borderBottom: `1px solid ${"var(--border)"}`, fontSize: 13, color: highlight ? CHART_COLORS.primary : "var(--muted-foreground)", background: highlight ? `${CHART_COLORS.primary}08` : "transparent" }}>
       <span>{label}</span>
-      <span style={{ fontFamily: FONT_MONO, color: highlight ? "#3b82f6" : "var(--foreground)" }}>{value}</span>
+      <span style={{ fontFamily: FONT_MONO, color: highlight ? CHART_COLORS.primary : "var(--foreground)" }}>{value}</span>
     </div>
   );
 }
@@ -205,13 +223,13 @@ export default function HousingPriceReport(props: WorkPageProps) {
       {/* ── HERO ── */}
       <div style={{ borderBottom: `1px solid ${"var(--border)"}`, padding: "72px 0 56px", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: `radial-gradient(circle at 1px 1px, ${"var(--border)"} 1px, transparent 0)`, backgroundSize: "28px 28px", opacity: 0.5 }} />
-        <div style={{ position: "absolute", top: "-20%", left: "60%", width: 600, height: 600, background: `radial-gradient(ellipse, ${"#f59e0b"}08 0%, transparent 65%)`, pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: "-20%", left: "60%", width: 600, height: 600, background: `radial-gradient(ellipse, ${CHART_COLORS.warning}08 0%, transparent 65%)`, pointerEvents: "none" }} />
         <div style={{ maxWidth: 980, margin: "0 auto", padding: "0 40px", position: "relative" }}>
-          <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: "#3b82f6", marginBottom: 20 }}>
+          <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: CHART_COLORS.primary, marginBottom: 20 }}>
             Machine Learning · Regression · Feature Engineering · Gradient Boosting
           </div>
           <h1 style={{ fontFamily: FONT_SANS, fontSize: "clamp(32px, 4.5vw, 58px)", fontWeight: 700, margin: "0 0 16px", lineHeight: 1.15, color: "var(--foreground)", letterSpacing: -0.02 }}>
-            Ames Housing:<br /><span style={{ color: "#3b82f6" }}>Predicting Sale Price</span>
+            Ames Housing:<br /><span style={{ color: CHART_COLORS.primary }}>Predicting Sale Price</span>
           </h1>
           <p style={{ fontSize: 17, color: "var(--muted-foreground)", maxWidth: 680, lineHeight: 1.8, margin: "0 0 14px" }}>
             A regression project on the Ames Housing dataset, predicting residential sale prices from 80+ structural, locational, and quality features. The central question I set out to answer: <strong style={{ color: "var(--foreground)" }}>how much predictive power can be extracted from systematic feature engineering versus throwing all raw variables at a gradient booster?</strong>
@@ -221,7 +239,7 @@ export default function HousingPriceReport(props: WorkPageProps) {
           </p>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             {["Python", "XGBoost", "CatBoost", "scikit-learn", "pandas", "seaborn", "RandomizedSearchCV"].map(t => (
-              <span key={t} style={{ fontFamily: FONT_MONO, fontSize: 11, background: "var(--card)", border: `1px solid ${"var(--border)"}`, color: "#06b6d4", padding: "5px 12px", borderRadius: 20 }}>{t}</span>
+              <span key={t} style={{ fontFamily: FONT_MONO, fontSize: 11, background: "var(--card)", border: `1px solid ${"var(--border)"}`, color: CHART_COLORS.secondary, padding: "5px 12px", borderRadius: 20 }}>{t}</span>
             ))}
           </div>
         </div>
@@ -233,8 +251,8 @@ export default function HousingPriceReport(props: WorkPageProps) {
         <div id="housing-kpis" className="scroll-mt-28" style={{ display: "flex", gap: 16, marginBottom: 80, flexWrap: "wrap" }}>
           <KPI label="Properties analysed" value="1,460" sub="Ames, Iowa residential sales from the Kaggle competition dataset" />
           <KPI label="Best R² Score" value="92.6%" sub="XGBoost on 23 hand-selected and engineered features, post-tuning" color={P.purple} />
-          <KPI label="Baseline R²" value="87.4%" sub="Linear Regression on the same ordinal-encoded feature set" color={"#f59e0b"} />
-          <KPI label="Feature reduction" value="80 → 23" sub="Raw features reduced to a curated subset without performance loss" color={"#06b6d4"} />
+          <KPI label="Baseline R²" value="87.4%" sub="Linear Regression on the same ordinal-encoded feature set" color={CHART_COLORS.warning} />
+          <KPI label="Feature reduction" value="80 → 23" sub="Raw features reduced to a curated subset without performance loss" color={CHART_COLORS.secondary} />
         </div>
 
         {/* ══ 01 THE PROBLEM ══ */}
@@ -272,16 +290,16 @@ export default function HousingPriceReport(props: WorkPageProps) {
             The most important thing I noticed during cleaning is that the vast majority of missing values in this dataset are not missing data at all. They are semantically meaningful absences. A null in <Mono>GarageType</Mono> does not mean the garage type was not recorded; it means the property has no garage. The same logic applies to basements, fireplaces, pools, fences, and alley access. Treating these as missing would introduce a false signal into the model.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-            <Callout color={"#06b6d4"} icon="✓">
+            <Callout color={CHART_COLORS.secondary} icon="✓">
               <strong style={{ color: "var(--foreground)" }}>Absence-aware imputation.</strong> I filled all null values in feature groups where absence is meaningful (garage, basement, pool, fireplace, fence, alley) with explicit string labels such as <Mono>No Garage</Mono>, <Mono>No Basement</Mono>, and <Mono>No Pool</Mono>. This preserves the real-world information instead of discarding it via zero-fill or median imputation.
             </Callout>
-            <Callout color={"#f59e0b"} icon="⚠">
+            <Callout color={CHART_COLORS.warning} icon="⚠">
               <strong style={{ color: "var(--foreground)" }}>LotFrontage: an imputation limitation.</strong> 259 properties (17.7%) have no recorded <Mono>LotFrontage</Mono>. I filled these with 0. A more rigorous alternative would have been neighbourhood-median imputation, since frontage is highly correlated with lot configuration and zoning. The zero-fill likely introduces a potential downward bias on this feature for imputed rows.
             </Callout>
             <Callout color={P.purple} icon="①">
               <strong style={{ color: "var(--foreground)" }}>Categorical encoding strategy.</strong> I mapped ordinal features such as <Mono>ExterQual</Mono>, <Mono>BsmtQual</Mono>, <Mono>KitchenQual</Mono>, and garage/basement condition to integer scales (0 to 5) reflecting their documented quality ladder. Nominal features with many categories were either one-hot encoded or dropped in favour of engineered alternatives.
             </Callout>
-            <Callout color={"#06b6d4"} icon="②">
+            <Callout color={CHART_COLORS.secondary} icon="②">
               <strong style={{ color: "var(--foreground)" }}>Near-constant features flagged for removal.</strong> I identified two features as carrying essentially no discriminative signal. <Mono>Utilities</Mono> is <Mono>AllPub</Mono> for 99.9% of properties. <Mono>PoolQC</Mono> is <Mono>No Pool</Mono> for 99.5%. I dropped both from the curated feature set, as near-zero variance features can add noise without benefit in a gradient boosting context.
             </Callout>
           </div>
@@ -296,7 +314,7 @@ export default function HousingPriceReport(props: WorkPageProps) {
 
           <ChartCard
             label="Chart 1 : Missing value counts by feature (top 9 affected columns)"
-            note={<>The column with the most missing values, <strong style={{ color: "#ef4444" }}>PoolQC</strong>, is missing for 99.5% of the dataset because almost no properties have a pool. <strong style={{ color: "#f59e0b" }}>MiscFeature</strong> follows at 96.3%. These aren't data quality problems, they're distributional facts about the dataset which I chose to preserve rather than patch.</>}
+            note={<>The column with the most missing values, <strong style={{ color: CHART_COLORS.danger }}>PoolQC</strong>, is missing for 99.5% of the dataset because almost no properties have a pool. <strong style={{ color: CHART_COLORS.warning }}>MiscFeature</strong> follows at 96.3%. These aren't data quality problems, they're distributional facts about the dataset which I chose to preserve rather than patch.</>}
           >
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={missingValues} layout="vertical" barCategoryGap="28%">
@@ -325,7 +343,7 @@ export default function HousingPriceReport(props: WorkPageProps) {
           {/* Chart 2: Sale Condition */}
           <ChartCard
             label="Chart 2 : Mean sale price by sale condition ($K)"
-            note={<>Partial sales, typically new construction sold before completion average <strong style={{ color: P.purple }}>$272K</strong>, which is $97K above normal arm's-length transactions at $175K. Abnormal sales average <strong style={{ color: "#ef4444" }}>$147K</strong>, considerably below normal. I found sale condition worth flagging in the model given how strongly it stratifies price.</>}
+            note={<>Partial sales, typically new construction sold before completion average <strong style={{ color: P.purple }}>$272K</strong>, which is $97K above normal arm's-length transactions at $175K. Abnormal sales average <strong style={{ color: CHART_COLORS.danger }}>$147K</strong>, considerably below normal. I found sale condition worth flagging in the model given how strongly it stratifies price.</>}
           >
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={saleConditionPrices} barCategoryGap="32%">
@@ -355,7 +373,7 @@ export default function HousingPriceReport(props: WorkPageProps) {
                 <YAxis tick={{ fill: "var(--muted-foreground)", fontSize: 11, fontFamily: "JetBrains Mono" }} axisLine={false} tickLine={false} />
                 <Tooltip content={<Tip />} cursor={{ fill: "#ffffff06" }} />
                 <Legend wrapperStyle={{ fontSize: 11, fontFamily: "JetBrains Mono", color: "var(--muted-foreground)" }} />
-                <Bar dataKey="PConc"  name="PConc"  fill={"#3b82f6"} radius={[4, 4, 0, 0]} />
+                <Bar dataKey="PConc"  name="PConc"  fill={CHART_COLORS.primary} radius={[4, 4, 0, 0]} />
                 <Bar dataKey="CBlock" name="CBlock" fill={"var(--muted-foreground)"}  radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -368,7 +386,7 @@ export default function HousingPriceReport(props: WorkPageProps) {
           <div style={{ marginTop: 20 }}>
             <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
               {LOT_TABS.map((tab) => (
-                <button key={tab} type="button" onClick={() => setActiveLotTab(tab)} style={{ fontFamily: FONT_MONO, fontSize: 11, padding: "8px 18px", borderRadius: 6, cursor: "pointer", background: activeLotTab === tab ? "#3b82f6" : "var(--card)", color: activeLotTab === tab ? "var(--background)" : "var(--muted-foreground)", border: `1px solid ${activeLotTab === tab ? "#3b82f6" : "var(--border)"}`, transition: "all 0.15s" }}>
+                <button key={tab} type="button" onClick={() => setActiveLotTab(tab)} style={{ fontFamily: FONT_MONO, fontSize: 11, padding: "8px 18px", borderRadius: 6, cursor: "pointer", background: activeLotTab === tab ? CHART_COLORS.primary : "var(--card)", color: activeLotTab === tab ? P.bg : "var(--muted-foreground)", border: `1px solid ${activeLotTab === tab ? CHART_COLORS.primary : "var(--border)"}`, transition: "all 0.15s" }}>
                   {tab === "avgPrice" ? "Price" : tab === "lotArea" ? "Lot Area" : tab === "pricePerSF" ? "Price / sqft" : "Quality"}
                 </button>
               ))}
@@ -382,7 +400,7 @@ export default function HousingPriceReport(props: WorkPageProps) {
                   <Tooltip content={<Tip />} cursor={{ fill: "#ffffff06" }} />
                   <Bar dataKey={activeLotTab} name={LOT_TAB_LABELS[activeLotTab]} radius={[5, 5, 0, 0]}>
                     {lotShapeData.map((d, i) => (
-                      <Cell key={i} fill={["#ef4444", "#f59e0b", "#06b6d4", "#06b6d4"][i]} />
+                      <Cell key={i} fill={[CHART_COLORS.danger, CHART_COLORS.warning, CHART_COLORS.secondary, CHART_COLORS.secondary][i]} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -423,15 +441,15 @@ export default function HousingPriceReport(props: WorkPageProps) {
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
             {[
-              { name: "BsmtHeight", why: "Rather than ordinal-encoding BsmtQual directly, I approximated basement ceiling height numerically (Ex: 100in, Gd: 95in, TA: 85in, Fa: 75in, Po: 65in, None: 55in). This provides a continuous measure of basement utility rather than a rank.", color: "#06b6d4" },
-              { name: "HouseAge", why: "YrSold minus YearBuilt. A direct continuous measure of property age at time of sale. I found this more informative than YearBuilt alone because two houses built in the same year but sold 20 years apart are in very different market conditions.", color: "#06b6d4" },
-              { name: "PorchArea", why: "Sum of OpenPorchSF, EnclosedPorch, 3SsnPorch, and ScreenPorch. I collapsed four separate porch columns into a single outdoor living space signal, with a binary hasPorch flag to preserve the presence/absence distinction.", color: "#f59e0b" },
-              { name: "TotalBathrooms", why: "Full bathrooms plus half-weight for half-baths, across both floors. This produces a single continuous measure of bathroom provision rather than four partially correlated columns, reducing multicollinearity.", color: "#f59e0b" },
-              { name: "PConc_in_Early_Era", why: "Binary flag: poured concrete foundation on a pre-1940s build. Rare combination (fewer than 5% of the dataset) that likely signals renovation or structural upgrade. I was motivated to engineer this by the confounding I observed between foundation type and construction decade.", color: "#ef4444" },
-              { name: "PConc_in_Modern_Era", why: "Binary flag: poured concrete foundation on a post-1980 build which is the expected condition for modern construction. Separating this from the early-era case allows the model to treat them as distinct signals rather than conflating old and new PConc.", color: "#ef4444" },
+              { name: "BsmtHeight", why: "Rather than ordinal-encoding BsmtQual directly, I approximated basement ceiling height numerically (Ex: 100in, Gd: 95in, TA: 85in, Fa: 75in, Po: 65in, None: 55in). This provides a continuous measure of basement utility rather than a rank.", color: CHART_COLORS.secondary },
+              { name: "HouseAge", why: "YrSold minus YearBuilt. A direct continuous measure of property age at time of sale. I found this more informative than YearBuilt alone because two houses built in the same year but sold 20 years apart are in very different market conditions.", color: CHART_COLORS.secondary },
+              { name: "PorchArea", why: "Sum of OpenPorchSF, EnclosedPorch, 3SsnPorch, and ScreenPorch. I collapsed four separate porch columns into a single outdoor living space signal, with a binary hasPorch flag to preserve the presence/absence distinction.", color: CHART_COLORS.warning },
+              { name: "TotalBathrooms", why: "Full bathrooms plus half-weight for half-baths, across both floors. This produces a single continuous measure of bathroom provision rather than four partially correlated columns, reducing multicollinearity.", color: CHART_COLORS.warning },
+              { name: "PConc_in_Early_Era", why: "Binary flag: poured concrete foundation on a pre-1940s build. Rare combination (fewer than 5% of the dataset) that likely signals renovation or structural upgrade. I was motivated to engineer this by the confounding I observed between foundation type and construction decade.", color: CHART_COLORS.danger },
+              { name: "PConc_in_Modern_Era", why: "Binary flag: poured concrete foundation on a post-1980 build which is the expected condition for modern construction. Separating this from the early-era case allows the model to treat them as distinct signals rather than conflating old and new PConc.", color: CHART_COLORS.danger },
               { name: "exterior_1_age_score", why: "House age divided by an exterior material durability score (Stone: 1.0, BrkFace: 0.9, VinylSd: 0.6, WdShing: 0.4, AsbShng: 0.3). Higher values indicate more wear relative to the material's expected lifespan. I combined three raw columns into one continuous maintenance-burden signal.", color: P.purple },
-              { name: "NeighborhoodAvgPrice", why: "Target-encoded neighbourhood using training-set average sale prices only. Neighbourhood is the strongest locational signal in the dataset, and I computed this post-split to prevent leakage, converting it into a continuous measure directly aligned with the prediction target.", color: "#3b82f6" },
-              { name: "is_single_fam_detached", why: "Binary flag for BldgType equal to 1Fam, which accounts for 83.6% of the dataset. I found single-family detached homes command different price dynamics from duplexes and townhouses. The flag separates these rather than relying on OHE of a 5-level categorical.", color: "#3b82f6" },
+              { name: "NeighborhoodAvgPrice", why: "Target-encoded neighbourhood using training-set average sale prices only. Neighbourhood is the strongest locational signal in the dataset, and I computed this post-split to prevent leakage, converting it into a continuous measure directly aligned with the prediction target.", color: CHART_COLORS.primary },
+              { name: "is_single_fam_detached", why: "Binary flag for BldgType equal to 1Fam, which accounts for 83.6% of the dataset. I found single-family detached homes command different price dynamics from duplexes and townhouses. The flag separates these rather than relying on OHE of a 5-level categorical.", color: CHART_COLORS.primary },
             ].map(f => (
               <div key={f.name} style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 10, padding: "14px 16px", borderLeft: `3px solid ${f.color}` }}>
                 <div style={{ fontFamily: FONT_MONO, fontSize: 11.5, color: f.color, marginBottom: 6 }}>{f.name}</div>
@@ -439,7 +457,7 @@ export default function HousingPriceReport(props: WorkPageProps) {
               </div>
             ))}
           </div>
-          <Callout color={"#f59e0b"} icon="⚠">
+          <Callout color={CHART_COLORS.warning} icon="⚠">
             <strong style={{ color: "var(--foreground)" }}>On the comprehensive vs curated feature sets:</strong> the 73-feature matrix includes duplicated columns (TotalBsmtSF and GarageArea appear twice due to how I concatenated the sub-dataframes). I confirmed this in cell 125, where the final column list shows these duplicates. The effect on model performance appears minimal given XGBoost's robustness to redundant features, but it's a code artifact I'd clean up before any production use.
           </Callout>
         </div>
@@ -453,7 +471,7 @@ export default function HousingPriceReport(props: WorkPageProps) {
 
           <ChartCard
             label="Chart 5 : R² score by model configuration (test set, 20% holdout)"
-            note={<>Linear Regression establishes my baseline at <strong style={{ color: "#ef4444" }}>87.4%</strong>. Random Forest adds 2 points at <strong style={{ color: "#f59e0b" }}>89.5%</strong>. The two XGBoost configurations are close, with the curated 23-feature variant edging the 73-feature version by 0.4 points. CatBoost, without hyperparameter tuning, achieves <strong style={{ color: "#06b6d4" }}>91.4%</strong>.</>}
+            note={<>Linear Regression establishes my baseline at <strong style={{ color: CHART_COLORS.danger }}>87.4%</strong>. Random Forest adds 2 points at <strong style={{ color: CHART_COLORS.warning }}>89.5%</strong>. The two XGBoost configurations are close, with the curated 23-feature variant edging the 73-feature version by 0.4 points. CatBoost, without hyperparameter tuning, achieves <strong style={{ color: CHART_COLORS.secondary }}>91.4%</strong>.</>}
           >
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={modelComparison} barCategoryGap="32%">
@@ -481,7 +499,7 @@ export default function HousingPriceReport(props: WorkPageProps) {
               { name: "CatBoost",                  feat: "23 selected", r2: "91.4%", note: "Untuned, iterations=500, depth=4", hl: false },
               { name: "XGBoost + target enc. ★",  feat: "23 selected", r2: "92.6%", note: "Post-tuning: n=800, depth=3, lr=0.05", hl: true  },
             ].map(({ name, feat, r2, note, hl }) => (
-              <div key={name} style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 2fr", padding: "12px 18px", fontSize: 13, color: hl ? "#3b82f6" : "var(--muted-foreground)", background: hl ? `${"#3b82f6"}08` : "transparent", borderBottom: `1px solid ${"var(--border)"}`, fontFamily: hl ? FONT_MONO : "inherit" }}>
+              <div key={name} style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 2fr", padding: "12px 18px", fontSize: 13, color: hl ? CHART_COLORS.primary : "var(--muted-foreground)", background: hl ? `${CHART_COLORS.primary}08` : "transparent", borderBottom: `1px solid ${"var(--border)"}`, fontFamily: hl ? FONT_MONO : "inherit" }}>
                 <span>{name}</span><span>{feat}</span><span>{r2}</span><span style={{ fontSize: 12 }}>{note}</span>
               </div>
             ))}
@@ -513,7 +531,7 @@ export default function HousingPriceReport(props: WorkPageProps) {
                 <Tooltip content={<Tip />} cursor={{ fill: "#ffffff06" }} />
                 <Bar dataKey="importance" name="Importance %" radius={[0, 5, 5, 0]}>
                   {featureImportance.map((d, i) => (
-                    <Cell key={i} fill={d.importance > 10 ? "#3b82f6" : d.importance > 5 ? "#f59e0b" : "#06b6d4"} />
+                    <Cell key={i} fill={d.importance > 10 ? CHART_COLORS.primary : d.importance > 5 ? CHART_COLORS.warning : CHART_COLORS.secondary} />
                   ))}
                 </Bar>
               </BarChart>
@@ -522,9 +540,9 @@ export default function HousingPriceReport(props: WorkPageProps) {
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginTop: 20 }}>
             {[
-              { title: "OverallQual at 62.2% is a concentration risk I need to flag", color: "#3b82f6", body: "A single feature accounting for nearly two-thirds of model importance is both informative and concerning. It tells me the model is heavily reliant on a single 10-point rating that is itself a human judgment. If that rating is inconsistently applied across appraisers or neighbourhoods, model performance may degrade on out-of-distribution data in ways that R² on the test set would not reveal." },
-              { title: "GrLivArea at 12.7% confirms size as the second axis", color: "#f59e0b", body: "Above-grade living area is the strongest purely dimensional predictor I found, outperforming TotalBsmtSF, 1stFlrSF, and 2ndFlrSF individually. This is consistent with real-estate market intuition: buyers primarily price on usable, above-ground, finished space. My engineered BsmtHeight feature's appearance at rank 10 suggests basement quality adds marginal signal beyond raw area." },
-              { title: "BsmtHeight and exterior_1_age_score validate my engineering approach", color: "#06b6d4", body: "Two features I engineered appear in the top 10, which validates my hypothesis that domain-informed transformations can extract signal that raw columns alone don't surface. exterior_1_age_score (rank 11 in the full importance table) combines age and material durability into a single wear-burden signal. Its presence tells me the model found it informative, though the specific durability weights are domain assumptions rather than data-derived values." },
+              { title: "OverallQual at 62.2% is a concentration risk I need to flag", color: CHART_COLORS.primary, body: "A single feature accounting for nearly two-thirds of model importance is both informative and concerning. It tells me the model is heavily reliant on a single 10-point rating that is itself a human judgment. If that rating is inconsistently applied across appraisers or neighbourhoods, model performance may degrade on out-of-distribution data in ways that R² on the test set would not reveal." },
+              { title: "GrLivArea at 12.7% confirms size as the second axis", color: CHART_COLORS.warning, body: "Above-grade living area is the strongest purely dimensional predictor I found, outperforming TotalBsmtSF, 1stFlrSF, and 2ndFlrSF individually. This is consistent with real-estate market intuition: buyers primarily price on usable, above-ground, finished space. My engineered BsmtHeight feature's appearance at rank 10 suggests basement quality adds marginal signal beyond raw area." },
+              { title: "BsmtHeight and exterior_1_age_score validate my engineering approach", color: CHART_COLORS.secondary, body: "Two features I engineered appear in the top 10, which validates my hypothesis that domain-informed transformations can extract signal that raw columns alone don't surface. exterior_1_age_score (rank 11 in the full importance table) combines age and material durability into a single wear-burden signal. Its presence tells me the model found it informative, though the specific durability weights are domain assumptions rather than data-derived values." },
             ].map(({ title, color, body }) => (
               <div key={title} style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 10, padding: "16px 18px", borderTop: `3px solid ${color}` }}>
                 <strong style={{ fontSize: 13.5, color: "var(--foreground)", display: "block", marginBottom: 10, lineHeight: 1.4 }}>{title}</strong>
@@ -565,7 +583,7 @@ export default function HousingPriceReport(props: WorkPageProps) {
               <TableRow label="Gap (CV to test)"    value="+4.3 pts" />
             </div>
           </div>
-          <Callout color={"#f59e0b"} icon="⚠">
+          <Callout color={CHART_COLORS.warning} icon="⚠">
             <strong style={{ color: "var(--foreground)" }}>The CV score (88.3%) is notably lower than the test R² (92.6%).</strong> A positive gap of this magnitude is unusual, and I want to flag it honestly. Typical cross-validation scores slightly exceed test scores because the full training set is used for the final fit. The inverse here may indicate that the random 80/20 test split captured a particularly "easy" subset of the data, or that my target encoding was computed differently between the CV folds and the final train/test split, creating a mild form of leakage. This warrants further investigation before treating 92.6% as a reliable out-of-sample estimate.
           </Callout>
         </div>
@@ -575,7 +593,7 @@ export default function HousingPriceReport(props: WorkPageProps) {
           <Section n={9} title="Limitations & What Comes Next" />
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
             <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 12, padding: "24px" }}>
-              <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: "#ef4444", marginBottom: 18 }}>Known limitations</div>
+              <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: CHART_COLORS.danger, marginBottom: 18 }}>Known limitations</div>
               {[
                 { title: "Positive CV to test gap raises leakage concerns", body: "The best CV R² of 88.3% being substantially below the test R² of 92.6% is an atypical result that I can't fully explain. My neighbourhood target encoding was implemented post-split for the final fit but may not have been applied consistently across all CV folds. If a fold's validation set saw neighbourhood averages computed from data that included those same rows, a mild leakage exists. I'd want to verify this by implementing target encoding strictly within each CV fold." },
                 { title: "Duplicate columns in the comprehensive feature matrix", body: "The concat operation I used to assemble the 73-feature matrix from sub-dataframes resulted in TotalBsmtSF and GarageArea appearing twice. I confirmed this in the column list output in cell 125. While XGBoost is generally tolerant of redundant features, I'd resolve this before any production use or further ensemble work." },
@@ -589,7 +607,7 @@ export default function HousingPriceReport(props: WorkPageProps) {
               ))}
             </div>
             <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 12, padding: "24px" }}>
-              <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: "#06b6d4", marginBottom: 18 }}>High-value next steps</div>
+              <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: CHART_COLORS.secondary, marginBottom: 18 }}>High-value next steps</div>
               {[
                 { title: "Log-transform the target variable", body: "SalePrice has a right-skewed distribution typical of real-estate data. Log-transforming the target before training would make the model optimise on percentage errors rather than absolute errors, which is generally more appropriate for a price prediction task where a $10K error on a $100K property is very different from the same error on a $500K property. RMSLE is the standard metric for Kaggle housing competitions for this reason." },
                 { title: "Stacking XGBoost with LightGBM and Ridge", body: "A level-1 stack using out-of-fold predictions from XGBoost, LightGBM, and a Ridge regression meta-learner could capture complementary signal: XGBoost and LightGBM handle nonlinear interactions while Ridge smooths the final prediction surface. I'd expect a +1 to 2% R² improvement from this." },

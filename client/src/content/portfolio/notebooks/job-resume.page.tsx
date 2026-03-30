@@ -5,27 +5,45 @@ import {
 } from "recharts";
 
 import { FONT_MONO, FONT_SANS } from "./notebookTheme";
+
+// ── STANDARD CHART COLORS ──────────────────────────────────────────────────
+
+const CHART_COLORS = {
+  primary: "#3b82f6",    // Blue
+  primaryDim: "#2563eb", // Darker blue for borders on primary accents
+  success: "#22c55e",    // Green
+  warning: "#f59e0b",    // Amber/Orange
+  danger: "#ef4444",     // Red
+  secondary: "#06b6d4",  // Cyan
+};
+
+const P = {
+  purple: "#a855f7",
+  bg: "var(--background)",
+} as const;
+
+
 import type { WorkPageProps } from "../workPageTypes";
 import { WorkReportShell } from "@/components/work/WorkReportShell";
 
-const P = { purple: "#a855f7" } as const;
+
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
 
 const f1Progression = [
-  { exp: "Exp 1", label: "Handcrafted\n10-D (LR)", f1: 60, fill: "#ef4444" },
-  { exp: "Exp 2", label: "Frozen MiniLM\n1536-D (LR)", f1: 69, fill: "#f59e0b" },
-  { exp: "Exp 3", label: "Fine-tuned\nMiniLM (LR)", f1: 84, fill: "#f59e0b" },
-  { exp: "Exp 4", label: "28-D Features\n(LR)", f1: 84, fill: "#06b6d4" },
-  { exp: "Exp 5", label: "28-D Features\n+ MLP ★", f1: 88, fill: "#06b6d4" },
+  { exp: "Exp 1", label: "Handcrafted\n10-D (LR)", f1: 60, fill: CHART_COLORS.danger },
+  { exp: "Exp 2", label: "Frozen MiniLM\n1536-D (LR)", f1: 69, fill: CHART_COLORS.warning },
+  { exp: "Exp 3", label: "Fine-tuned\nMiniLM (LR)", f1: 84, fill: CHART_COLORS.warning },
+  { exp: "Exp 4", label: "28-D Features\n(LR)", f1: 84, fill: CHART_COLORS.secondary },
+  { exp: "Exp 5", label: "28-D Features\n+ MLP ★", f1: 88, fill: CHART_COLORS.secondary },
 ];
 
 const classifierComparison = [
-  { model: "MLP ★",               f1: 88, fill: "#06b6d4" },
-  { model: "XGBoost",             f1: 86, fill: "#f59e0b" },
-  { model: "LightGBM",            f1: 86, fill: "#f59e0b" },
-  { model: "GradBoost",           f1: 84, fill: "#06b6d4" },
-  { model: "HistGradBoost",       f1: 84, fill: "#06b6d4" },
+  { model: "MLP ★",               f1: 88, fill: CHART_COLORS.secondary },
+  { model: "XGBoost",             f1: 86, fill: CHART_COLORS.warning },
+  { model: "LightGBM",            f1: 86, fill: CHART_COLORS.warning },
+  { model: "GradBoost",           f1: 84, fill: CHART_COLORS.secondary },
+  { model: "HistGradBoost",       f1: 84, fill: CHART_COLORS.secondary },
   { model: "RandomForest",        f1: 83, fill: "var(--muted-foreground)" },
   { model: "CatBoost",            f1: 83, fill: "var(--muted-foreground)" },
 ];
@@ -39,10 +57,10 @@ const featureDimensions = [
 ];
 
 const gainBreakdown = [
-  { source: "Frozen MiniLM (Exp 2 vs 1)", gain: 9, fill: "#f59e0b" },
-  { source: "Fine-tuning (Exp 3 vs 2)",   gain: 15, fill: "#f59e0b" },
+  { source: "Frozen MiniLM (Exp 2 vs 1)", gain: 9, fill: CHART_COLORS.warning },
+  { source: "Fine-tuning (Exp 3 vs 2)",   gain: 15, fill: CHART_COLORS.warning },
   { source: "Structured features",        gain: 0, fill: "var(--muted-foreground)" },
-  { source: "Nonlinear classifier",       gain: 4, fill: "#06b6d4" },
+  { source: "Nonlinear classifier",       gain: 4, fill: CHART_COLORS.secondary },
 ];
 
 // ── SHARED UI ─────────────────────────────────────────────────────────────────
@@ -65,7 +83,7 @@ function Tip({
   if (!active || !payload?.length) return null;
   return (
     <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, padding: "10px 14px", borderRadius: 8, fontSize: 13, color: "var(--foreground)", fontFamily: FONT_MONO }}>
-      <div style={{ color: "#3b82f6", marginBottom: 4 }}>{label}</div>
+      <div style={{ color: CHART_COLORS.primary, marginBottom: 4 }}>{label}</div>
       {payload.map((p, i) => (
         <div key={i} style={{ color: p.color || "var(--foreground)" }}>
           {p.name}:{" "}
@@ -80,7 +98,7 @@ function Section({ n, title }: { n: number; title: string }): React.JSX.Element 
   const num = String(n).padStart(2, "0");
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 28 }}>
-      <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: "#3b82f6", border: `1px solid ${"#3b82f6"}`, padding: "2px 8px", borderRadius: 4, whiteSpace: "nowrap" }}>
+      <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: CHART_COLORS.primary, border: `1px solid ${CHART_COLORS.primaryDim}`, padding: "2px 8px", borderRadius: 4, whiteSpace: "nowrap" }}>
         {num}
       </span>
       <h2 style={{ fontFamily: FONT_SANS, fontSize: 24, color: "var(--foreground)", margin: 0, fontWeight: 700, letterSpacing: -0.5, whiteSpace: "nowrap" }}>{title}</h2>
@@ -91,9 +109,9 @@ function Section({ n, title }: { n: number; title: string }): React.JSX.Element 
 
 function KPI({ label, value, sub, color }: { label: string; value: ReactNode; sub?: string; color?: string }): React.JSX.Element {
   return (
-    <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 12, padding: "20px 24px", flex: 1, borderTop: `3px solid ${color || "#3b82f6"}` }}>
+    <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 12, padding: "20px 24px", flex: 1, borderTop: `3px solid ${color || CHART_COLORS.primary}` }}>
       <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: "var(--muted-foreground)", marginBottom: 8 }}>{label}</div>
-      <div style={{ fontFamily: FONT_SANS, fontSize: 36, color: color || "#3b82f6", fontWeight: 900, lineHeight: 1 }}>{value}</div>
+      <div style={{ fontFamily: FONT_SANS, fontSize: 36, color: color || CHART_COLORS.primary, fontWeight: 900, lineHeight: 1 }}>{value}</div>
       {sub ? <div style={{ marginTop: 6, fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.5 }}>{sub}</div> : null}
     </div>
   );
@@ -101,11 +119,11 @@ function KPI({ label, value, sub, color }: { label: string; value: ReactNode; su
 
 function Mono({ children }: { children: ReactNode }): React.JSX.Element {
   return (
-    <code style={{ fontFamily: FONT_MONO, fontSize: 11.5, background: "var(--muted)", color: "#06b6d4", padding: "2px 7px", borderRadius: 4, border: `1px solid ${"var(--border)"}` }}>{children}</code>
+    <code style={{ fontFamily: FONT_MONO, fontSize: 11.5, background: "var(--muted)", color: CHART_COLORS.secondary, padding: "2px 7px", borderRadius: 4, border: `1px solid ${"var(--border)"}` }}>{children}</code>
   );
 }
 
-function Callout({ color = "#3b82f6", icon, children }: { color?: string; icon?: ReactNode; children: ReactNode }): React.JSX.Element {
+function Callout({ color = CHART_COLORS.primary, icon, children }: { color?: string; icon?: ReactNode; children: ReactNode }): React.JSX.Element {
   return (
     <div style={{ background: `${color}12`, border: `1px solid ${color}40`, borderRadius: 10, padding: "14px 18px", marginTop: 16, display: "flex", gap: 12, alignItems: "flex-start" }}>
       {icon ? <span style={{ fontSize: 16, flexShrink: 0, marginTop: 1 }}>{icon}</span> : null}
@@ -116,8 +134,8 @@ function Callout({ color = "#3b82f6", icon, children }: { color?: string; icon?:
 
 function AnalysisBlock({ heading, children }: { heading?: string; children: ReactNode }): React.JSX.Element {
   return (
-    <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderLeft: `3px solid ${"#3b82f6"}`, borderRadius: "0 10px 10px 0", padding: "16px 20px", marginTop: 16 }}>
-      {heading ? <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: "#3b82f6", marginBottom: 8 }}>{heading}</div> : null}
+    <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderLeft: `3px solid ${CHART_COLORS.primary}`, borderRadius: "0 10px 10px 0", padding: "16px 20px", marginTop: 16 }}>
+      {heading ? <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: CHART_COLORS.primary, marginBottom: 8 }}>{heading}</div> : null}
       <div style={{ fontSize: 14, color: "var(--muted-foreground)", lineHeight: 1.8 }}>{children}</div>
     </div>
   );
@@ -135,9 +153,9 @@ function ChartCard({ label, note, children }: { label?: string; note?: ReactNode
 
 function TableRow({ label, value, highlight }: { label: string; value: string; highlight?: boolean }): React.JSX.Element {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 18px", borderBottom: `1px solid ${"var(--border)"}`, fontSize: 13, color: highlight ? "#3b82f6" : "var(--muted-foreground)", background: highlight ? `${"#3b82f6"}08` : "transparent" }}>
+    <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 18px", borderBottom: `1px solid ${"var(--border)"}`, fontSize: 13, color: highlight ? CHART_COLORS.primary : "var(--muted-foreground)", background: highlight ? `${CHART_COLORS.primary}08` : "transparent" }}>
       <span>{label}</span>
-      <span style={{ fontFamily: FONT_MONO, color: highlight ? "#3b82f6" : "var(--foreground)" }}>{value}</span>
+      <span style={{ fontFamily: FONT_MONO, color: highlight ? CHART_COLORS.primary : "var(--foreground)" }}>{value}</span>
     </div>
   );
 }
@@ -163,7 +181,7 @@ const expDetails: Record<ExpTab, { title: string; dim: string; f1: string; color
     title: "Handcrafted 10-D Baseline",
     dim: "10 features",
     f1: "60%",
-    color: "#ef4444",
+    color: CHART_COLORS.danger,
     body: "I built a shallow feature vector from basic text statistics and coarse semantic similarity: cosine similarity between generic sentence embeddings, embedding norms, mean and variance of embedding components, and token counts for both resume and job description. No task-specific learning was involved.",
     why: "This experiment establishes a performance floor. An F1 of 60% tells me that basic structural properties of text carry some compatibility signal, but they're far too coarse to capture what actually makes a candidate a good fit for a role.",
   },
@@ -171,7 +189,7 @@ const expDetails: Record<ExpTab, { title: string; dim: string; f1: string; color
     title: "Frozen MiniLM + 1536-D Interactions",
     dim: "1536 features",
     f1: "69%",
-    color: "#f59e0b",
+    color: CHART_COLORS.warning,
     body: "I used a pretrained MiniLM encoder to produce 384-dimensional embeddings for both the resume and the job description. These were combined into a 1536-dimensional interaction vector by concatenating the raw embeddings, their absolute difference, and their elementwise product. The encoder was frozen throughout.",
     why: "The jump from 60% to 69% told me that general-purpose transformer embeddings encode meaningfully richer semantic structure than surface text statistics. The absolute difference component may capture mismatches between skills and requirements, while the elementwise product highlights dimensions where both texts strongly agree.",
   },
@@ -179,7 +197,7 @@ const expDetails: Record<ExpTab, { title: string; dim: string; f1: string; color
     title: "Fine-Tuned MiniLM Bi-Encoder",
     dim: "1536 features",
     f1: "84%",
-    color: "#3b82f6",
+    color: CHART_COLORS.primary,
     body: "I fine-tuned the MiniLM encoder on compatibility labels using a cosine similarity objective. Compatible pairs are encouraged to have embeddings close together; incompatible pairs are pushed apart with a margin-based loss. The downstream interaction features remained identical to Experiment 2, isolating the effect of the reshaped embedding space.",
     why: "The F1 jump from 69% to 84% under a fixed classifier and fixed feature construction is the largest single gain across my entire study. It strongly suggests that the embedding space, once reshaped around compatibility rather than general language understanding, becomes dramatically more informative. The representation was the primary bottleneck, not the classifier.",
   },
@@ -187,7 +205,7 @@ const expDetails: Record<ExpTab, { title: string; dim: string; f1: string; color
     title: "Structured 28-D Compatibility Features",
     dim: "28 features",
     f1: "≈84%",
-    color: "#06b6d4",
+    color: CHART_COLORS.secondary,
     body: "Using spaCy noun-chunk extraction and regular expressions, I derived structured compatibility signals: skill overlap, Jaccard similarity between skill sets, the gap between required and observed years of experience, education-level alignment, and sentence-level similarity scores from the fine-tuned bi-encoder. These were condensed into a 28-dimensional, human-interpretable feature vector.",
     why: "Adding structured features under the same linear classifier produced no significant gain. My read is that the information is largely already captured by the fine-tuned embeddings, or that the relationships between these structured features are inherently nonlinear in ways a logistic regression boundary can't exploit.",
   },
@@ -212,13 +230,13 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
       {/* ── HERO ── */}
       <div style={{ borderBottom: `1px solid ${"var(--border)"}`, padding: "72px 0 56px", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: `radial-gradient(circle at 1px 1px, ${"var(--border)"} 1px, transparent 0)`, backgroundSize: "28px 28px", opacity: 0.5 }} />
-        <div style={{ position: "absolute", top: "-20%", left: "60%", width: 600, height: 600, background: `radial-gradient(ellipse, ${"#06b6d4"}08 0%, transparent 65%)`, pointerEvents: "none" }} />
+        <div style={{ position: "absolute", top: "-20%", left: "60%", width: 600, height: 600, background: `radial-gradient(ellipse, ${CHART_COLORS.secondary}08 0%, transparent 65%)`, pointerEvents: "none" }} />
         <div style={{ maxWidth: 980, margin: "0 auto", padding: "0 40px", position: "relative" }}>
-          <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: "#3b82f6", marginBottom: 20 }}>
+          <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: CHART_COLORS.primary, marginBottom: 20 }}>
             NLP · Representation Learning · Binary Classification · ATS
           </div>
           <h1 style={{ fontFamily: FONT_SANS, fontSize: "clamp(32px, 4.5vw, 58px)", fontWeight: 700, margin: "0 0 16px", lineHeight: 1.15, color: "var(--foreground)", letterSpacing: -0.02 }}>
-            Resume–Job Matching:<br /><span style={{ color: "#3b82f6" }}>Representation vs. Classifier</span>
+            Resume–Job Matching:<br /><span style={{ color: CHART_COLORS.primary }}>Representation vs. Classifier</span>
           </h1>
           <p style={{ fontSize: 17, color: "var(--muted-foreground)", maxWidth: 680, lineHeight: 1.8, margin: "0 0 14px" }}>
             When an ML system improves, it's often unclear whether credit belongs to a better representation or a more expressive classifier. I built a controlled framework to answer that question in the context of Applicant Tracking Systems: <strong style={{ color: "var(--foreground)" }}>how much of the gain comes from learning better embeddings, and how much from choosing a more powerful model?</strong>
@@ -228,7 +246,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
           </p>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             {["Python", "PyTorch", "HuggingFace", "MiniLM", "spaCy", "scikit-learn", "XGBoost", "LightGBM"].map(t => (
-              <span key={t} style={{ fontFamily: FONT_MONO, fontSize: 11, background: "var(--card)", border: `1px solid ${"var(--border)"}`, color: "#06b6d4", padding: "5px 12px", borderRadius: 20 }}>{t}</span>
+              <span key={t} style={{ fontFamily: FONT_MONO, fontSize: 11, background: "var(--card)", border: `1px solid ${"var(--border)"}`, color: CHART_COLORS.secondary, padding: "5px 12px", borderRadius: 20 }}>{t}</span>
             ))}
           </div>
         </div>
@@ -240,8 +258,8 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
         <div id="rjm-kpis" className="scroll-mt-28" style={{ display: "flex", gap: 16, marginBottom: 80, flexWrap: "wrap" }}>
           <KPI label="Dataset" value="HF" sub="resume-jd-match dataset from Hugging Face, binarized to fit / no-fit labels" />
           <KPI label="Best F1-score" value="88%" sub="MLP on 28-D structured compatibility features in Experiment 5" color={P.purple} />
-          <KPI label="Representation gain" value="+24%" sub="F1 improvement from Exp 1 to Exp 3 under a fixed Logistic Regression" color={"#3b82f6"} />
-          <KPI label="Classifier gain" value="+4%" sub="Additional F1 improvement from switching LR to MLP on the same features" color={"#06b6d4"} />
+          <KPI label="Representation gain" value="+24%" sub="F1 improvement from Exp 1 to Exp 3 under a fixed Logistic Regression" color={CHART_COLORS.primary} />
+          <KPI label="Classifier gain" value="+4%" sub="Additional F1 improvement from switching LR to MLP on the same features" color={CHART_COLORS.secondary} />
         </div>
 
         {/* ══ 01 RESEARCH QUESTION ══ */}
@@ -288,10 +306,10 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
               </p>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <Callout color={"#06b6d4"} icon="①">
+              <Callout color={CHART_COLORS.secondary} icon="①">
                 <strong style={{ color: "var(--foreground)" }}>Label binarization.</strong> I collapsed the original three-way labels ("no fit", "potential fit", "good fit") to binary: anything other than "no fit" is treated as a positive match. This reflects the practical ATS decision of whether to shortlist a candidate.
               </Callout>
-              <Callout color={"#f59e0b"} icon="②">
+              <Callout color={CHART_COLORS.warning} icon="②">
                 <strong style={{ color: "var(--foreground)" }}>Punctuation restoration.</strong> Resumes in the dataset frequently lack punctuation, which may degrade sentence-embedding quality. I applied the <Mono>fullstop</Mono> model to restore these boundaries before any encoding takes place.
               </Callout>
               <Callout color={P.purple} icon="③">
@@ -311,7 +329,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
           {/* Experiment selector */}
           <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
             {EXP_TABS.map((tab) => (
-              <button key={tab} type="button" onClick={() => setActiveExp(tab)} style={{ fontFamily: FONT_MONO, fontSize: 11, padding: "8px 18px", borderRadius: 6, cursor: "pointer", background: activeExp === tab ? "#3b82f6" : "var(--card)", color: activeExp === tab ? "var(--background)" : "var(--muted-foreground)", border: `1px solid ${activeExp === tab ? "#3b82f6" : "var(--border)"}`, transition: "all 0.15s" }}>
+              <button key={tab} type="button" onClick={() => setActiveExp(tab)} style={{ fontFamily: FONT_MONO, fontSize: 11, padding: "8px 18px", borderRadius: 6, cursor: "pointer", background: activeExp === tab ? CHART_COLORS.primary : "var(--card)", color: activeExp === tab ? P.bg : "var(--muted-foreground)", border: `1px solid ${activeExp === tab ? CHART_COLORS.primary : "var(--border)"}`, transition: "all 0.15s" }}>
                 Exp {tab}
               </button>
             ))}
@@ -346,7 +364,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
             );
           })()}
 
-          <Callout color={"#3b82f6"} icon="→">
+          <Callout color={CHART_COLORS.primary} icon="→">
             <strong style={{ color: "var(--foreground)" }}>Why I used Logistic Regression as the fixed classifier.</strong> A linear model can't implicitly learn complex nonlinear interactions between features. Any performance improvement I observed across Experiments 1–4 was therefore more cleanly attributable to the quality of the representation rather than to the classifier's ability to compensate for a poor feature space.
           </Callout>
         </div>
@@ -361,7 +379,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
             <ChartCard
               label="Chart 1 : F1-score progression across experiments"
-              note={<>The sharpest jump I observed occurs between Experiment 2 and Experiment 3, where fine-tuning lifts F1 from <strong style={{ color: "#f59e0b" }}>69%</strong> to <strong style={{ color: "#3b82f6" }}>84%</strong> under the same classifier and feature construction. The final MLP closes at <strong style={{ color: P.purple }}>88%</strong>.</>}
+              note={<>The sharpest jump I observed occurs between Experiment 2 and Experiment 3, where fine-tuning lifts F1 from <strong style={{ color: CHART_COLORS.warning }}>69%</strong> to <strong style={{ color: CHART_COLORS.primary }}>84%</strong> under the same classifier and feature construction. The final MLP closes at <strong style={{ color: P.purple }}>88%</strong>.</>}
             >
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={f1Progression} barCategoryGap="35%">
@@ -382,7 +400,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
 
             <ChartCard
               label="Chart 2 : Marginal gain by source of improvement"
-              note={<>Fine-tuning the encoder accounts for roughly <strong style={{ color: "#3b82f6" }}>15%</strong> of F1 improvement, the largest single contribution I found. Using frozen embeddings adds <strong style={{ color: "#f59e0b" }}>9%</strong>, while the final nonlinear classifier contributes <strong style={{ color: P.purple }}>4%</strong>. Structured features alone add zero under a linear model.</>}
+              note={<>Fine-tuning the encoder accounts for roughly <strong style={{ color: CHART_COLORS.primary }}>15%</strong> of F1 improvement, the largest single contribution I found. Using frozen embeddings adds <strong style={{ color: CHART_COLORS.warning }}>9%</strong>, while the final nonlinear classifier contributes <strong style={{ color: P.purple }}>4%</strong>. Structured features alone add zero under a linear model.</>}
             >
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={gainBreakdown} layout="vertical" barCategoryGap="28%">
@@ -418,7 +436,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
               { name: "5: 28-D structured + RandomForest",     rep: "28-D structured",   clf: "RandomForest",  f1: "83%",  hl: false },
               { name: "5: 28-D structured + CatBoost",         rep: "28-D structured",   clf: "CatBoost",      f1: "83%",  hl: false },
             ].map(({ name, rep, clf, f1, hl }) => (
-              <div key={name} style={{ display: "grid", gridTemplateColumns: "2.5fr 1fr 1fr 1fr", padding: "12px 18px", fontSize: 13, color: hl ? "#3b82f6" : "var(--muted-foreground)", background: hl ? `${"#3b82f6"}08` : "transparent", borderBottom: `1px solid ${"var(--border)"}`, fontFamily: hl ? FONT_MONO : "inherit" }}>
+              <div key={name} style={{ display: "grid", gridTemplateColumns: "2.5fr 1fr 1fr 1fr", padding: "12px 18px", fontSize: 13, color: hl ? CHART_COLORS.primary : "var(--muted-foreground)", background: hl ? `${CHART_COLORS.primary}08` : "transparent", borderBottom: `1px solid ${"var(--border)"}`, fontFamily: hl ? FONT_MONO : "inherit" }}>
                 <span>{name}</span><span>{rep}</span><span>{clf}</span><span>{f1}</span>
               </div>
             ))}
@@ -468,9 +486,9 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
             {[
-              { icon: "📐", color: "#3b82f6", title: "Representation learning is the dominant driver", body: "Fine-tuning the MiniLM bi-encoder on compatibility labels accounts for 15% of F1 improvement under a fixed linear classifier. That is roughly three times the gain I achieved by switching to the best nonlinear classifier later. The quality of the feature space mattered far more than the sophistication of the classifier, at least up to a point." },
-              { icon: "🔧", color: "#f59e0b", title: "Fine-tuning, not frozen embeddings, was the key step", body: "Frozen MiniLM embeddings improved over my handcrafted baseline (69% vs 60%), but the representation isn't yet shaped around compatibility. Fine-tuning explicitly reshapes the embedding space so that compatible pairs cluster together and incompatible pairs are pushed apart. Which is why I saw such a much larger improvement in Experiment 3 than Experiment 2 under the same classifier." },
-              { icon: "📊", color: "#06b6d4", title: "Structured features added interpretability, not performance", body: "The 28-D structured compatibility features I built (skill overlap, experience gap, Jaccard similarity, education alignment) added human-readable signal without improving F1 under a linear classifier. When I looked at the pairplot and PCA projection of the feature space, I could see heavily overlapping, nonlinearly separable class boundaries which helps explain why logistic regression couldn't exploit these features despite them seeming intuitively informative." },
+              { icon: "📐", color: CHART_COLORS.primary, title: "Representation learning is the dominant driver", body: "Fine-tuning the MiniLM bi-encoder on compatibility labels accounts for 15% of F1 improvement under a fixed linear classifier. That is roughly three times the gain I achieved by switching to the best nonlinear classifier later. The quality of the feature space mattered far more than the sophistication of the classifier, at least up to a point." },
+              { icon: "🔧", color: CHART_COLORS.warning, title: "Fine-tuning, not frozen embeddings, was the key step", body: "Frozen MiniLM embeddings improved over my handcrafted baseline (69% vs 60%), but the representation isn't yet shaped around compatibility. Fine-tuning explicitly reshapes the embedding space so that compatible pairs cluster together and incompatible pairs are pushed apart. Which is why I saw such a much larger improvement in Experiment 3 than Experiment 2 under the same classifier." },
+              { icon: "📊", color: CHART_COLORS.secondary, title: "Structured features added interpretability, not performance", body: "The 28-D structured compatibility features I built (skill overlap, experience gap, Jaccard similarity, education alignment) added human-readable signal without improving F1 under a linear classifier. When I looked at the pairplot and PCA projection of the feature space, I could see heavily overlapping, nonlinearly separable class boundaries which helps explain why logistic regression couldn't exploit these features despite them seeming intuitively informative." },
               { icon: "🧠", color: P.purple, title: "Classifier complexity is useful, but only once the representation is ready", body: "Applying the MLP to a rich representation yielded 88% F1. Applied to the Experiment 1 feature space, a nonlinear classifier would likely have given much smaller gains. The order matters: I found that investing in representation quality first, then introducing classifier complexity, was the more efficient path in this text matching task." },
             ].map(({ icon, color, title, body }) => (
               <div key={title} style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 10, padding: "20px", borderTop: `3px solid ${color}` }}>
@@ -482,7 +500,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
               </div>
             ))}
           </div>
-          <Callout color={"#3b82f6"} icon="★">
+          <Callout color={CHART_COLORS.primary} icon="★">
             <strong style={{ color: "var(--foreground)" }}>My central takeaway:</strong> in a resume–job matching setting, the choice of representation appears to matter far more than the choice of classifier, at least until representational capacity is no longer the bottleneck. This may have practical implications for ATS system design: optimising the encoder for the task is likely to yield larger returns than trying more powerful classifiers on a poorly suited feature space.
           </Callout>
         </div>
@@ -492,7 +510,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
           <Section n={7} title="Limitations & What Comes Next" />
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
             <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 12, padding: "24px" }}>
-              <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: "#ef4444", marginBottom: 18 }}>Known limitations</div>
+              <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: CHART_COLORS.danger, marginBottom: 18 }}>Known limitations</div>
               {[
                 { title: "Single dataset with binary labels", body: "All my experiments use one dataset binarized to a fit / no-fit decision. The real hiring process involves more nuanced degrees of fit, and I'm not confident the same findings would hold on other datasets with different label distributions or domain characteristics." },
                 { title: "No fairness-aware evaluation", body: "I evaluated only predictive performance. ATS systems operating in real hiring contexts would also need to assess whether the model's predictions are systematically skewed by demographic signals that may be present in resume text which is something my framework doesn't address." },
@@ -506,7 +524,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
               ))}
             </div>
             <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 12, padding: "24px" }}>
-              <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: "#06b6d4", marginBottom: 18 }}>High-value next steps</div>
+              <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: CHART_COLORS.secondary, marginBottom: 18 }}>High-value next steps</div>
               {[
                 { title: "Multi-level compatibility scoring", body: "Restoring the original three-way label (no fit / potential fit / good fit) as an ordinal prediction task could make the system more useful in practice, where recruiters benefit from ranked shortlists rather than binary gates." },
                 { title: "Cross-domain generalization", body: "Testing the same experimental framework on resumes and job descriptions from different industries could reveal whether the fine-tuned representation generalises or overfits to domain-specific vocabulary patterns present in my training data." },
