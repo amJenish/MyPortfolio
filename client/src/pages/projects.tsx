@@ -3,13 +3,18 @@ import { WorkListCard } from "@/components/work/WorkListCard";
 import { projects } from "@/lib/content/registry";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { ScrollRevealStagger } from "@/components/motion/ScrollRevealStagger";
+import {
+  scrollRevealRouteDelayChildren,
+  scrollRevealRouteDuration,
+  scrollRevealRouteStagger,
+} from "@/components/motion/scrollMotion";
 
 export default function Projects() {
   return (
     <Layout>
       <div className="space-y-12">
         {/* ── Page header ── */}
-        <ScrollReveal as="header" className="max-w-2xl space-y-4 text-left">
+        <ScrollReveal as="header" className="max-w-2xl space-y-4 text-left" duration={scrollRevealRouteDuration}>
           <p className="font-mono text-xs font-semibold uppercase tracking-widest text-primary">
             Software Engineering + ML
           </p>
@@ -26,8 +31,9 @@ export default function Projects() {
         {/* ── Project grid ── */}
         <ScrollRevealStagger
           className="grid grid-cols-1 gap-6 md:grid-cols-2"
-          stagger={0.07}
-          delayChildren={0.08}
+          stagger={scrollRevealRouteStagger}
+          delayChildren={scrollRevealRouteDelayChildren}
+          duration={scrollRevealRouteDuration}
         >
           {projects.map((project) => (
             <WorkListCard

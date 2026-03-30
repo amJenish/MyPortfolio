@@ -384,23 +384,6 @@ export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element
                 <span style={{ fontSize: 13, color: "var(--muted-foreground)", lineHeight: 1.7 }}>{rd.risk}</span>
               </div>
             </div>
-
-            <ChartWrap
-              label="Chart 1 — Reward design tradeoffs (qualitative assessment from training runs)"
-              note="Stability = how consistent the training signal is across runs. Signal clarity = how directly it maps to the real objective. These are assessments from observing training behaviour, not measured scores."
-              illustrative
-            >
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={rewardFunctions} barCategoryGap="20%">
-                  <CartesianGrid vertical={false} stroke="var(--border)" />
-                  <XAxis dataKey="name" tick={{ fill: "var(--muted-foreground)", fontSize: 11, fontFamily: MONO }} axisLine={false} tickLine={false} />
-                  <YAxis domain={[0, 10]} tick={{ fill: "var(--muted-foreground)", fontSize: 11, fontFamily: MONO }} axisLine={false} tickLine={false} />
-                  <Tooltip content={<ChartTip />} cursor={{ fill: "rgba(255, 255, 255, 0.04)" }} />
-                  <Bar dataKey="stability" fill="var(--primary)" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="clarity" fill="rgb(59, 130, 246)" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </ChartWrap>
           </div>
 
         </div>

@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { ScrollReadingProgress } from "@/components/motion/ScrollReadingProgress";
 import { profile } from "@/lib/content/registry";
 import {
   ML_LIST_PATH,
@@ -71,9 +70,9 @@ export default function Layout({
       const saved = window.localStorage.getItem(THEME_KEY);
       if (saved === "dark") initial = true;
       else if (saved === "light") initial = false;
-      else initial = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches ?? false;
+      else initial = false;
     } catch {
-      initial = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches ?? false;
+      initial = false;
     }
 
     // Apply immediately to avoid initial flash.
@@ -230,8 +229,6 @@ export default function Layout({
           </motion.button>
         </div>
       </header>
-
-      <ScrollReadingProgress />
 
       {/* ── Mobile nav drawer ── */}
       <AnimatePresence>

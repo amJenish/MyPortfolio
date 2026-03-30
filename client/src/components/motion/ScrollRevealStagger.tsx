@@ -1,7 +1,8 @@
 import * as React from "react";
-import { motion, useReducedMotion, type HTMLMotionProps, type Variants } from "framer-motion";
+import { motion, type HTMLMotionProps, type Variants } from "framer-motion";
 import {
   getScrollRevealStaggerItemVariants,
+  scrollRevealDuration,
   scrollRevealRootMargin,
 } from "./scrollMotion";
 
@@ -10,38 +11,41 @@ type Props = {
   className?: string;
   stagger?: number;
   delayChildren?: number;
+  /** Override default stagger item reveal length */
+  duration?: number;
 } & Omit<HTMLMotionProps<"div">, "children" | "initial" | "animate" | "whileInView" | "variants">;
 
 /**
- * Staggers children into view once the container crosses the viewport (IntersectionObserver + variants).
+ * Staggers children when the container intersects the viewport (IntersectionObserver + variants).
+ * Replays when the container leaves and re-enters the viewport.
  */
 export function ScrollRevealStagger({
   children,
   className,
-  stagger = 0.065,
-  delayChildren = 0.05,
+  stagger = 0.04,
+  delayChildren = 0.03,
+  duration = scrollRevealDuration,
   ...rest
 }: Props) {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = false;
   const [rootEl, setRootEl] = React.useState<Element | null>(null);
   const [revealed, setRevealed] = React.useState(false);
 
   React.useEffect(() => {
     if (reduceMotion) return;
     if (!rootEl) return;
-    if (revealed) return;
 
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) setRevealed(true);
+          setRevealed(entry.isIntersecting);
         });
       },
       { root: null, rootMargin: scrollRevealRootMargin, threshold: 0 },
     );
     io.observe(rootEl);
     return () => io.disconnect();
-  }, [rootEl, reduceMotion, revealed]);
+  }, [rootEl, reduceMotion]);
 
   const active = Boolean(reduceMotion || revealed);
 
@@ -55,7 +59,7 @@ export function ScrollRevealStagger({
     },
   };
 
-  const item: Variants = getScrollRevealStaggerItemVariants(reduceMotion);
+  const item: Variants = getScrollRevealStaggerItemVariants(reduceMotion, duration);
 
   return (
     <motion.div

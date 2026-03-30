@@ -32,16 +32,16 @@ function itemSubtitle(p: Project | KaggleProject, v: Variant): string {
 const listVariants: Variants = {
   hidden: {},
   show: {
-    transition: { staggerChildren: 0.09, delayChildren: 0.06 },
+    transition: { staggerChildren: 0.05, delayChildren: 0.03 },
   },
 };
 
 const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 32 },
+  hidden: { opacity: 0, y: 16 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { type: "spring", stiffness: 360, damping: 28 },
+    transition: { type: "spring", stiffness: 420, damping: 32 },
   },
 };
 
@@ -60,19 +60,18 @@ export function HomeSpotlightSection({
   React.useEffect(() => {
     if (reduceMotion) return;
     if (!listEl) return;
-    if (listRevealed) return;
 
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) setListRevealed(true);
+          setListRevealed(entry.isIntersecting);
         });
       },
       { root: null, rootMargin: scrollRevealRootMargin, threshold: 0 },
     );
     io.observe(listEl);
     return () => io.disconnect();
-  }, [listEl, reduceMotion, listRevealed, variant]);
+  }, [listEl, reduceMotion, variant]);
 
   const listActive = Boolean(reduceMotion || listRevealed);
 

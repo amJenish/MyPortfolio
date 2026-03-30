@@ -3,7 +3,16 @@ import type { TargetAndTransition, Variants } from "framer-motion";
 /** Shared easing for scroll-driven entrances — smooth deceleration */
 export const scrollEase: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
-export const scrollRevealDuration = 0.85;
+/** Short, snappy — long blurs/lifts read as distracting */
+export const scrollRevealDuration = 0.38;
+
+/**
+ * Faster timing for route-level list pages (Projects / Data & ML / Paperwork) so the first paint
+ * after navigation feels closer to Home. Home keeps the default `scrollRevealDuration`.
+ */
+export const scrollRevealRouteDuration = 0.22;
+export const scrollRevealRouteStagger = 0.028;
+export const scrollRevealRouteDelayChildren = 0.02;
 
 /** Bottom inset: smaller (more negative %) = reveal earlier as you scroll */
 export const scrollRevealRootMargin = "0px 0px -10% 0px";
@@ -27,13 +36,16 @@ export function getScrollRevealMotion(reduceMotion: boolean | null): {
     };
   }
   return {
-    hidden: { opacity: 0, y: 44, scale: 0.965, filter: "blur(11px)" },
+    hidden: { opacity: 0, y: 18, scale: 0.99, filter: "blur(5px)" },
     visible: { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" },
   };
 }
 
 /** Stagger children: same visual language as `ScrollReveal` */
-export function getScrollRevealStaggerItemVariants(reduceMotion: boolean | null): Variants {
+export function getScrollRevealStaggerItemVariants(
+  reduceMotion: boolean | null,
+  itemDuration: number = scrollRevealDuration,
+): Variants {
   const r = Boolean(reduceMotion);
   if (r) {
     return {
@@ -48,13 +60,13 @@ export function getScrollRevealStaggerItemVariants(reduceMotion: boolean | null)
     };
   }
   return {
-    hidden: { opacity: 0, y: 44, scale: 0.965, filter: "blur(11px)" },
+    hidden: { opacity: 0, y: 18, scale: 0.99, filter: "blur(5px)" },
     show: {
       opacity: 1,
       y: 0,
       scale: 1,
       filter: "blur(0px)",
-      transition: { duration: scrollRevealDuration * 0.92, ease: scrollEase },
+      transition: { duration: itemDuration * 0.95, ease: scrollEase },
     },
   };
 }

@@ -4,6 +4,11 @@ import { kaggleProjects } from "@/lib/content/registry";
 import { mlDetailPath } from "@/lib/routes";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { ScrollRevealStagger } from "@/components/motion/ScrollRevealStagger";
+import {
+  scrollRevealRouteDelayChildren,
+  scrollRevealRouteDuration,
+  scrollRevealRouteStagger,
+} from "@/components/motion/scrollMotion";
 
 export default function Ml() {
   return (
@@ -26,8 +31,9 @@ export default function Ml() {
         {/* ── Notebooks grid ── */}
         <ScrollRevealStagger
           className="grid grid-cols-1 gap-6 md:grid-cols-2"
-          stagger={0.07}
-          delayChildren={0.08}
+          stagger={scrollRevealRouteStagger}
+          delayChildren={scrollRevealRouteDelayChildren}
+          duration={scrollRevealRouteDuration}
         >
           {kaggleProjects.map((p) => (
             <WorkListCard

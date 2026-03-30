@@ -1,5 +1,5 @@
 import * as React from "react";
-import { motion, useReducedMotion, type HTMLMotionProps } from "framer-motion";
+import { motion, type HTMLMotionProps } from "framer-motion";
 import {
   getScrollRevealMotion,
   scrollEase,
@@ -23,32 +23,40 @@ export type ScrollRevealProps = {
   children: React.ReactNode;
   className?: string;
   delay?: number;
+  /** Override default reveal length (e.g. faster on route list pages) */
+  duration?: number;
 } & Omit<HTMLMotionProps<"div">, "children" | "initial" | "animate" | "whileInView" | "transition">;
 
 /**
  * Scroll-driven reveal using IntersectionObserver (more reliable than whileInView with routed/layout parents).
  */
-export function ScrollReveal({ as = "div", children, className, delay = 0, ...rest }: ScrollRevealProps) {
-  const reduceMotion = useReducedMotion();
+export function ScrollReveal({
+  as = "div",
+  children,
+  className,
+  delay = 0,
+  duration = scrollRevealDuration,
+  ...rest
+}: ScrollRevealProps) {
+  const reduceMotion = false;
   const [rootEl, setRootEl] = React.useState<Element | null>(null);
   const [revealed, setRevealed] = React.useState(false);
 
   React.useEffect(() => {
     if (reduceMotion) return;
     if (!rootEl) return;
-    if (revealed) return;
 
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) setRevealed(true);
+          setRevealed(entry.isIntersecting);
         });
       },
       { root: null, rootMargin: scrollRevealRootMargin, threshold: 0 },
     );
     io.observe(rootEl);
     return () => io.disconnect();
-  }, [rootEl, reduceMotion, revealed]);
+  }, [rootEl, reduceMotion]);
 
   const show = Boolean(reduceMotion || revealed);
   const Comp = tags[as];
@@ -61,7 +69,7 @@ export function ScrollReveal({ as = "div", children, className, delay = 0, ...re
       initial={false}
       animate={show ? visible : hidden}
       transition={{
-        duration: reduceMotion ? 0 : scrollRevealDuration,
+        duration: reduceMotion ? 0 : duration,
         delay: reduceMotion ? 0 : delay,
         ease: scrollEase,
       }}
