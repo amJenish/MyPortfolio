@@ -1,19 +1,44 @@
-import type { ReactNode } from "react";
-import { C } from "@/lib/theme";
-import { WorkSectionLabel } from "../_shared";
-import type { WorkPageProps } from "../workPageTypes";
+import { type ReactNode } from "react";
+import {
+  Body,
+  Code,
+  FONT_MONO as MONO,
+  FONT_SANS as SANS,
+  Notice,
+  SectionLabel,
+  Tag,
+  TwoCol,
+} from "../reportPrimitives";
+import type { WorkPageProps } from "@/content/portfolio/workPageTypes";
 import { WorkReportShell } from "@/components/work/WorkReportShell";
 
-const PIPELINE_ACCENT = C.teal;
+const COLORS = {
+  teal: "rgb(45, 212, 191)",
+  orange: "rgb(245, 158, 11)",
+};
+
+export const workPageSections = [
+  { id: "summary", label: "Overview" },
+  { id: "capabilities", label: "1. Core Capabilities" },
+  { id: "pipelines", label: "2. Dual-Pipeline Architecture" },
+  { id: "ingestion", label: "3. Ingestion Pipeline" },
+  { id: "retrieval", label: "4. Retrieval & Generation" },
+  { id: "stack", label: "5. Technical Stack" },
+] as const;
 
 function PipelineNode({ accent, children }: { accent: string; children: ReactNode }) {
   return (
     <div
-      className="shrink-0 whitespace-nowrap rounded-lg border border-transparent px-3 py-2 font-mono text-xs font-medium"
       style={{
+        fontFamily: MONO,
+        fontSize: 12,
+        fontWeight: 500,
+        padding: "8px 12px",
+        borderRadius: 8,
+        border: `1px solid color-mix(in srgb, ${accent} 40%, transparent)`,
         backgroundColor: `color-mix(in srgb, ${accent} 12%, transparent)`,
-        borderColor: `color-mix(in srgb, ${accent} 40%, transparent)`,
         color: accent,
+        whiteSpace: "nowrap",
       }}
     >
       {children}
@@ -23,372 +48,261 @@ function PipelineNode({ accent, children }: { accent: string; children: ReactNod
 
 function PipelineArrow() {
   return (
-    <span className="shrink-0 select-none font-mono text-sm text-muted-foreground" aria-hidden>
+    <span style={{ fontFamily: MONO, fontSize: 14, color: "var(--muted-foreground)", userSelect: "none" }} aria-hidden>
       →
     </span>
   );
 }
 
-const cardTitleAccent = "text-xs font-mono font-medium text-accent";
-const cardTitleFg = "text-xs font-mono font-semibold text-foreground";
-
-export const workPageSections = [
-  { id: "summary",    label: "Overview" },
-  { id: "built",      label: "1. Core Features" },
-  { id: "pipelines",  label: "2. Dual-Pipeline Architecture" },
-  { id: "ingestion",  label: "3. Ingestion Pipeline" },
-  { id: "retrieval",  label: "4. Retrieval Pipeline" },
-  { id: "choices",    label: "5. Engineering Decisions" },
-  { id: "stack",      label: "6. Technical Stack" },
-] as const;
-
-export default function Sw5Page(props: WorkPageProps) {
+export default function RAGStudyAssistantPage(props: WorkPageProps) {
   return (
     <WorkReportShell {...props}>
-    <div className="theme-body work-report-body mx-auto max-w-[min(100%,80rem)] space-y-10 px-4 pb-16 text-sm sm:px-6 sm:text-base">
+      <div style={{ color: "var(--foreground)", fontFamily: SANS, textAlign: "left" }}>
+        <div style={{ borderBottom: "1px solid var(--border)", padding: "80px 0 64px", position: "relative", overflow: "hidden" }}>
+          <div style={{
+            position: "absolute", inset: 0,
+            backgroundImage: `linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)`,
+            backgroundSize: "48px 48px", opacity: 0.3,
+          }} />
+          <div style={{
+            position: "absolute", top: "-30%", right: "10%",
+            width: 560, height: 560,
+            background: "radial-gradient(ellipse, rgb(45, 212, 191 / 0.08) 0%, transparent 65%)",
+            pointerEvents: "none",
+          }} />
 
-      <section className="scroll-mt-28 space-y-4">
-        <WorkSectionLabel number={1} title="Overview" id="summary" />
-        <p className="text-report-body">
-          A full-stack Retrieval-Augmented Generation system designed for querying academic documents in natural language. The core challenge it solves is not retrieval itself but retrieval precision: standard RAG pipelines embed raw document text, which may be dense, poorly formatted, or domain-specific in ways that create a mismatch against the clean language of user queries. This system addresses that by embedding LLM-generated summaries rather than raw chunks, narrowing the semantic gap between what is stored and what is searched.
-        </p>
-        <p className="text-report-body">
-          Documents move through a two-stage pipeline: an ingestion pipeline that parses, semantically chunks, summarizes, and indexes each document section; and a query pipeline that rewrites the user&apos;s question, retrieves the most relevant chunks, and generates a grounded response via LLaMA 3.2 through the Groq API. Session state is managed through a ResearchSession object that scopes retrieval to the documents uploaded within a given session and maintains query history for follow-up questions. The backend is a FastAPI application with modular service boundaries, containerized with Docker Compose.
-        </p>
-        <ul className="list-disc space-y-2 pl-5 text-muted-foreground leading-[1.6]">
-          <li>Summarize-then-embed produces cleaner vector representations than embedding raw document text.</li>
-          <li>SemanticChunker splits by topical coherence rather than fixed token count, preserving contextual boundaries.</li>
-          <li>Query rewriting translates conversational questions into retrieval-optimized queries before embedding.</li>
-          <li>ResearchSession scopes retrieval to the active document set and maintains context across follow-up questions.</li>
-          <li>ElasticSearch dense vector index preserves the option for hybrid keyword and vector retrieval in future iterations.</li>
-        </ul>
-        <p className="border-l-2 border-primary/50 pl-4 text-left leading-[1.6] text-muted-foreground">
-          Standard RAG pipelines embed raw document text, which often produces a semantic mismatch against the clean, concise language of user queries. How can the ingestion and retrieval steps be designed together to minimize that gap, while keeping responses strictly grounded in source material?
-        </p>
-      </section>
-
-      {/* ── 02 CORE FEATURES ── */}
-      <section className="space-y-4">
-        <WorkSectionLabel number={2} title="Core Features" id="built" />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-            <div className={cardTitleAccent}>Document Ingestion</div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Uploaded PDFs are parsed, split into semantically coherent sections by <span className="font-mono text-xs text-foreground/80 bg-muted/30 px-1 rounded">SemanticChunker</span>, and each chunk is summarized by the LLM before its embedding is stored. Ingestion is fully decoupled from the query path.
-            </p>
-          </div>
-          <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-            <div className={cardTitleAccent}>Retrieval Pipeline</div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              User questions are rewritten for retrieval precision, embedded, and searched against the indexed summary vectors in ElasticSearch. The top-ranked chunks are returned as context for generation, with their source locations tracked for citation.
-            </p>
-          </div>
-          <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-            <div className={cardTitleAccent}>Grounded Generation</div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              LLaMA 3.2 via Groq generates responses conditioned on the retrieved chunks, not on parametric memory. The model is instructed to cite specific document sections, making it possible to trace any claim back to the source text.
-            </p>
-          </div>
-          <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-            <div className={cardTitleAccent}>Session Management</div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              <span className="font-mono text-xs text-foreground/80 bg-muted/30 px-1 rounded">ResearchSession</span> manages which documents are in scope for a given session and maintains a query history so follow-up questions can reference prior answers without re-embedding context.
-            </p>
-          </div>
-          <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-            <div className={cardTitleAccent}>Query Rewriting</div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Conversational questions ("what does the paper say about X?") are poor retrieval queries. A preprocessing step uses the LLM to restructure them into declarative, noun-dense queries that match the vocabulary distribution of indexed summary embeddings.
-            </p>
-          </div>
-          <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-            <div className={cardTitleAccent}>Containerized Deployment</div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              FastAPI backend, ElasticSearch, and the React frontend each run in isolated Docker containers orchestrated via Docker Compose. Service boundaries are clearly defined, and the full stack can be started from a single command locally.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 02 DUAL-PIPELINE ARCHITECTURE ── */}
-      <section className="space-y-6">
-        <WorkSectionLabel number={2} title="Dual-Pipeline Architecture" id="pipelines" />
-
-        <p className="text-muted-foreground">
-          The system separates into two pipelines with no shared runtime state between them. This separation is intentional: ingestion is a slow, asynchronous, compute-heavy process that runs once per document. The query pipeline is synchronous and latency-sensitive. Mixing them into a single flow would couple the user experience to document processing time.
-        </p>
-
-        {/* Ingestion pipeline visual */}
-        <div className="border border-border rounded-lg bg-card/30 p-5 space-y-3">
-          <div className="text-report-label mb-4">Ingestion pipeline (runs once per uploaded document)</div>
-          <div className="flex flex-wrap items-center gap-2.5">
-            <PipelineNode accent={PIPELINE_ACCENT}>PDF Upload</PipelineNode>
-            <PipelineArrow />
-            <PipelineNode accent={PIPELINE_ACCENT}>PDF Parser</PipelineNode>
-            <PipelineArrow />
-            <PipelineNode accent="#f97316">SemanticChunker</PipelineNode>
-            <PipelineArrow />
-            <PipelineNode accent="#f97316">LLM Summarizer</PipelineNode>
-            <PipelineArrow />
-            <PipelineNode accent="#2dd4bf">Embedding Model</PipelineNode>
-            <PipelineArrow />
-            <PipelineNode accent="#2dd4bf">ElasticSearch Index</PipelineNode>
-          </div>
-          <p className="text-xs text-muted-foreground leading-relaxed pt-1">
-            Raw text is stored alongside each indexed entry. The embedding is generated from the summary, not the raw text. Both are needed at query time.
-          </p>
-        </div>
-
-        {/* Query pipeline visual */}
-        <div className="border border-border rounded-lg bg-card/30 p-5 space-y-3">
-          <div className="text-report-label mb-4">Query pipeline (runs per user question)</div>
-          <div className="flex flex-wrap items-center gap-2.5">
-            <PipelineNode accent={PIPELINE_ACCENT}>User Query</PipelineNode>
-            <PipelineArrow />
-            <PipelineNode accent="#f97316">Query Rewriter</PipelineNode>
-            <PipelineArrow />
-            <PipelineNode accent="#f97316">Embedding Model</PipelineNode>
-            <PipelineArrow />
-            <PipelineNode accent="#2dd4bf">Vector Search (ES)</PipelineNode>
-            <PipelineArrow />
-            <PipelineNode accent="#2dd4bf">Chunk Retrieval</PipelineNode>
-            <PipelineArrow />
-            <PipelineNode accent="#a78bfa">LLaMA 3.2 (Groq)</PipelineNode>
-            <PipelineArrow />
-            <PipelineNode accent="#a78bfa">Grounded Response</PipelineNode>
-          </div>
-          <p className="text-xs text-muted-foreground leading-relaxed pt-1">
-            The retrieval step returns raw chunk text (not summaries) as context for generation. Summaries exist only in the vector index.
-          </p>
-        </div>
-
-        <div className="bg-muted/10 p-4 rounded border border-border font-mono text-xs text-muted-foreground leading-relaxed space-y-1">
-          <div><span className="text-foreground/60">backend/app/DataManagement/</span>  PDF parsing, SemanticChunker, ElasticSearch indexing, embedding utilities</div>
-          <div><span className="text-foreground/60">backend/app/RAG/</span>             Query rewriting, vector retrieval orchestration, LLM generation, citation assembly</div>
-          <div><span className="text-foreground/60">backend/app/core/</span>            ResearchSession state, document scope tracking, query history management</div>
-          <div><span className="text-foreground/60">frontend/src/</span>                React + Blueprint UI, document uploader, chat interface, source citation display</div>
-        </div>
-      </section>
-
-      {/* ── 03 INGESTION PIPELINE ── */}
-      <section className="space-y-4">
-        <WorkSectionLabel number={4} title="Ingestion Pipeline" id="ingestion" />
-
-        <p className="text-muted-foreground">
-          The ingestion pipeline has three meaningful stages after initial PDF parsing, each of which involves a design choice that affects downstream retrieval quality.
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-            <div className={cardTitleFg}>Stage 1: Semantic Chunking</div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              <span className="font-mono text-xs text-foreground/80 bg-muted/30 px-1 rounded">SemanticChunker.py</span> splits document text based on topical coherence rather than fixed token counts. The chunker tracks semantic drift between consecutive sentences and introduces a boundary when the topic shifts beyond a threshold. This means a methods section and a results section will not be merged into the same chunk, even if a fixed-size splitter would have combined them.
-            </p>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              The practical consequence is variable chunk sizes. A short, dense definition section may become a small chunk while a sprawling discussion section may remain large. Downstream retrieval benefits from this because retrieved chunks are more likely to be topically focused.
-            </p>
-          </div>
-
-          <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-            <div className={cardTitleFg}>Stage 2: Summarize-then-Embed</div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Each chunk is passed to the LLM with a prompt asking for a concise summary of its core claims and topics. The embedding model then encodes the summary, not the raw chunk text. Both the summary embedding and the raw chunk text are stored in ElasticSearch: the embedding is used for retrieval, the raw text is what gets passed to the generation model.
-            </p>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              The motivation is that raw academic text may be dense with citations, passive constructions, and hedging language that may degrade the quality of its vector representation. A clean, active-voice summary may produce a vector that sits closer to the kinds of natural language queries users actually ask.
-            </p>
-          </div>
-
-          <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-            <div className={cardTitleFg}>Stage 3: ElasticSearch Indexing</div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Each indexed document entry stores the summary embedding as a dense vector field, the raw chunk text, the source document identifier, and the chunk position within the document. The dense vector field enables approximate nearest neighbor search using dot product similarity.
-            </p>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Session identifiers are stored alongside each entry so that at query time the vector search can be filtered to only the documents belonging to the active session, preventing cross-session contamination without needing separate indexes per user.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 04 RETRIEVAL PIPELINE ── */}
-      <section className="space-y-4">
-        <WorkSectionLabel number={5} title="Retrieval Pipeline" id="retrieval" />
-
-        <p className="text-muted-foreground">
-          The query pipeline has two non-trivial stages before the LLM call: query rewriting and vector retrieval. Both are worth examining because they reflect specific assumptions about where retrieval tends to fail.
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-4">
-            <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-              <div className={cardTitleFg}>Query Rewriting</div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                A user asking "can you explain the methodology they used?" is making a reasonable conversational request, but it is a poor retrieval query. It contains no domain vocabulary, no noun phrases specific to the document, and the word "methodology" may not appear verbatim in the indexed summaries.
-              </p>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                The rewriting step prompts the LLM with both the user's question and the session's prior query history, asking it to produce a retrieval-optimized version. The rewritten query tends to be noun-dense, declarative, and stripped of conversational scaffolding. This query is what gets embedded and searched, not the original.
-              </p>
+          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 40px", position: "relative" }}>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 24, alignItems: "center" }}>
+              <span style={{ fontFamily: MONO, fontSize: 11, color: "var(--muted-foreground)" }}>
+                Full-stack · RAG · LLM integration
+              </span>
+              <Tag color="rgb(34, 197, 94)">Complete</Tag>
             </div>
-            <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-              <div className={cardTitleFg}>Session-Scoped Retrieval</div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Vector search runs against the full ElasticSearch index but is filtered by session ID, so only chunks from documents the user has uploaded in the current session are eligible for retrieval. This avoids needing a separate index per user while still providing clean isolation between sessions.
-              </p>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                <span className="font-mono text-xs text-foreground/80 bg-muted/30 px-1 rounded">ResearchSession</span> also tracks which document IDs are active, allowing the user to optionally narrow retrieval to a specific uploaded document if they are querying across multiple papers in the same session.
-              </p>
-            </div>
-          </div>
 
-          <div className="space-y-4">
-            <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-              <div className={cardTitleFg}>Chunk Retrieval and Context Assembly</div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                The top-k chunks returned by ElasticSearch are retrieved by their raw text, not their summaries. Summaries served their purpose at indexing time by producing better vectors; at generation time, the model needs the full original context to answer accurately.
-              </p>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Retrieved chunks are assembled into a context window alongside their source document identifiers and chunk positions. The generation prompt instructs the model to only use the provided context and to cite the specific source section for each claim it makes.
-              </p>
-            </div>
-            <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-              <div className={cardTitleFg}>Grounded Generation via Groq</div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                LLaMA 3.2 is accessed through Groq rather than a self-hosted inference server. Groq's custom inference hardware provides substantially lower latency than standard GPU-based serving, which matters for an interactive research workflow where the user is waiting for an answer.
-              </p>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                The generation prompt is structured to prevent the model from drawing on parametric memory: it is given the retrieved chunks as the sole context and instructed that any claim not present in those chunks should be flagged as outside the scope of the uploaded documents.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+            <h1 style={{
+              fontFamily: SANS,
+              fontSize: "clamp(30px, 4.5vw, 54px)",
+              fontWeight: 800, margin: "0 0 20px",
+              lineHeight: 1.12, letterSpacing: -1, color: "var(--foreground)",
+            }}>
+              RAG + LLM<br />
+              <span style={{ color: COLORS.teal }}>Study assistant for papers and articles</span>
+            </h1>
 
-      {/* ── 05 ENGINEERING DECISIONS ── */}
-      <section className="space-y-4">
-        <WorkSectionLabel number={6} title="Engineering Decisions" id="choices" />
+            <Body style={{ maxWidth: 1280, marginBottom: 12, color: "#000000" }}>
+              A full-stack retrieval-augmented generation (RAG) system that helps students and researchers explore papers and articles effectively. Users upload PDFs, and the system indexes them using semantic chunking and dense embeddings. Questions are answered by retrieving relevant sections and generating grounded responses via LLaMA 3.2.
+            </Body>
+            <Body style={{ maxWidth: 1280, marginBottom: 36, color: "#000000" }}>
+              The architecture separates ingestion (asynchronous, compute-heavy) from retrieval (synchronous, latency-sensitive). ElasticSearch provides hybrid keyword + vector search. The FastAPI backend orchestrates the RAG pipeline. React with Blueprint UI provides the frontend. Everything runs in Docker containers.
+            </Body>
 
-        <p className="text-muted-foreground">
-          Each of the four major design choices below had alternatives that were considered. The decisions are worth explaining not just as choices made, but as tradeoffs within specific constraints.
-        </p>
-
-        <div className="space-y-3">
-
-          <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-            <div className={cardTitleFg}>Semantic Chunking vs Fixed-Size Chunking</div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Fixed-size chunking (splitting every N tokens with an overlap window) is simpler and produces predictable chunk sizes, which makes embedding batch sizes uniform. The problem is that a 512-token boundary has no relationship to where the text's meaning changes. A methods section that spans 600 tokens gets split in the middle; the retrieved chunk may answer half of a user's question about methodology while the other half is in the next chunk and may not rank highly enough to be retrieved.
-            </p>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Semantic chunking produces variable-length chunks but may preserve the completeness of a topical unit. The tradeoff is additional complexity in the chunking logic and variable memory footprint per chunk. For academic research documents where sections have relatively clear topical boundaries, this tradeoff appears worthwhile.
-            </p>
-          </div>
-
-          <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-            <div className={cardTitleFg}>Summarize-then-Embed vs Direct Embedding</div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Direct embedding (encoding raw chunk text) is faster, requires no LLM call at ingestion time, and avoids any information loss introduced by summarization. It is also the standard approach in most open-source RAG tutorials and frameworks.
-            </p>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              The concern with direct embedding for academic text is the vocabulary mismatch problem: a user querying in plain language and a document section written in dense academic prose may occupy very different regions of the embedding space even when they are semantically related. Embedding a summary may reduce this gap because the summary is itself written in plainer language. The cost is an LLM call per chunk at ingestion, which makes ingestion slower and more expensive. For a research tool where documents are uploaded once and queried many times, this cost may be justifiable.
-            </p>
-          </div>
-
-          <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-            <div className={cardTitleFg}>ElasticSearch vs Dedicated Vector Database</div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Pinecone, Chroma, Weaviate, and Qdrant are all purpose-built for vector retrieval and may offer simpler setup and higher indexing throughput for purely vector-based workloads. ElasticSearch is a heavier dependency and requires more configuration.
-            </p>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              The reason for choosing ElasticSearch is its support for hybrid retrieval: a single index can serve both dense vector ANN search and BM25 keyword search, and the two can be combined with a reciprocal rank fusion step. At present the system uses only vector search, but future iterations could layer in keyword matching (for exact technical terms, author names, or dataset identifiers) without re-indexing any documents. This optionality is built into the choice of storage layer from the start.
-            </p>
-          </div>
-
-          <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-            <div className={cardTitleFg}>Query Rewriting vs Direct Query Embedding</div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Embedding the user's raw question directly is simpler and avoids an additional LLM call on every query. For short, well-formed factual questions this likely works adequately. The problem surfaces with conversational phrasing, pronouns referencing prior context ("what about the approach they took in section two?"), or vague questions that require domain grounding to retrieve anything useful.
-            </p>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              The query rewriting step is also where session history is incorporated: the rewriter has access to the previous questions and responses in the session and can resolve ambiguous pronouns or inject context before the query is embedded. This makes the retrieval pipeline stateful in a lightweight way without requiring a full conversational memory architecture.
-            </p>
-          </div>
-
-        </div>
-      </section>
-
-      {/* ── 06 TECHNICAL STACK ── */}
-      <section className="space-y-4">
-        <WorkSectionLabel number={7} title="Technical Stack" id="stack" />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-3">
-            <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-              <div className={cardTitleFg}>Backend</div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                FastAPI serves the backend with async endpoint support, which matters for the ingestion route where PDF processing and multiple LLM summarization calls can take several seconds. Background tasks handle chunk indexing so the upload endpoint can respond to the client before indexing completes. Pydantic models are used throughout for request validation and session state serialization.
-              </p>
-            </div>
-            <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-              <div className={cardTitleFg}>LLM Inference</div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                LLaMA 3.2 is accessed via the Groq API. Three distinct LLM calls occur in the system: chunk summarization at ingestion time, query rewriting at the start of each query, and answer generation using the retrieved context. Each uses a different prompt structure suited to its task.
-              </p>
-            </div>
-            <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-              <div className={cardTitleFg}>Vector Storage</div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                ElasticSearch stores dense vector embeddings in a <span className="font-mono text-xs text-foreground/80 bg-muted/30 px-1 rounded">dense_vector</span> field type with cosine similarity configured for ANN search. Each index entry carries the summary embedding, raw chunk text, document ID, session ID, and chunk position metadata.
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-              <div className={cardTitleFg}>Frontend</div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                React with Blueprint UI provides the document upload flow and conversational query interface. The UI shows retrieved source citations alongside each response, allowing users to trace the model's claims back to specific document sections. Session state is maintained client-side and passed with each query request.
-              </p>
-            </div>
-            <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-              <div className={cardTitleFg}>Infrastructure</div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Docker Compose orchestrates three services: the FastAPI application, the ElasticSearch instance, and the React development server. Service dependencies are declared explicitly so ElasticSearch is healthy before the API starts. Environment variables for the Groq API key and ElasticSearch credentials are injected via a <span className="font-mono text-xs text-foreground/80 bg-muted/30 px-1 rounded">.env</span> file, not hardcoded.
-              </p>
-            </div>
-            <div className="p-4 border border-border rounded-lg bg-card/50 space-y-2">
-              <div className={cardTitleFg}>Service Boundaries</div>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                The three backend modules (DataManagement, RAG, core) are deliberately separated so the ingestion and retrieval logic cannot become entangled over time. Adding support for a new document type (DOCX, HTML) requires only changes to DataManagement; swapping the embedding model requires only changes to the embedding utilities used by both pipelines.
-              </p>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {["Python", "FastAPI", "ElasticSearch", "React", "LLaMA 3.2", "RAG", "Docker", "Groq API"].map(t => (
+                <Tag key={t}>{t}</Tag>
+              ))}
             </div>
           </div>
         </div>
 
-        <div className="mt-8 space-y-6">
-          <div>
-            <h3 className="mb-2 text-left text-sm font-semibold text-foreground">What went well</h3>
-            <ul className="list-disc space-y-2 pl-5 text-muted-foreground leading-[1.6]">
-              <li>Implemented summarize-then-embed so queries in plain language align better with indexed vectors on dense PDFs.</li>
-              <li>Used semantic chunking so sections stay topically whole instead of split at arbitrary token boundaries.</li>
-              <li>Chose ElasticSearch so hybrid keyword + vector retrieval stays available without a storage migration later.</li>
-              <li>Added query rewriting with session context to support follow-ups and pronouns.</li>
-              <li>Kept ingestion, RAG orchestration, and session logic in separate modules so each stage can evolve on its own.</li>
-            </ul>
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "64px 40px" }}>
+          <div id="summary" className="scroll-mt-28" style={{ marginBottom: 88 }}>
+            <SectionLabel n={1} title="Overview" />
+            <Body style={{ marginBottom: 24, color: "#000000" }}>
+              A retrieval-augmented generation system that enables grounded question-answering over uploaded documents. Users upload PDFs, the system indexes them using semantic chunking and dense embeddings, and questions are answered by retrieving relevant sections and generating responses conditioned on the retrieved context via LLaMA 3.2.
+            </Body>
+            <Notice color={COLORS.teal} icon="★">
+              How can we build a system where an LLM answers questions about specific documents without hallucinating, and where every claim can be traced back to the source text?
+            </Notice>
           </div>
-          <div>
-            <h3 className="mb-2 text-left text-sm font-semibold text-foreground">Future improvements</h3>
-            <ul className="list-disc space-y-2 pl-5 text-muted-foreground leading-[1.6]">
-              <li>I&apos;d profile ingestion cost and batching now that every chunk pays for a summarization call.</li>
-              <li>Planning to add parsers beyond PDF (e.g. DOCX/HTML) when the use case needs them.</li>
-              <li>Want to experiment with chunk budgets and re-ranking when queries span very long documents.</li>
-              <li>Next: a small eval set and metrics for retrieval hit-rate and groundedness.</li>
-            </ul>
+
+          <div id="capabilities" className="scroll-mt-28" style={{ marginBottom: 88 }}>
+            <SectionLabel n={2} title="Core Capabilities" />
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16, marginBottom: 32 }}>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Document Ingestion</div>
+                <Body style={{ fontSize: 13, color: "#000000" }}>Users upload PDF documents. The system extracts text, applies semantic chunking to keep sections topically whole, summarizes each chunk with an LLM, and generates dense embeddings from the summaries for efficient retrieval.</Body>
+              </div>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Semantic Chunking</div>
+                <Body style={{ fontSize: 13, color: "#000000" }}>Instead of splitting at arbitrary token boundaries, the system chunks based on semantic coherence. Sections stay topically whole, improving retrieval quality and reducing the need for large context windows during generation.</Body>
+              </div>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Retrieval Pipeline</div>
+                <Body style={{ fontSize: 13, color: "#000000" }}>User questions are rewritten for retrieval precision, embedded, and searched against the indexed summary vectors in ElasticSearch. The top-ranked chunks are returned as context for generation, with their source locations tracked for citation.</Body>
+              </div>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Grounded Generation</div>
+                <Body style={{ fontSize: 13, color: "#000000" }}>LLaMA 3.2 via Groq generates responses conditioned on the retrieved chunks, not on parametric memory. The model is instructed to cite specific document sections, making it possible to trace any claim back to the source text.</Body>
+              </div>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Session Management</div>
+                <Body style={{ fontSize: 13, color: "#000000" }}><Code>ResearchSession</Code> manages which documents are in scope for a given session and maintains a query history so follow-up questions can reference prior answers without re-embedding context.</Body>
+              </div>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Query Rewriting</div>
+                <Body style={{ fontSize: 13, color: "#000000" }}>Conversational questions ("what does the paper say about X?") are poor retrieval queries. A preprocessing step uses the LLM to restructure them into declarative, noun-dense queries that match the vocabulary distribution of indexed summaries.</Body>
+              </div>
+            </div>
+          </div>
+
+          <div id="pipelines" className="scroll-mt-28" style={{ marginBottom: 88 }}>
+            <SectionLabel n={3} title="Dual-Pipeline Architecture" />
+            <Body style={{ marginBottom: 24, color: "#000000" }}>The system separates into two pipelines with no shared runtime state between them. This separation is intentional: ingestion is a slow, asynchronous, compute-heavy process that runs once per document. The query pipeline is synchronous and latency-sensitive. Mixing them would couple the user experience to document processing time.</Body>
+
+            <div style={{ padding: 20, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)", marginBottom: 24 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 16 }}>Ingestion pipeline (runs once per uploaded document)</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
+                <PipelineNode accent={COLORS.teal}>PDF Upload</PipelineNode>
+                <PipelineArrow />
+                <PipelineNode accent={COLORS.teal}>PDF Parser</PipelineNode>
+                <PipelineArrow />
+                <PipelineNode accent={COLORS.orange}>SemanticChunker</PipelineNode>
+                <PipelineArrow />
+                <PipelineNode accent={COLORS.orange}>LLM Summarizer</PipelineNode>
+                <PipelineArrow />
+                <PipelineNode accent={COLORS.teal}>Embedding Model</PipelineNode>
+                <PipelineArrow />
+                <PipelineNode accent={COLORS.teal}>ElasticSearch Index</PipelineNode>
+              </div>
+              <Body style={{ fontSize: 12, color: "#000000" }}>Raw text is stored alongside each indexed entry. The embedding is generated from the summary, not the raw text. Both are needed at query time: summaries for retrieval, raw text for context generation.</Body>
+            </div>
+
+            <div style={{ padding: 20, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 16 }}>Query pipeline (runs per user question)</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
+                <PipelineNode accent={COLORS.teal}>User Query</PipelineNode>
+                <PipelineArrow />
+                <PipelineNode accent={COLORS.orange}>Query Rewriter</PipelineNode>
+                <PipelineArrow />
+                <PipelineNode accent={COLORS.orange}>Embedding Model</PipelineNode>
+                <PipelineArrow />
+                <PipelineNode accent={COLORS.teal}>ElasticSearch Search</PipelineNode>
+                <PipelineArrow />
+                <PipelineNode accent={COLORS.orange}>LLM Generation</PipelineNode>
+                <PipelineArrow />
+                <PipelineNode accent={COLORS.teal}>Cited Response</PipelineNode>
+              </div>
+              <Body style={{ fontSize: 12, color: "#000000" }}>The query pipeline is latency-sensitive. Query rewriting happens first to improve retrieval precision. Retrieved chunks are then passed to the LLM with instructions to cite specific sections. The response includes source references so users can trace claims back to the original documents.</Body>
+            </div>
+          </div>
+
+          <div id="ingestion" className="scroll-mt-28" style={{ marginBottom: 88 }}>
+            <SectionLabel n={4} title="Ingestion Pipeline" />
+            <Body style={{ marginBottom: 24, color: "#000000" }}>The ingestion pipeline is asynchronous and compute-heavy. It runs once per uploaded document and produces indexed embeddings that power the retrieval pipeline. The pipeline is decoupled from the query pipeline so document processing does not block user interactions.</Body>
+
+            <TwoCol gap={20}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>PDF Parsing</div>
+                <Body style={{ fontSize: 13, color: "#000000" }}>Raw PDF text is extracted using a PDF parsing library. The extracted text is cleaned and normalized to remove artifacts from the PDF format. Document metadata (title, author, page numbers) is preserved for citation purposes.</Body>
+              </div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Semantic Chunking</div>
+                <Body style={{ fontSize: 13, color: "#000000" }}>Text is split into chunks based on semantic coherence rather than fixed token boundaries. The chunker identifies section boundaries and keeps topically related content together. This improves retrieval quality and reduces context fragmentation.</Body>
+              </div>
+            </TwoCol>
+
+            <TwoCol gap={20}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>LLM Summarization</div>
+                <Body style={{ fontSize: 13, color: "#000000" }}>Each chunk is summarized with LLaMA 3.2 via Groq. Summaries are dense, noun-heavy, and optimized for embedding. The summary is used to generate the retrieval embedding; the raw chunk is stored separately for context generation.</Body>
+              </div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Embedding & Indexing</div>
+                <Body style={{ fontSize: 13, color: "#000000" }}>Summary embeddings are generated using a dense embedding model. Each embedding is indexed in ElasticSearch with the raw chunk text, document ID, session ID, and chunk position metadata. Hybrid keyword + vector search is configured for retrieval.</Body>
+              </div>
+            </TwoCol>
+          </div>
+
+          <div id="retrieval" className="scroll-mt-28" style={{ marginBottom: 88 }}>
+            <SectionLabel n={5} title="Retrieval & Generation" />
+            <Body style={{ marginBottom: 24, color: "#000000" }}>The retrieval pipeline is synchronous and latency-sensitive. It runs on every user query and returns cited responses grounded in the retrieved document sections.</Body>
+
+            <TwoCol gap={20}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Query Rewriting</div>
+                <Body style={{ fontSize: 13, color: "#000000" }}>User questions are often conversational ("what does the paper say about X?"). A preprocessing step uses the LLM to rewrite them into declarative, noun-dense queries that better match the vocabulary distribution of indexed summaries. This improves retrieval precision.</Body>
+              </div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Retrieval</div>
+                <Body style={{ fontSize: 13, color: "#000000" }}>The rewritten query is embedded and searched against ElasticSearch using hybrid keyword + vector search. The top-ranked chunks are retrieved along with their source metadata. Retrieved chunks are ranked by relevance and passed to the generation step.</Body>
+              </div>
+            </TwoCol>
+
+            <TwoCol gap={20}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Grounded Generation</div>
+                <Body style={{ fontSize: 13, color: "#000000" }}>LLaMA 3.2 via Groq generates a response conditioned on the retrieved chunks. The model is instructed to cite specific document sections and avoid hallucinating information not present in the context. The response includes source references.</Body>
+              </div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Session Context</div>
+                <Body style={{ fontSize: 13, color: "#000000" }}><Code>ResearchSession</Code> maintains query history so follow-up questions can reference prior answers. The session tracks which documents are in scope and maintains conversation context without re-embedding or re-indexing.</Body>
+              </div>
+            </TwoCol>
+          </div>
+
+          <div id="stack" className="scroll-mt-28" style={{ marginBottom: 88 }}>
+            <SectionLabel n={6} title="Technical Stack" />
+
+            <TwoCol gap={20}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Backend</div>
+                <Body style={{ fontSize: 13, color: "#000000" }}>FastAPI provides the HTTP API for document upload and query handling. Pydantic models are used for request validation and session state serialization. The backend is organized into three modules: DataManagement (ingestion), RAG (retrieval orchestration), and core (shared utilities).</Body>
+              </div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>LLM Inference</div>
+                <Body style={{ fontSize: 13, color: "#000000" }}>LLaMA 3.2 is accessed via the Groq API. Three distinct LLM calls occur: chunk summarization at ingestion time, query rewriting at the start of each query, and answer generation using the retrieved context. Each uses a different prompt structure suited to its task.</Body>
+              </div>
+            </TwoCol>
+
+            <TwoCol gap={20}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Vector Storage</div>
+                <Body style={{ fontSize: 13, color: "#000000" }}>ElasticSearch stores dense vector embeddings in a <Code>dense_vector</Code> field type with cosine similarity configured for ANN search. Each index entry carries the summary embedding, raw chunk text, document ID, session ID, and chunk position metadata.</Body>
+              </div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Frontend</div>
+                <Body style={{ fontSize: 13, color: "#000000" }}>React with Blueprint UI provides the document upload flow and conversational query interface. The UI shows retrieved source citations alongside each response, allowing users to trace the model's claims back to specific document sections.</Body>
+              </div>
+            </TwoCol>
+
+            <TwoCol gap={20}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Infrastructure</div>
+                <Body style={{ fontSize: 13, color: "#000000" }}>Docker Compose orchestrates three services: the FastAPI application, the ElasticSearch instance, and the React development server. Service dependencies are declared explicitly so ElasticSearch is healthy before the API starts. Environment variables are injected via a <Code>.env</Code> file.</Body>
+              </div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Service Boundaries</div>
+                <Body style={{ fontSize: 13, color: "#000000" }}>The three backend modules (DataManagement, RAG, core) are deliberately separated so ingestion and retrieval logic cannot become entangled. Adding support for a new document type requires only changes to DataManagement. Swapping the embedding model requires only changes to shared utilities.</Body>
+              </div>
+            </TwoCol>
+          </div>
+
+          <div style={{ marginBottom: 88 }}>
+            <SectionLabel n={7} title="Reflections" />
+
+            <div style={{ marginBottom: 40 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "var(--foreground)", marginBottom: 16 }}>What went well</div>
+              <ul style={{ listStyle: "disc", paddingLeft: 20, color: "var(--muted-foreground)", lineHeight: 1.8 }}>
+                <li>Implemented summarize-then-embed so queries in plain language align better with indexed vectors on dense PDFs.</li>
+                <li>Used semantic chunking so sections stay topically whole instead of split at arbitrary token boundaries.</li>
+                <li>Chose ElasticSearch so hybrid keyword + vector retrieval stays available without a storage migration later.</li>
+                <li>Added query rewriting with session context to support follow-ups and pronouns.</li>
+                <li>Kept ingestion, RAG orchestration, and session logic in separate modules so each stage can evolve on its own.</li>
+              </ul>
+            </div>
+
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "var(--foreground)", marginBottom: 16 }}>Future improvements</div>
+              <ul style={{ listStyle: "disc", paddingLeft: 20, color: "var(--muted-foreground)", lineHeight: 1.8 }}>
+                <li>Profile ingestion cost and batching now that every chunk pays for a summarization call.</li>
+                <li>Add parsers beyond PDF (e.g. DOCX/HTML) when the use case needs them.</li>
+                <li>Experiment with chunk budgets and re-ranking when queries span very long documents.</li>
+                <li>Build a small eval set and metrics for retrieval hit-rate and groundedness.</li>
+              </ul>
+            </div>
           </div>
         </div>
-      </section>
-
-    </div>
+      </div>
     </WorkReportShell>
   );
 }
