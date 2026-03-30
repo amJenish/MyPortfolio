@@ -51,23 +51,30 @@ const navItems = [
   },
 ] as const;
 
-export default function Layout({ 
-  children, 
-  fullWidth = false 
-}: { 
+export default function Layout({
+  children,
+  fullWidth = false,
+}: {
   children: React.ReactNode;
   fullWidth?: boolean;
 }) {
   const [location] = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const email = profile.email;
   const reduceMotion = useReducedMotion();
   const navHover = reduceMotion ? undefined : { y: -1 };
-  const navTap = reduceMotion ? undefined : { scale: 0.98 };
+  const navTap = reduceMotion ? undefined : { scale: 0.97 };
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location]);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <div className="relative z-[1] min-h-screen bg-background font-sans text-foreground selection:bg-primary/25">
@@ -78,53 +85,69 @@ export default function Layout({
         Skip to content
       </a>
 
-      <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
-        <div className="mx-auto flex h-[3.25rem] w-full max-w-[min(100%,88rem)] items-center gap-3 px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">
+      {/* ── Header ── */}
+      <header
+        className={cn(
+          "sticky top-0 z-50 border-b transition-all duration-300",
+          scrolled
+            ? "border-border/80 bg-background/96 shadow-sm backdrop-blur-md"
+            : "border-transparent bg-background/80 backdrop-blur-sm",
+        )}
+      >
+        <div className="mx-auto flex h-14 w-full max-w-[min(100%,88rem)] items-center gap-4 px-4 sm:px-6 lg:px-8">
+          {/* Logo / Brand */}
+          <Link
+            href="/"
+            className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+          >
             <span className="flex flex-col leading-tight">
-              <span className="text-sm font-extrabold tracking-tight text-foreground">
+              <span className="font-heading text-[0.9375rem] font-bold tracking-tight text-foreground">
                 Jenish Paudel
               </span>
-              <span className="font-mono text-[11px] text-muted-foreground">
+              <span className="font-mono text-[10px] font-medium tracking-widest text-primary uppercase opacity-80">
                 Portfolio
               </span>
             </span>
           </Link>
 
+          {/* Desktop nav */}
           <nav
-            className="ml-auto hidden items-center gap-0.5 md:flex"
+            className="ml-auto hidden items-center gap-1 md:flex"
             aria-label="Primary"
           >
             {navItems.map((item) => {
               const isActive = item.match(location);
               const Icon = item.icon;
               return (
-                <Link key={item.href} href={item.href} className="focus-visible:outline-none rounded-md">
+                <Link key={item.href} href={item.href} className="focus-visible:outline-none rounded-lg">
                   <motion.span
                     whileHover={navHover}
                     whileTap={navTap}
                     className={cn(
-                      "relative inline-flex items-center gap-1.5 rounded-md px-3 py-2 font-mono text-xs transition-colors",
-                      "focus-visible:ring-2 focus-visible:ring-ring",
+                      "relative inline-flex items-center gap-2 rounded-lg px-3.5 py-2 font-sans text-sm font-medium transition-colors",
                       isActive
-                        ? "border-l-2 border-primary pl-[10px] text-primary"
-                        : "border-l-2 border-transparent text-muted-foreground hover:text-foreground",
+                        ? "bg-primary/10 text-primary"
+                        : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
                     )}
                   >
-                    <Icon className="h-4 w-4 opacity-90" aria-hidden />
+                    <Icon className="h-4 w-4 opacity-80" aria-hidden />
                     {item.label}
+                    {isActive && (
+                      <span className="absolute bottom-1 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full bg-primary" />
+                    )}
                   </motion.span>
                 </Link>
               );
             })}
           </nav>
 
-          <div className="hidden items-center gap-1.5 md:flex">
+          {/* Desktop social links */}
+          <div className="hidden items-center gap-1 md:flex">
             <a
               href={profile.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-md border border-transparent p-2 text-muted-foreground transition-colors hover:border-border hover:bg-muted/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="rounded-lg border border-transparent p-2 text-muted-foreground transition-colors hover:border-border hover:bg-muted/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-label="GitHub"
             >
               <Github className="h-4 w-4" />
@@ -133,26 +156,27 @@ export default function Layout({
               href={profile.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-md border border-transparent p-2 text-muted-foreground transition-colors hover:border-border hover:bg-muted/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="rounded-lg border border-transparent p-2 text-muted-foreground transition-colors hover:border-border hover:bg-muted/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-label="LinkedIn"
             >
               <Linkedin className="h-4 w-4" />
             </a>
             <a
               href={`mailto:${email}`}
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card/70 px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:bg-primary/[0.06] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="ml-1 inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-semibold text-foreground transition-all hover:border-primary/50 hover:bg-primary/[0.06] hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-label={`Send email to ${email}`}
             >
               <Mail className="h-3.5 w-3.5 shrink-0" />
-              <span className="hidden sm:inline">Email</span>
+              <span>Email</span>
             </a>
           </div>
 
+          {/* Mobile menu toggle */}
           <motion.button
             type="button"
             onClick={() => setIsMobileMenuOpen((o) => !o)}
-            whileTap={reduceMotion ? undefined : { scale: 0.94 }}
-            className="ml-auto rounded-md border border-border p-2 text-muted-foreground hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:ml-0 md:hidden"
+            whileTap={reduceMotion ? undefined : { scale: 0.92 }}
+            className="ml-auto rounded-lg border border-border p-2 text-muted-foreground hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:ml-0 md:hidden"
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-nav"
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
@@ -164,6 +188,7 @@ export default function Layout({
 
       <ScrollReadingProgress />
 
+      {/* ── Mobile nav drawer ── */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <>
@@ -172,7 +197,7 @@ export default function Layout({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40 bg-black/50 backdrop-blur-[2px] md:hidden"
+              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-[3px] md:hidden"
               aria-label="Close menu"
               onClick={() => setIsMobileMenuOpen(false)}
             />
@@ -185,10 +210,10 @@ export default function Layout({
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 28, stiffness: 320 }}
-              className="fixed right-0 top-0 z-50 h-full w-[min(100%,20rem)] border-l border-border bg-background shadow-xl md:hidden"
+              className="fixed right-0 top-0 z-50 h-full w-[min(100%,22rem)] border-l border-border bg-background shadow-2xl md:hidden"
             >
               <div className="flex flex-col gap-6 p-6 pt-20">
-                <nav className="flex flex-col gap-1" aria-label="Mobile primary">
+                <nav className="flex flex-col gap-1.5" aria-label="Mobile primary">
                   {navItems.map((item) => {
                     const isActive = item.match(location);
                     const Icon = item.icon;
@@ -196,25 +221,26 @@ export default function Layout({
                       <Link key={item.href} href={item.href}>
                         <span
                           className={cn(
-                            "flex items-center gap-3 rounded-lg border border-transparent px-4 py-3 font-mono text-xs",
+                            "flex items-center gap-3 rounded-xl px-4 py-3 font-sans text-sm font-medium transition-colors",
                             isActive
-                              ? "border-l-2 border-l-primary bg-primary/[0.06] pl-[14px] text-primary"
-                              : "text-muted-foreground hover:bg-muted/50",
+                              ? "bg-primary/10 text-primary"
+                              : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
                           )}
                         >
-                          <Icon className="h-5 w-5" />
+                          <Icon className="h-5 w-5 shrink-0" />
                           {item.label}
                         </span>
                       </Link>
                     );
                   })}
                 </nav>
-                <div className="flex gap-2 border-t border-border pt-4">
+
+                <div className="flex gap-2 border-t border-border pt-5">
                   <a
                     href={profile.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-border py-2 text-sm"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-border py-2.5 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:text-primary"
                   >
                     <Github className="h-4 w-4" />
                     GitHub
@@ -223,18 +249,19 @@ export default function Layout({
                     href={profile.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-border py-2 text-sm"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-border py-2.5 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:text-primary"
                   >
                     <Linkedin className="h-4 w-4" />
                     LinkedIn
                   </a>
                 </div>
+
                 <a
                   href={`mailto:${email}`}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg border border-border px-4 py-3 text-sm font-medium text-foreground transition-colors hover:border-primary/30 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-primary/40 bg-primary/[0.06] px-4 py-3 text-sm font-semibold text-primary transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <Mail className="h-4 w-4" />
-                  Email
+                  Send Email
                 </a>
               </div>
             </motion.div>
@@ -242,59 +269,63 @@ export default function Layout({
         )}
       </AnimatePresence>
 
+      {/* ── Main content ── */}
       {fullWidth ? (
-        // Full-width mode: render children without main container constraints
         <motion.div
           key={location}
-          initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: reduceMotion ? 0 : 0.48,
-            ease: [0.16, 1, 0.3, 1],
-          }}
+          transition={{ duration: reduceMotion ? 0 : 0.45, ease: [0.16, 1, 0.3, 1] }}
         >
           {children}
         </motion.div>
       ) : (
-        // Standard mode: render children in constrained main container
         <main
           id="main-content"
-          className="mx-auto min-h-[calc(100vh-4rem)] w-full max-w-[min(100%,88rem)] px-4 py-8 sm:px-6 sm:py-10 lg:px-12"
+          className="mx-auto min-h-[calc(100vh-4rem)] w-full max-w-[min(100%,88rem)] px-4 py-10 sm:px-6 sm:py-12 lg:px-12 lg:py-14"
         >
           <motion.div
             key={location}
-            initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+            initial={reduceMotion ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: reduceMotion ? 0 : 0.48,
-              ease: [0.16, 1, 0.3, 1],
-            }}
+            transition={{ duration: reduceMotion ? 0 : 0.45, ease: [0.16, 1, 0.3, 1] }}
           >
             {children}
           </motion.div>
         </main>
       )}
 
-      <footer className="border-t border-border/80 py-8">
-        <div className="mx-auto flex w-full max-w-[min(100%,88rem)] flex-col items-center justify-between gap-4 px-4 text-center text-sm text-muted-foreground sm:flex-row sm:text-left sm:px-6 lg:px-8">
-          <p>Jenish Paudel — Computer Science @ Western University</p>
-          <div className="flex flex-wrap justify-center gap-4">
+      {/* ── Footer ── */}
+      <footer className="border-t border-border/60 py-10">
+        <div className="mx-auto flex w-full max-w-[min(100%,88rem)] flex-col items-center justify-between gap-5 px-4 sm:flex-row sm:px-6 lg:px-8">
+          <div className="text-center sm:text-left">
+            <p className="font-heading text-sm font-semibold text-foreground">Jenish Paudel</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">Computer Science @ Western University</p>
+          </div>
+          <div className="flex flex-wrap justify-center gap-5 text-sm text-muted-foreground">
             <a
               href={profile.github}
-              className="rounded-sm hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 rounded-sm transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
+              <Github className="h-3.5 w-3.5" />
               GitHub
             </a>
             <a
               href={profile.linkedin}
-              className="rounded-sm hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 rounded-sm transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
+              <Linkedin className="h-3.5 w-3.5" />
               LinkedIn
             </a>
             <a
               href={`mailto:${email}`}
-              className="rounded-sm hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex items-center gap-1.5 rounded-sm transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
+              <Mail className="h-3.5 w-3.5" />
               Email
             </a>
           </div>

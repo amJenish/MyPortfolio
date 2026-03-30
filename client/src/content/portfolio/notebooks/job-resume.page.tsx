@@ -9,8 +9,8 @@ import { FONT_MONO, FONT_SANS } from "./notebookTheme";
 // ── STANDARD CHART COLORS ──────────────────────────────────────────────────
 
 const CHART_COLORS = {
-  primary: "#3b82f6",    // Blue
-  primaryDim: "#2563eb", // Darker blue for borders on primary accents
+  primary: "#6366f1",    // Indigo (primary)
+  primaryDim: "#4f46e5", // Darker indigo for borders
   success: "#22c55e",    // Green
   warning: "#f59e0b",    // Amber/Orange
   danger: "#ef4444",     // Red

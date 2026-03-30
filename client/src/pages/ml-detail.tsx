@@ -16,17 +16,17 @@ export default function MlDetail() {
       <Layout>
         <div className="mx-auto max-w-lg space-y-6 py-16 text-left">
           <Link
-            href="/data-ml"
+            href="/ml"
             className="inline-flex items-center gap-2 text-sm font-medium text-primary"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Data & ML
+            Back to Data &amp; ML
           </Link>
           <h1 className="text-2xl font-bold">Notebook not found</h1>
           <p className="text-muted-foreground text-sm">
             That ID is not in the list.
           </p>
-          <Link href="/data-ml">
+          <Link href="/ml">
             <Button>All notebooks</Button>
           </Link>
         </div>
@@ -42,17 +42,17 @@ export default function MlDetail() {
       <Layout>
         <div className="mx-auto max-w-lg space-y-6 py-16 text-left">
           <Link
-            href="/data-ml"
+            href="/ml"
             className="inline-flex items-center gap-2 text-sm font-medium text-primary"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Data & ML
+            Back to Data &amp; ML
           </Link>
           <h1 className="text-2xl font-bold">No report page found</h1>
           <p className="text-muted-foreground text-sm">
             This notebook does not have a registered report page yet.
           </p>
-          <Link href="/data-ml">
+          <Link href="/ml">
             <Button>All notebooks</Button>
           </Link>
         </div>
@@ -67,7 +67,7 @@ export default function MlDetail() {
     <Layout fullWidth>
       <Page
         entry={notebook}
-        backHref="/data-ml"
+        backHref="/ml"
         backLabel="Back to Data & ML"
         categoryLabel="Data & ML"
         sections={sections}

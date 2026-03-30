@@ -1,12 +1,12 @@
 import { type ReactNode } from "react";
 import {
+  CatalogTagPills,
   Body,
   Code,
   FONT_MONO as MONO,
   FONT_SANS as SANS,
   Notice,
   SectionLabel,
-  Tag,
   TwoCol,
 } from "../reportPrimitives";
 import type { WorkPageProps } from "@/content/portfolio/workPageTypes";
@@ -15,7 +15,7 @@ import { WorkReportShell } from "@/components/work/WorkReportShell";
 // ── COLORS ──────────────────────────────────────────────────────────────────────
 
 const COLORS = {
-  teal: "rgb(45, 212, 191)",
+  teal: "var(--primary)",
 };
 
 export const workPageSections = [
@@ -69,24 +69,30 @@ export default function StudentEnrollmentPage(props: WorkPageProps) {
         <div style={{ borderBottom: "1px solid var(--border)", padding: "80px 0 64px", position: "relative", overflow: "hidden" }}>
           <div style={{
             position: "absolute", inset: 0,
-            backgroundImage: `linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)`,
-            backgroundSize: "48px 48px", opacity: 0.3,
+            backgroundImage: "radial-gradient(circle, var(--border) 1px, transparent 1px)",
+            backgroundSize: "32px 32px",
+            opacity: 0.35,
           }} />
           <div style={{
-            position: "absolute", top: "-30%", right: "10%",
-            width: 560, height: 560,
-            background: "radial-gradient(ellipse, rgb(45, 212, 191 / 0.08) 0%, transparent 65%)",
+            position: "absolute",
+            top: "-20%",
+            right: "5%",
+            width: 520,
+            height: 520,
+            background: "radial-gradient(ellipse, color-mix(in srgb, var(--primary) 8%, transparent) 0%, transparent 62%)",
+            pointerEvents: "none",
+          }} />
+          <div style={{
+            position: "absolute",
+            bottom: "-10%",
+            left: "10%",
+            width: 320,
+            height: 320,
+            background: "radial-gradient(ellipse, color-mix(in srgb, var(--primary) 5%, transparent) 0%, transparent 60%)",
             pointerEvents: "none",
           }} />
 
           <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 40px", position: "relative" }}>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 24, alignItems: "center" }}>
-              <span style={{ fontFamily: MONO, fontSize: 11, color: "var(--muted-foreground)" }}>
-                Backend · Servlet architecture · Java & JDBC
-              </span>
-              <Tag color="rgb(34, 197, 94)">Complete</Tag>
-            </div>
-
             <h1 style={{
               fontFamily: SANS,
               fontSize: "clamp(30px, 4.5vw, 54px)",
@@ -97,18 +103,14 @@ export default function StudentEnrollmentPage(props: WorkPageProps) {
               <span style={{ color: COLORS.teal }}>Academic administration system</span>
             </h1>
 
-            <Body style={{ maxWidth: 1280, marginBottom: 12, color: "#000000" }}>
+            <Body style={{ maxWidth: 1280, marginBottom: 12, color: "var(--foreground)" }}>
               A servlet-based academic administration platform built in Java that manages the full lifecycle of student enrollment: from program selection and prerequisite validation through schedule conflict detection and course registration. The system supports three distinct user roles (Student, Professor, Administrator), each with scoped permissions and a dedicated service boundary.
             </Body>
-            <Body style={{ maxWidth: 1280, marginBottom: 36, color: "#000000" }}>
+            <Body style={{ maxWidth: 1280, marginBottom: 36, color: "var(--foreground)" }}>
               The architecture follows a strict layered separation between HTTP handling, business logic, and data access. Thirteen dedicated data access objects, nine service classes, and a shared helper layer handle cross-cutting concerns like data validation and query construction. All database interaction goes through JDBC with prepared statements.
             </Body>
 
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {["Java", "Servlets", "JDBC", "MySQL", "SQL", "Object-Oriented Design"].map(t => (
-                <Tag key={t}>{t}</Tag>
-              ))}
-            </div>
+            <CatalogTagPills tags={props.entry.tags} />
           </div>
         </div>
 
@@ -117,10 +119,10 @@ export default function StudentEnrollmentPage(props: WorkPageProps) {
           {/* ══ 01 OVERVIEW ══ */}
           <div id="summary" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={1} title="Overview" />
-            <Body style={{ marginBottom: 16, color: "#000000" }}>
+            <Body style={{ marginBottom: 16, color: "var(--foreground)" }}>
               The system manages the full lifecycle of student enrollment: from program selection and prerequisite validation through schedule conflict detection and course registration. The architecture follows a strict layered separation between HTTP handling, business logic, and data access.
             </Body>
-            <Body style={{ marginBottom: 24, color: "#000000" }}>
+            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
               Key architectural principles:
             </Body>
             <ul style={{ listStyle: "disc", paddingLeft: 20, marginBottom: 24, color: "var(--muted-foreground)", lineHeight: 1.8 }}>
@@ -143,42 +145,42 @@ export default function StudentEnrollmentPage(props: WorkPageProps) {
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16, marginBottom: 32 }}>
               <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Student Enrollment</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   Students can browse available course offerings, check prerequisite completion status, and register for courses. Enrollment is blocked if prerequisites are unmet, seats are full, or the offering conflicts with an existing schedule entry.
                 </Body>
               </div>
 
               <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Professor Role</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   The professor role exposes read access to assigned course offerings and enrolled student rosters. Teaching load tracking is handled by the administrator layer. The professor servlet path is explicitly scoped to their assigned courses.
                 </Body>
               </div>
 
               <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Administrator Control</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   Administrators manage the full academic structure: creating programs, defining courses and prerequisites, scheduling offerings, assigning professors, and controlling enrollment periods. User lifecycle management is also scoped to this role.
                 </Body>
               </div>
 
               <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Prerequisite Enforcement</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   The <Code>PrerequisitesDAO</Code> models prerequisite chains per course. Before any enrollment is committed, <Code>EnrollmentManagementServices</Code> queries the student's completed course history and validates against all required predecessors.
                 </Body>
               </div>
 
               <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Schedule Conflict Detection</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   <Code>ScheduleConflictValidator</Code> runs at registration time to prevent students from booking overlapping course offerings. Conflicts are detected by querying the student's existing enrollments and checking for time slot overlap.
                 </Body>
               </div>
 
               <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Seat Management</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   Each course offering has a fixed seat capacity. <Code>EnrollmentManagementServices</Code> queries the current enrollment count before accepting a new registration. Seat availability is checked atomically with the enrollment commit.
                 </Body>
               </div>
@@ -188,7 +190,7 @@ export default function StudentEnrollmentPage(props: WorkPageProps) {
           {/* ══ 03 LAYERED ARCHITECTURE ══ */}
           <div id="architecture" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={3} title="Layered Architecture" />
-            <Body style={{ marginBottom: 24, color: "#000000" }}>
+            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
               The system is organized into three distinct layers: the HTTP/Servlet layer, the business logic layer, and the data access layer. Each layer has a single responsibility and communicates through well-defined interfaces.
             </Body>
 
@@ -208,7 +210,7 @@ export default function StudentEnrollmentPage(props: WorkPageProps) {
                 <PipelineNode accent={COLORS.teal}>MySQL Database</PipelineNode>
               </div>
 
-              <Body style={{ fontSize: 12, marginTop: 16, color: "#000000" }}>
+              <Body style={{ fontSize: 12, marginTop: 16, color: "var(--foreground)" }}>
                 Each layer is independently testable. Servlets handle HTTP concerns (routing, authentication, serialization). Services handle business logic (validation, orchestration). DAOs handle SQL and persistence. This separation keeps concerns isolated and makes the codebase maintainable.
               </Body>
             </div>
@@ -216,13 +218,13 @@ export default function StudentEnrollmentPage(props: WorkPageProps) {
             <TwoCol gap={20}>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Servlet Layer</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   Each servlet maps to a specific domain action. Servlets handle HTTP routing, authentication checks, and parameter extraction. They delegate all business logic to the service layer and serialize responses back to JSON or HTML. Role-based access control is enforced at this boundary.
                 </Body>
               </div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Service Layer</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   Nine service classes encapsulate business logic: enrollment validation, prerequisite checking, schedule conflict detection, and seat management. Services orchestrate calls to multiple DAOs and enforce invariants before committing changes. All complex queries and validations live here.
                 </Body>
               </div>
@@ -231,13 +233,13 @@ export default function StudentEnrollmentPage(props: WorkPageProps) {
             <TwoCol gap={20}>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Data Access Layer</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   Thirteen DAO classes provide a clean separation between business logic and SQL. Each DAO owns a specific entity's persistence logic. No raw queries leak into the service layer. Prepared statements prevent SQL injection. Stored procedures handle complex multi-table queries.
                 </Body>
               </div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Helper Layer</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   Shared utilities handle cross-cutting concerns: data validation, query construction, password hashing, and session management. <Code>DatabaseConnection</Code> centralizes JDBC connection management. <Code>LoggedUserInformation</Code> maintains session state across requests.
                 </Body>
               </div>
@@ -247,7 +249,7 @@ export default function StudentEnrollmentPage(props: WorkPageProps) {
           {/* ══ 04 DATA LAYER ══ */}
           <div id="datalayer" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={4} title="Data Layer" />
-            <Body style={{ marginBottom: 24, color: "#000000" }}>
+            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
               The data layer is built around the DAO pattern with thirteen dedicated data access objects. Each DAO owns the persistence logic for a specific entity. All database interaction goes through JDBC with prepared statements to prevent SQL injection. Stored procedures handle the more complex multi-table queries.
             </Body>
 
@@ -278,20 +280,20 @@ export default function StudentEnrollmentPage(props: WorkPageProps) {
           {/* ══ 05 BUSINESS LOGIC ══ */}
           <div id="bizlogic" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={5} title="Business Logic" />
-            <Body style={{ marginBottom: 24, color: "#000000" }}>
+            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
               Nine service classes encapsulate the core business logic. Each service orchestrates calls to multiple DAOs and enforces domain invariants before committing changes. Complex validations and multi-step workflows live in the service layer.
             </Body>
 
             <TwoCol gap={20}>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Enrollment Validation</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   <Code>EnrollmentManagementServices</Code> enforces three constraints before accepting any enrollment: prerequisites must be met, seats must be available, and schedule conflicts must not exist. All three checks run atomically before the database commit.
                 </Body>
               </div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Schedule Conflict Detection</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   <Code>ScheduleConflictValidator</Code> queries the student's existing enrollments and checks for time slot overlap. Conflicts are detected by comparing start/end times across all enrolled offerings. The check runs before the enrollment is committed.
                 </Body>
               </div>
@@ -300,13 +302,13 @@ export default function StudentEnrollmentPage(props: WorkPageProps) {
             <TwoCol gap={20}>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Prerequisite Checking</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   <Code>PrerequisiteValidator</Code> queries the student's completed course history and validates against all required predecessors. Partial completion is treated as a failure. The validator handles chains of prerequisites (A requires B, B requires C).
                 </Body>
               </div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Seat Management</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   <Code>SeatAvailabilityValidator</Code> queries the current enrollment count for a course offering and checks against its fixed capacity. Seat availability is checked atomically with the enrollment commit to prevent race conditions.
                 </Body>
               </div>
@@ -316,20 +318,20 @@ export default function StudentEnrollmentPage(props: WorkPageProps) {
           {/* ══ 06 SECURITY & ACCESS CONTROL ══ */}
           <div id="security" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={6} title="Security & Access Control" />
-            <Body style={{ marginBottom: 24, color: "#000000" }}>
+            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
               Role-based access control is enforced at the servlet layer. Each servlet checks the authenticated user's role before allowing access to protected operations. Passwords are hashed before storage. Session state is maintained securely across requests.
             </Body>
 
             <TwoCol gap={20}>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Authentication</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   Users log in with email and password. <Code>PasswordHasher</Code> hashes credentials before any database write, so plaintext values are never stored. Successful login returns a session token that gates access to protected operations.
                 </Body>
               </div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Authorization</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   <Code>LoggedUserInformation</Code> maintains session state so each request is authorized against the currently authenticated user's role. Servlets check role membership before delegating to service methods. Unauthenticated or underprivileged requests are rejected at the servlet boundary.
                 </Body>
               </div>
@@ -338,13 +340,13 @@ export default function StudentEnrollmentPage(props: WorkPageProps) {
             <TwoCol gap={20}>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>SQL Injection Prevention</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   All database interaction uses JDBC prepared statements. User input is never concatenated directly into SQL strings. Stored procedures handle complex multi-table queries, further isolating SQL logic from application code.
                 </Body>
               </div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Data Isolation</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   Students can only view and modify their own enrollments. Professors can only view their assigned courses and rosters. Administrators have full access. Data isolation is enforced at the service layer through role-aware queries.
                 </Body>
               </div>
@@ -358,13 +360,13 @@ export default function StudentEnrollmentPage(props: WorkPageProps) {
             <TwoCol gap={20}>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Build & Tooling</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   Maven manages dependencies and the build lifecycle. The Maven wrapper (<Code>mvnw</Code>) is committed to the repository so the project builds without a system Maven installation. The <Code>pom.xml</Code> defines the servlet container integration and third-party dependencies.
                 </Body>
               </div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Package Structure</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   The application is organized under <Code>com.example.studentenrollmentsystem</Code> with five sub-packages: DAO, Interfaces, models, security, and services. Servlets live in a separate <Code>servlets/</Code> package. The package layout mirrors the architectural layering directly.
                 </Body>
               </div>
@@ -373,13 +375,13 @@ export default function StudentEnrollmentPage(props: WorkPageProps) {
             <TwoCol gap={20}>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Persistence</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   MySQL stores all application data. <Code>DatabaseConnection.java</Code> centralizes JDBC connection management so no individual DAO creates its own connection. At present this uses a single managed connection rather than a pool.
                 </Body>
               </div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Extensibility</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   Adding a new entity requires a new model, a new DAO, and additions to the relevant service class, without touching any servlet. Swapping MySQL for a different JDBC-compatible database would require only changes to <Code>DatabaseConnection.java</Code>.
                 </Body>
               </div>

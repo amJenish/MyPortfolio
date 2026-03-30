@@ -4,6 +4,7 @@ import {
   ResponsiveContainer, LineChart, Line, Legend,
 } from "recharts";
 import {
+  CatalogTagPills,
   Body,
   ChartTip,
   ChartWrap,
@@ -14,7 +15,6 @@ import {
   Panel,
   PanelLabel,
   SectionLabel,
-  Tag,
   TwoCol,
 } from "../reportPrimitives";
 import type { WorkPageProps } from "@/content/portfolio/workPageTypes";
@@ -89,13 +89,13 @@ export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element
     },
     Throughput: {
       formula: "r = vehicles_cleared",
-      color: "rgb(45, 212, 191)",
+      color: "var(--primary)",
       body: "Reward is proportional to the number of vehicles that clear the intersection during the current phase. Intuitive and directly tied to what a good signal policy should achieve. The signal is sparse by design — it only accumulates during active green phases.",
       risk: "Throughput alone ignores queue buildup on non-served approaches. An agent optimising purely for throughput on one direction will let perpendicular queues grow if it maximises clearance on the dominant flow.",
     },
     ThroughputQueue: {
       formula: "r = α·throughput − β·queue",
-      color: "rgb(45, 212, 191)",
+      color: "var(--primary)",
       body: "A two-term reward combining positive throughput signal with a queue-length penalty. This directly patches the failure mode of the pure throughput formulation. The α and β weights control the trade-off between clearing vehicles and preventing buildup.",
       risk: "The weighting is fragile. Too much throughput emphasis and the agent ignores queues. Too much queue penalty and the agent becomes overly conservative, switching phases before they've cleared the current wave.",
     },
@@ -117,24 +117,30 @@ export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element
         <div style={{ borderBottom: "1px solid var(--border)", padding: "80px 0 64px", position: "relative", overflow: "hidden" }}>
           <div style={{
             position: "absolute", inset: 0,
-            backgroundImage: `linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)`,
-            backgroundSize: "48px 48px", opacity: 0.3,
+            backgroundImage: "radial-gradient(circle, var(--border) 1px, transparent 1px)",
+            backgroundSize: "32px 32px",
+            opacity: 0.35,
           }} />
           <div style={{
-            position: "absolute", top: "-30%", right: "10%",
-            width: 560, height: 560,
-            background: "radial-gradient(ellipse, rgb(45, 212, 191 / 0.08) 0%, transparent 65%)",
+            position: "absolute",
+            top: "-20%",
+            right: "5%",
+            width: 520,
+            height: 520,
+            background: "radial-gradient(ellipse, color-mix(in srgb, var(--primary) 8%, transparent) 0%, transparent 62%)",
+            pointerEvents: "none",
+          }} />
+          <div style={{
+            position: "absolute",
+            bottom: "-10%",
+            left: "10%",
+            width: 320,
+            height: 320,
+            background: "radial-gradient(ellipse, color-mix(in srgb, var(--primary) 5%, transparent) 0%, transparent 60%)",
             pointerEvents: "none",
           }} />
 
           <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 40px", position: "relative" }}>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 24, alignItems: "center" }}>
-              <span style={{ fontFamily: MONO, fontSize: 11, color: "var(--muted-foreground)" }}>
-                Reinforcement learning · traffic control · reward engineering
-              </span>
-              <Tag color="rgb(245, 158, 11)">In progress</Tag>
-            </div>
-
             <h1 style={{
               fontFamily: SANS,
               fontSize: "clamp(30px, 4.5vw, 54px)",
@@ -142,26 +148,22 @@ export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element
               lineHeight: 1.12, letterSpacing: -1, color: "var(--foreground)",
             }}>
               Adaptive traffic signal<br />
-              <span style={{ color: "rgb(45, 212, 191)" }}>control via reinforcement learning</span>
+              <span style={{ color: "var(--primary)" }}>control via reinforcement learning</span>
             </h1>
 
-            <Body style={{ maxWidth: 1280, marginBottom: 12, color: "#000000" }}>
+            <Body style={{ maxWidth: 1280, marginBottom: 12, color: "var(--foreground)" }}>
               I&apos;m building a reinforcement learning system that learns adaptive signal timing policies at
               a single intersection from 60 days of historical traffic data. Key question: can a learned policy consistently outperform a fixed-time plan, and which
               reward formulation gets us there most reliably?
             </Body>
-            <Body style={{ maxWidth: 1280, marginBottom: 36, color: "#000000" }}>
+            <Body style={{ maxWidth: 1280, marginBottom: 36, color: "var(--foreground)" }}>
               The system is built around a modular architecture that lets me swap reward functions,
               observation spaces, and agent architectures independently. I&apos;ve implemented DQN and Double DQN,
               designed five reward formulations, and have both fixed-time and actuated baselines ready.
               Right now I&apos;m working through a convergence problem before I can run clean comparisons.
             </Body>
 
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {["Python", "PyTorch", "SUMO", "Double DQN", "SMDP", "Reward Engineering"].map(t => (
-                <Tag key={t}>{t}</Tag>
-              ))}
-            </div>
+            <CatalogTagPills tags={props.entry.tags} />
           </div>
         </div>
 
@@ -174,9 +176,9 @@ export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element
             marginBottom: 88,
           }}>
             {([
-              { value: "60d",         label: "Training data",    sub: "Historical intersection flow",    color: "rgb(45, 212, 191)"  },
-              { value: "5",           label: "Reward functions", sub: "From WaitTime to Composite",      color: "rgb(45, 212, 191)"  },
-              { value: "2",           label: "Baselines",        sub: "Fixed-time & actuated",           color: "rgb(45, 212, 191)"  },
+              { value: "60d",         label: "Training data",    sub: "Historical intersection flow",    color: "var(--primary)"  },
+              { value: "5",           label: "Reward functions", sub: "From WaitTime to Composite",      color: "var(--primary)"  },
+              { value: "2",           label: "Baselines",        sub: "Fixed-time & actuated",           color: "var(--primary)"  },
               { value: "Convergence", label: "Current blocker",  sub: "Not reliably converging yet",     color: "rgb(245, 158, 11)" },
             ] as { value: string; label: string; sub: string; color: string }[]).map((s, i) => (
               <div key={s.label} style={{
@@ -250,7 +252,7 @@ export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element
           {/* ══ 02 ARCHITECTURE ══ */}
           <div id="rl-arch" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={2} title="How I Built It" />
-            <Body style={{ marginBottom: 32, color: "#000000" }}>
+            <Body style={{ marginBottom: 32, color: "var(--foreground)" }}>
               The codebase is built around a components-and-connector pattern. Every major piece has an
               abstract base class and a concrete implementation. <Code>agent.py</Code> and{" "}
               <Code>trainer.py</Code> act as the connectors, wiring together whichever combination of
@@ -260,8 +262,8 @@ export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginBottom: 16 }}>
               {([
-                { name: "Environment",   file: "sumo_environment.py",  color: "rgb(45, 212, 191)",    note: "Wraps SUMO, manages simulation state, handles phase transitions, exposes step/reset." },
-                { name: "Observation",   file: "queue_observation.py", color: "rgb(45, 212, 191)",    note: "Extracts queue length per lane and formats it as the state vector fed to the Q-network." },
+                { name: "Environment",   file: "sumo_environment.py",  color: "var(--primary)",    note: "Wraps SUMO, manages simulation state, handles phase transitions, exposes step/reset." },
+                { name: "Observation",   file: "queue_observation.py", color: "var(--primary)",    note: "Extracts queue length per lane and formats it as the state vector fed to the Q-network." },
                 { name: "Reward",        file: "5 implementations",    color: "rgb(245, 158, 11)",   note: "Pluggable reward functions — each implements the same base interface." },
                 { name: "Policy",        file: "double_dqn.py",        color: "var(--muted-foreground)", note: "Q-network, target network, and update logic. DQN and Double DQN both live here." },
                 { name: "Replay Buffer", file: "uniform.py",           color: "var(--muted-foreground)", note: "Stores (s, a, r, s′, done) tuples and samples random minibatches." },
@@ -284,16 +286,16 @@ export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element
               </div>
               <TwoCol gap={28}>
                 <div>
-                  <div style={{ fontFamily: MONO, fontSize: 12, color: "rgb(45, 212, 191)", marginBottom: 8 }}>agent.py</div>
-                  <Body style={{ fontSize: 13.5, color: "#000000" }}>
+                  <div style={{ fontFamily: MONO, fontSize: 12, color: "var(--primary)", marginBottom: 8 }}>agent.py</div>
+                  <Body style={{ fontSize: 13.5, color: "var(--foreground)" }}>
                     Owns the policy and replay buffer. Exposes <Code>act(state)</Code> for epsilon-greedy
                     action selection and <Code>learn()</Code> for sampling from the buffer and updating the
                     Q-network. Deliberately knows nothing about the environment or reward function.
                   </Body>
                 </div>
                 <div>
-                  <div style={{ fontFamily: MONO, fontSize: 12, color: "rgb(45, 212, 191)", marginBottom: 8 }}>trainer.py</div>
-                  <Body style={{ fontSize: 13.5, color: "#000000" }}>
+                  <div style={{ fontFamily: MONO, fontSize: 12, color: "var(--primary)", marginBottom: 8 }}>trainer.py</div>
+                  <Body style={{ fontSize: 13.5, color: "var(--foreground)" }}>
                     Orchestrates the training loop. Holds environment, reward function, and scheduler.
                     Experiments are driven by <Code>reward_configuration.json</Code> and{" "}
                     <Code>policy_configuration.json</Code> — no code changes between runs.
@@ -303,7 +305,7 @@ export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element
             </div>
 
             <TwoCol gap={10}>
-              <Notice color="rgb(45, 212, 191)" icon="✓">
+              <Notice color="var(--primary)" icon="✓">
                 <strong>Baselines are first-class.</strong>{" "}
                 <Code>fixed_time.py</Code> and <Code>actuated.py</Code> live in a dedicated{" "}
                 <Code>baselines/</Code> module with an evaluation script. Comparing against fixed-time is
@@ -321,7 +323,7 @@ export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element
           {/* ══ 03 REWARD ENGINEERING ══ */}
           <div id="rl-rewards" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={3} title="Reward Engineering" />
-            <Body style={{ marginBottom: 28, color: "#000000" }}>
+            <Body style={{ marginBottom: 28, color: "var(--foreground)" }}>
               Reward design has been the majority of the research work so far. Different formulations produce
               very different agent behaviours even with identical architectures. I built five reward functions,
               each implementing the same base interface so they&apos;re fully interchangeable in the training loop.
@@ -343,10 +345,10 @@ export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element
                       flex: 1, fontFamily: MONO, fontSize: 11,
                       padding: "12px 8px", cursor: "pointer",
                       background: active ? "var(--card)" : "transparent",
-                      color: active ? "rgb(45, 212, 191)" : "var(--muted-foreground)",
+                      color: active ? "var(--primary)" : "var(--muted-foreground)",
                       border: "none",
                       borderRight: i < REWARD_TABS.length - 1 ? "1px solid var(--border)" : "none",
-                      borderBottom: active ? "2px solid rgb(45, 212, 191)" : "2px solid transparent",
+                      borderBottom: active ? "2px solid var(--primary)" : "2px solid transparent",
                       transition: "all 0.15s",
                     }}
                   >
@@ -369,7 +371,7 @@ export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element
                   {activeReward}
                 </h3>
                 <div style={{
-                  fontFamily: MONO, fontSize: 13, color: "rgb(45, 212, 191)",
+                  fontFamily: MONO, fontSize: 13, color: "var(--primary)",
                   background: "var(--muted)", border: "1px solid var(--border)",
                   padding: "9px 16px", borderRadius: 6,
                 }}>
@@ -394,7 +396,7 @@ export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element
                   <XAxis dataKey="name" tick={{ fill: "var(--muted-foreground)", fontSize: 11, fontFamily: MONO }} axisLine={false} tickLine={false} />
                   <YAxis domain={[0, 10]} tick={{ fill: "var(--muted-foreground)", fontSize: 11, fontFamily: MONO }} axisLine={false} tickLine={false} />
                   <Tooltip content={<ChartTip />} cursor={{ fill: "rgba(255, 255, 255, 0.04)" }} />
-                  <Bar dataKey="stability" fill="rgb(45, 212, 191)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="stability" fill="var(--primary)" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="clarity" fill="rgb(59, 130, 246)" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>

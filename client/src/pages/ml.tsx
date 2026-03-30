@@ -8,17 +8,31 @@ import { ScrollRevealStagger } from "@/components/motion/ScrollRevealStagger";
 export default function Ml() {
   return (
     <Layout>
-      <div className="space-y-10">
-        <ScrollReveal as="section" className="max-w-2xl space-y-3 text-left">
-          <p className="text-xs font-medium text-muted-foreground">Experiments and write-ups</p>
-          <h1 className="font-heading text-3xl font-bold tracking-tight md:text-4xl">Data science, ML, and notebooks</h1>
-          <p className="leading-[1.6] text-muted-foreground">
-            Structured reports with metrics, tables, and Recharts—drop exported figures under{" "}
-            <code className="rounded-md bg-muted px-1.5 py-0.5 text-xs">public/portfolio/notebooks/&lt;slug&gt;/</code> when ready.
+      <div className="space-y-12">
+        {/* ── Page header ── */}
+        <ScrollReveal as="header" className="max-w-2xl space-y-4 text-left">
+          <p className="font-mono text-xs font-semibold uppercase tracking-widest text-primary">
+            Experiments &amp; write-ups
           </p>
+          <h1 className="font-heading text-4xl font-extrabold tracking-tight md:text-5xl">
+            Data science, ML &amp; notebooks
+          </h1>
+          <p className="text-[0.9375rem] leading-relaxed text-muted-foreground">
+            Structured reports with metrics, tables, and Recharts — drop exported figures under{" "}
+            <code className="rounded-md bg-muted px-1.5 py-0.5 font-mono text-xs text-primary">
+              public/portfolio/notebooks/&lt;slug&gt;/
+            </code>{" "}
+            when ready.
+          </p>
+          <div className="h-1 w-24 rounded-full bg-gradient-to-r from-primary to-primary/20" aria-hidden />
         </ScrollReveal>
 
-        <ScrollRevealStagger className="grid grid-cols-1 gap-6 md:grid-cols-2" stagger={0.07} delayChildren={0.08}>
+        {/* ── Notebooks grid ── */}
+        <ScrollRevealStagger
+          className="grid grid-cols-1 gap-6 md:grid-cols-2"
+          stagger={0.07}
+          delayChildren={0.08}
+        >
           {kaggleProjects.map((p) => (
             <WorkListCard
               key={p.id}

@@ -18,7 +18,7 @@ import { WorkReportShell } from "@/components/work/WorkReportShell";
 // ── STANDARD CHART COLORS ──────────────────────────────────────────────────
 
 const CHART_COLORS = {
-  primary: "#3b82f6",    // Blue
+  primary: "#6366f1",    // Indigo (primary)
   success: "#22c55e",    // Green
   warning: "#f59e0b",    // Amber/Orange
   danger: "#ef4444",     // Red
@@ -194,7 +194,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
               <span style={{ color: CHART_COLORS.primary }}>Churn Prediction</span>
             </h1>
 
-            <Body style={{ maxWidth: 660, marginBottom: 24, color: "#000000" }}>
+            <Body style={{ maxWidth: 660, marginBottom: 24, color: "var(--foreground)" }}>
               A telecom company's most expensive problem isn't acquiring customers. It's silently losing them. I built a churn prediction system across 7,032 subscribers to answer: who is at risk, why they're leaving, and which levers retain them.
             </Body>
 
@@ -210,7 +210,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
           {/* ══ 01 OVERVIEW ══ */}
           <div id="telco-kpis" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={1} title="Overview" />
-            <Body style={{ marginBottom: 24, color: "#000000" }}>
+            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
               A binary classification model trained on 7,032 telecom subscribers to predict which customers are at risk of churning. The dataset includes 19 features spanning demographics, service usage, billing, and contract details. The final Gradient Boosting model achieves 79.4% accuracy and 83.6% ROC-AUC on the held-out test set.
             </Body>
 
@@ -222,7 +222,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
           {/* ══ 02 BUSINESS PROBLEM ══ */}
           <div id="telco-business" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={2} title="Business Problem" />
-            <Body style={{ marginBottom: 24, color: "#000000" }}>
+            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
               Telecom companies operate on thin margins. Customer acquisition cost is high; retention is far cheaper. But retention teams have limited outreach capacity. They can't contact every customer. So the question becomes: which customers should they prioritize?
             </Body>
 
@@ -239,7 +239,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
                 backgroundColor: "var(--card)",
               }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: CHART_COLORS.primary, marginBottom: 8 }}>Baseline churn rate</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>27% of the 7,032 customers in the dataset churned within the observation window. That's 1,869 lost customers. The company needs to know who's likely to leave.</Body>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>27% of the 7,032 customers in the dataset churned within the observation window. That's 1,869 lost customers. The company needs to know who's likely to leave.</Body>
               </div>
 
               <div style={{
@@ -249,7 +249,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
                 backgroundColor: "var(--card)",
               }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: CHART_COLORS.primary, marginBottom: 8 }}>Limited retention budget</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>The retention team can realistically contact 500–600 customers per month. That's 7–8% of the customer base. They need a ranked list of who to prioritize.</Body>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>The retention team can realistically contact 500–600 customers per month. That's 7–8% of the customer base. They need a ranked list of who to prioritize.</Body>
               </div>
 
               <div style={{
@@ -259,7 +259,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
                 backgroundColor: "var(--card)",
               }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: CHART_COLORS.primary, marginBottom: 8 }}>False alarms are expensive</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>Contacting a customer who wasn't leaving wastes budget and risks annoying them. A model with high precision (few false positives) is more operationally useful than one with high recall.</Body>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>Contacting a customer who wasn't leaving wastes budget and risks annoying them. A model with high precision (few false positives) is more operationally useful than one with high recall.</Body>
               </div>
             </div>
           </div>
@@ -267,7 +267,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
           {/* ══ 03 EDA ══ */}
           <div id="telco-eda" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={3} title="Exploratory Data Analysis" />
-            <Body style={{ marginBottom: 24, color: "#000000" }}>
+            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
               Before building any model, I explored the data to understand which features correlate with churn. Three patterns emerged immediately: tenure, monthly charges, and payment method.
             </Body>
 
@@ -294,7 +294,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
-                <Body style={{ fontSize: 12, color: "#000000", marginTop: 12 }}>
+                <Body style={{ fontSize: 12, color: "var(--foreground)", marginTop: 12 }}>
                   New customers (0–6 months) churn at 53%. By 2 years, the rate drops to 9%. Tenure is the strongest single predictor.
                 </Body>
               </div>
@@ -321,7 +321,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
-                <Body style={{ fontSize: 12, color: "#000000", marginTop: 12 }}>
+                <Body style={{ fontSize: 12, color: "var(--foreground)", marginTop: 12 }}>
                   E-Check payment method shows 45% churn vs 15% for credit card. Suggests friction in the payment experience.
                 </Body>
               </div>
@@ -331,7 +331,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
           {/* ══ 04 FEATURES ══ */}
           <div id="telco-features" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={4} title="Feature Engineering" />
-            <Body style={{ marginBottom: 24, color: "#000000" }}>
+            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
               I used 19 features spanning demographics, service adoption, billing, and contract terms. Key engineered features include contract type (categorical), payment method (categorical), and binary flags for internet services.
             </Body>
           </div>
@@ -339,7 +339,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
           {/* ══ 05 MODELS ══ */}
           <div id="telco-models" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={5} title="Model Comparison & Selection" />
-            <Body style={{ marginBottom: 24, color: "#000000" }}>
+            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
               I trained five models and evaluated them on a held-out test set. Gradient Boosting emerged as the strongest, balancing precision and recall without overfitting.
             </Body>
 
@@ -388,7 +388,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
               ))}
             </div>
 
-            <Body style={{ color: "#000000", marginBottom: 12 }}>
+            <Body style={{ color: "var(--foreground)", marginBottom: 12 }}>
               <strong>Why Gradient Boosting:</strong> It achieves the highest accuracy (79.4%) and matches LogReg's ROC-AUC (83.6%). More importantly, its 65% precision means fewer false alarms for the retention team. SVM's 90% precision is misleading—it only catches 9% of churners, making it operationally useless.
             </Body>
           </div>
@@ -396,7 +396,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
           {/* ══ 06 FEATURE IMPORTANCE ══ */}
           <div id="telco-importance" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={6} title="Feature Importance" />
-            <Body style={{ marginBottom: 24, color: "#000000" }}>
+            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
               The model learned that financial features dominate: TotalCharges (10.2%), Tenure (9.6%), and MonthlyCharges (8.3%) account for 28% of predictive signal. Contract type and payment method also rank highly, offering actionable levers for retention.
             </Body>
 
@@ -428,7 +428,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
           {/* ══ 07 TUNING ══ */}
           <div id="telco-tuning" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={7} title="Hyperparameter Tuning" />
-            <Body style={{ marginBottom: 24, color: "#000000" }}>
+            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
               I ran GridSearchCV with 3-fold cross-validation across 32 parameter combinations. The tuned model achieved 80.1% CV accuracy and 79.4% test accuracy—a 0.7% generalization gap indicating healthy performance without overfitting.
             </Body>
           </div>
@@ -436,7 +436,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
           {/* ══ 08 EVALUATION ══ */}
           <div id="telco-evaluation" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={8} title="Final Evaluation" />
-            <Body style={{ marginBottom: 24, color: "#000000" }}>
+            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
               On the held-out test set (2,110 subscribers: 1,549 retained, 561 churners), the model achieves 65% precision and 48% recall on churners. This means: of the customers flagged as at-risk, 65% actually churn. Of the customers who actually churn, the model catches 48%.
             </Body>
 
@@ -497,7 +497,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
           {/* ══ 09 NEXT STEPS ══ */}
           <div id="telco-next" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={9} title="Next Steps" />
-            <Body style={{ color: "#000000", marginBottom: 24 }}>
+            <Body style={{ color: "var(--foreground)", marginBottom: 24 }}>
               The model is production-ready. Immediate next steps:
             </Body>
             <ul style={{ listStyle: "disc", paddingLeft: 20, color: "var(--muted-foreground)", lineHeight: 1.8 }}>

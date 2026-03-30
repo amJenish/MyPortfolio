@@ -5,35 +5,47 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium " +
-    "transition-[color,background-color,border-color,box-shadow,transform,filter] duration-200 ease-out " +
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl font-sans text-sm font-semibold " +
+    "transition-all duration-200 ease-out " +
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background " +
-    "disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98] " +
-    "[&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover-elevate active-elevate-2",
+    "disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97] " +
+    "[&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
+        /* Primary — maximum emphasis, filled indigo */
         default:
-          "bg-primary text-primary-foreground border border-primary font-mono font-bold hover:brightness-[1.06]",
+          "bg-primary text-primary-foreground border border-primary/80 shadow-sm hover:brightness-110 hover:-translate-y-0.5 hover:shadow-md hover:shadow-primary/20 active:translate-y-0",
+
         destructive:
-          "bg-destructive text-destructive-foreground shadow-sm border-destructive-border",
+          "bg-destructive text-destructive-foreground shadow-sm border border-destructive/80 hover:brightness-110",
+
+        /* Outline — secondary action, clear border */
         outline:
-          "border border-border bg-transparent text-muted-foreground shadow-none active:shadow-none hover:border-primary/40 hover:text-primary",
+          "border-2 border-border bg-transparent text-muted-foreground hover:border-primary/50 hover:bg-primary/[0.06] hover:text-primary active:scale-[0.97]",
+
         secondary:
-          "border bg-secondary text-secondary-foreground border-secondary-border",
-        ghost: "border border-transparent hover:bg-muted/50",
-        link: "border-transparent text-primary underline-offset-4 hover:underline active:scale-100",
+          "border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80",
+
+        ghost:
+          "border border-transparent text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+
+        link:
+          "border-transparent text-primary underline-offset-4 hover:underline active:scale-100",
+
+        /* CTA — hero primary action, strongest visual weight */
         cta:
-          "btn-cta relative overflow-hidden rounded-lg border border-primary/90 bg-primary text-primary-foreground shadow-md " +
-          "hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/15 active:translate-y-0 active:shadow-md",
+          "btn-cta relative overflow-hidden rounded-xl border border-primary/90 bg-primary text-primary-foreground shadow-md " +
+          "hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/25 hover:brightness-110 active:translate-y-0 active:shadow-md",
+
         ctaSecondary:
-          "btn-cta-secondary relative overflow-hidden rounded-lg border-2 border-primary/35 bg-background/80 text-foreground shadow-sm " +
-          "hover:-translate-y-0.5 hover:border-primary/55 hover:bg-muted/40 hover:shadow-md active:translate-y-0",
+          "btn-cta-secondary relative overflow-hidden rounded-xl border-2 border-primary/35 bg-background/80 text-foreground shadow-sm " +
+          "hover:-translate-y-0.5 hover:border-primary/55 hover:bg-primary/[0.06] hover:text-primary hover:shadow-md active:translate-y-0",
       },
       size: {
-        default: "min-h-9 px-4 py-2",
-        sm: "min-h-8 rounded-md px-3 text-xs",
-        lg: "min-h-10 rounded-md px-8",
+        default: "min-h-9 px-4 py-2 text-sm",
+        sm: "min-h-8 rounded-lg px-3 text-xs",
+        lg: "min-h-11 rounded-xl px-8 text-sm",
         icon: "h-9 w-9 active:scale-100",
       },
     },

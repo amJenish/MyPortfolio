@@ -1,7 +1,7 @@
 import React, { useRef, useCallback, useMemo } from "react";
 import Layout from "@/components/layout";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Github, Mail, FileText } from "lucide-react";
+import { ArrowRight, Github, Mail, FileText, Sparkles } from "lucide-react";
 import { profile, projects, researchPapers, kaggleProjects } from "@/lib/content/registry";
 import { Link } from "wouter";
 import { motion, useReducedMotion, useScroll, useTransform, type Variants } from "framer-motion";
@@ -21,7 +21,7 @@ export default function Home() {
   const reduceMotion = useReducedMotion();
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll();
-  const heroParallax = useTransform(scrollYProgress, [0, 0.12], [0, 48]);
+  const heroParallax = useTransform(scrollYProgress, [0, 0.12], [0, 52]);
 
   const spotlightProjects = useMemo(
     () => resolveSpotlightByIds(projects, HOME_SPOTLIGHT_PROJECT_IDS),
@@ -35,16 +35,16 @@ export default function Home() {
   const heroContainer: Variants = {
     hidden: {},
     show: {
-      transition: { staggerChildren: reduceMotion ? 0 : 0.09, delayChildren: reduceMotion ? 0 : 0.06 },
+      transition: { staggerChildren: reduceMotion ? 0 : 0.1, delayChildren: reduceMotion ? 0 : 0.08 },
     },
   };
 
   const heroItem: Variants = {
-    hidden: reduceMotion ? {} : { opacity: 0, y: 22 },
+    hidden: reduceMotion ? {} : { opacity: 0, y: 24 },
     show: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.55, ease: scrollEase },
+      transition: { duration: 0.6, ease: scrollEase },
     },
   };
 
@@ -67,69 +67,95 @@ export default function Home() {
 
   return (
     <Layout>
-      <div className="space-y-16 md:space-y-24">
+      <div className="space-y-20 md:space-y-28">
+
+        {/* ── Hero ── */}
         <section
           ref={heroRef}
           onPointerMove={onHeroPointerMove}
           onPointerLeave={onHeroPointerLeave}
           className={cn(
-            "home-hero home-hero-interactive relative overflow-hidden rounded-2xl border border-border/70 bg-card/40 px-6 py-14 shadow-lg sm:px-10 sm:py-16 md:py-20",
+            "home-hero home-hero-interactive relative overflow-hidden rounded-3xl border border-border/60 bg-card px-8 py-16 shadow-xl sm:px-12 sm:py-20 md:py-24",
           )}
         >
+          {/* Decorative blobs */}
           <motion.div
-            className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-primary/[0.07] blur-3xl"
+            className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-primary/[0.08] blur-3xl"
             aria-hidden
             style={reduceMotion ? undefined : { y: heroParallax }}
           />
+          <motion.div
+            className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-primary/[0.05] blur-3xl"
+            aria-hidden
+          />
+
           <div className="relative z-10 mx-auto max-w-3xl text-center">
             <motion.div
               variants={heroContainer}
               initial={reduceMotion ? false : "hidden"}
               animate="show"
             >
-              <motion.p
-                variants={heroItem}
-                className="mb-4 flex flex-wrap items-center justify-center gap-1 text-xs font-semibold uppercase tracking-[0.2em] text-primary"
-              >
-                <span>Available for Internships</span>
-                <span className="inline-block h-4 w-px translate-y-px bg-primary animate-blink" aria-hidden />
-              </motion.p>
+              {/* Availability badge */}
+              <motion.div variants={heroItem} className="mb-6 flex justify-center">
+                <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/[0.08] px-4 py-1.5 text-xs font-semibold text-primary">
+                  <Sparkles className="h-3.5 w-3.5" aria-hidden />
+                  Available for Internships
+                  <span className="inline-block h-4 w-px bg-primary/40 animate-blink" aria-hidden />
+                </span>
+              </motion.div>
+
+              {/* Name — largest element, maximum hierarchy */}
               <motion.h1
                 variants={heroItem}
-                className="font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl"
+                className="font-heading text-5xl font-extrabold tracking-tight text-foreground sm:text-6xl md:text-7xl"
               >
                 {profile.name}
               </motion.h1>
+
+              {/* Subtitle — clear secondary hierarchy */}
               <motion.p
                 variants={heroItem}
-                className="mt-5 max-w-lg text-base leading-[1.6] text-muted-foreground sm:text-lg"
+                className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
               >
-                Computer Science student focused on software engineering and machine learning, with experience building backend systems and practical ML models.
+                Computer Science student focused on software engineering and machine learning,
+                with experience building backend systems and practical ML models.
               </motion.p>
+
+              {/* CTA buttons — strong emphasis, clear primary action */}
               <motion.div
                 variants={heroItem}
-                className="mt-10 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-start"
+                className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center"
               >
-                <motion.div whileHover={reduceMotion ? undefined : { y: -2 }} whileTap={reduceMotion ? undefined : { scale: 0.98 }}>
+                <motion.div whileHover={reduceMotion ? undefined : { y: -2 }} whileTap={reduceMotion ? undefined : { scale: 0.97 }}>
                   <Link href="/projects">
-                    <Button size="lg" variant="cta" className="h-12 min-w-[12rem] w-full px-8 text-base sm:w-auto">
-                      View projects
-                      <ArrowRight className="ml-2 h-4 w-4" />
+                    <Button size="lg" variant="cta" className="h-12 min-w-[11rem] px-8 text-sm font-semibold">
+                      View Projects
+                      <ArrowRight className="ml-1.5 h-4 w-4" />
                     </Button>
                   </Link>
                 </motion.div>
-                <motion.div whileHover={reduceMotion ? undefined : { y: -2 }} whileTap={reduceMotion ? undefined : { scale: 0.98 }}>
-                  <Button variant="outline" size="lg" asChild className="h-12 min-w-[12rem] border-2 border-border bg-card/60 text-base hover:border-primary/40">
+                <motion.div whileHover={reduceMotion ? undefined : { y: -2 }} whileTap={reduceMotion ? undefined : { scale: 0.97 }}>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    asChild
+                    className="h-12 min-w-[11rem] border-2 border-border bg-card/60 text-sm font-semibold hover:border-primary/50 hover:text-primary"
+                  >
                     <a href={profile.github} target="_blank" rel="noopener noreferrer">
-                      <Github className="h-5 w-5" />
+                      <Github className="h-4 w-4" />
                       GitHub
                     </a>
                   </Button>
                 </motion.div>
-                <motion.div whileHover={reduceMotion ? undefined : { y: -2 }} whileTap={reduceMotion ? undefined : { scale: 0.98 }}>
-                  <Button variant="outline" size="lg" asChild className="h-12 min-w-[12rem] border-2 border-border bg-card/60 text-base hover:border-primary/40">
+                <motion.div whileHover={reduceMotion ? undefined : { y: -2 }} whileTap={reduceMotion ? undefined : { scale: 0.97 }}>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    asChild
+                    className="h-12 min-w-[11rem] border-2 border-border bg-card/60 text-sm font-semibold hover:border-primary/50 hover:text-primary"
+                  >
                     <a href={`mailto:${profile.email}`}>
-                      <Mail className="h-5 w-5" />
+                      <Mail className="h-4 w-4" />
                       Email
                     </a>
                   </Button>
@@ -139,20 +165,25 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="grid gap-10 lg:grid-cols-2 lg:gap-14" aria-labelledby="about-heading">
-          <ScrollReveal as="div" className="space-y-4">
-            <h2 id="about-heading" className="font-heading text-xl font-bold md:text-2xl">
-              About me
-            </h2>
-            <div className="prose prose-invert prose-neutral max-w-none text-muted-foreground prose-p:leading-relaxed prose-p:text-sm sm:prose-p:text-base">
+        {/* ── About + Skills ── */}
+        <section className="grid gap-12 lg:grid-cols-2 lg:gap-16" aria-labelledby="about-heading">
+          <ScrollReveal as="div" className="space-y-5">
+            <div className="space-y-1">
+              <p className="font-mono text-xs font-semibold uppercase tracking-widest text-primary">About</p>
+              <h2 id="about-heading" className="font-heading text-2xl font-bold md:text-3xl">
+                About me
+              </h2>
+            </div>
+            <div className="prose prose-neutral max-w-none text-muted-foreground prose-p:leading-[1.75] prose-p:text-[0.9375rem]">
               <p>{profile.bio}</p>
             </div>
           </ScrollReveal>
           <ScrollReveal as="div" className="min-w-0" delay={0.08}>
-            <SkillsShowcase heading="Stack" />
+            <SkillsShowcase heading="Stack" description={null} />
           </ScrollReveal>
         </section>
 
+        {/* ── Projects spotlight ── */}
         <ScrollReveal as="section">
           <HomeSpotlightSection
             variant="software"
@@ -163,6 +194,7 @@ export default function Home() {
           />
         </ScrollReveal>
 
+        {/* ── Notebooks spotlight ── */}
         <ScrollReveal as="section" delay={0.04}>
           <HomeSpotlightSection
             variant="ml"
@@ -173,36 +205,44 @@ export default function Home() {
           />
         </ScrollReveal>
 
+        {/* ── Paperwork CTA ── */}
         <ScrollReveal
           as="section"
-          className="space-y-5 border-t border-border/60 pt-12"
+          className="space-y-6 border-t border-border/60 pt-14"
           aria-labelledby="paperwork-home-heading"
           delay={0.06}
         >
-          <h2 id="paperwork-home-heading" className="font-heading text-xl font-bold md:text-2xl">
-            Paperwork
-          </h2>
-          <p className="max-w-xl text-sm text-muted-foreground">
-            PDFs and write-ups. open the list to read or download.
+          <div className="space-y-1">
+            <p className="font-mono text-xs font-semibold uppercase tracking-widest text-primary">Paperwork</p>
+            <h2 id="paperwork-home-heading" className="font-heading text-2xl font-bold md:text-3xl">
+              Papers &amp; PDFs
+            </h2>
+          </div>
+          <p className="max-w-xl text-[0.9375rem] leading-relaxed text-muted-foreground">
+            Long-form write-ups and research PDFs. Open the list to read or download.
           </p>
-          <motion.div whileHover={reduceMotion ? undefined : { y: -2 }} whileTap={reduceMotion ? undefined : { scale: 0.99 }}>
+          <motion.div
+            whileHover={reduceMotion ? undefined : { y: -2 }}
+            whileTap={reduceMotion ? undefined : { scale: 0.99 }}
+          >
             <Link
               href={PAPERWORK_LIST_PATH}
-              className="paperwork-home-card group flex max-w-xl items-center justify-between gap-4 rounded-2xl border border-border bg-card p-5 shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="group flex max-w-lg items-center justify-between gap-4 rounded-2xl border border-border bg-card p-5 shadow-md transition-all hover:border-primary/40 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <div className="flex items-start gap-3">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
-                  <FileText className="h-5 w-5" />
+              <div className="flex items-center gap-4">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary">
+                  <FileText className="h-6 w-6" />
                 </span>
                 <div>
-                  <p className="font-medium text-foreground">Papers &amp; PDFs</p>
-                  <p className="text-sm text-muted-foreground">{researchPapers.length} available</p>
+                  <p className="font-heading font-semibold text-foreground">Papers &amp; PDFs</p>
+                  <p className="mt-0.5 text-sm text-muted-foreground">{researchPapers.length} available</p>
                 </div>
               </div>
-              <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
+              <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
             </Link>
           </motion.div>
         </ScrollReveal>
+
       </div>
     </Layout>
   );

@@ -2,11 +2,11 @@ import { useState, type ReactNode } from "react";
 import {
   Body,
   Code,
+  CatalogTagPills,
   FONT_MONO as MONO,
   FONT_SANS as SANS,
   Notice,
   SectionLabel,
-  Tag,
   TwoCol,
 } from "../reportPrimitives";
 import type { WorkPageProps } from "@/content/portfolio/workPageTypes";
@@ -30,7 +30,7 @@ type ServiceDetail = {
 // ── COLORS (Standard palette) ──────────────────────────────────────────────────
 
 const COLORS = {
-  teal: "rgb(45, 212, 191)",
+  teal: "var(--primary)",
   orange: "rgb(245, 158, 11)",
   purple: "rgb(139, 92, 246)",
   amber: "rgb(245, 158, 11)",
@@ -151,24 +151,30 @@ export default function GeeseMapPage(props: WorkPageProps) {
         <div style={{ borderBottom: "1px solid var(--border)", padding: "80px 0 64px", position: "relative", overflow: "hidden" }}>
           <div style={{
             position: "absolute", inset: 0,
-            backgroundImage: `linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)`,
-            backgroundSize: "48px 48px", opacity: 0.3,
+            backgroundImage: "radial-gradient(circle, var(--border) 1px, transparent 1px)",
+            backgroundSize: "32px 32px",
+            opacity: 0.35,
           }} />
           <div style={{
-            position: "absolute", top: "-30%", right: "10%",
-            width: 560, height: 560,
-            background: "radial-gradient(ellipse, rgb(45, 212, 191 / 0.08) 0%, transparent 65%)",
+            position: "absolute",
+            top: "-20%",
+            right: "5%",
+            width: 520,
+            height: 520,
+            background: "radial-gradient(ellipse, color-mix(in srgb, var(--primary) 8%, transparent) 0%, transparent 62%)",
+            pointerEvents: "none",
+          }} />
+          <div style={{
+            position: "absolute",
+            bottom: "-10%",
+            left: "10%",
+            width: 320,
+            height: 320,
+            background: "radial-gradient(ellipse, color-mix(in srgb, var(--primary) 5%, transparent) 0%, transparent 60%)",
             pointerEvents: "none",
           }} />
 
           <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 40px", position: "relative" }}>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 24, alignItems: "center" }}>
-              <span style={{ fontFamily: MONO, fontSize: 11, color: "var(--muted-foreground)" }}>
-                Microservices · backend architecture · Java & Spring Boot
-              </span>
-              <Tag color="rgb(34, 197, 94)">Complete</Tag>
-            </div>
-
             <h1 style={{
               fontFamily: SANS,
               fontSize: "clamp(30px, 4.5vw, 54px)",
@@ -176,21 +182,17 @@ export default function GeeseMapPage(props: WorkPageProps) {
               lineHeight: 1.12, letterSpacing: -1, color: "var(--foreground)",
             }}>
               Geese Map<br />
-              <span style={{ color: "rgb(45, 212, 191)" }}>A location-aware social heatmap</span>
+              <span style={{ color: "var(--primary)" }}>A location-aware social heatmap</span>
             </h1>
 
-            <Body style={{ maxWidth: 1280, marginBottom: 12, color: "#000000" }}>
+            <Body style={{ maxWidth: 1280, marginBottom: 12, color: "var(--foreground)" }}>
               A microservices-based backend that powers a location-aware social heatmap. Users upload photos taken at a location; the system verifies the image content, extracts GPS and timestamp metadata from EXIF data, and aggregates the resulting post records into a heatmap dataset. Each concern is handled by a dedicated service.
             </Body>
-            <Body style={{ maxWidth: 1280, marginBottom: 36, color: "#000000" }}>
+            <Body style={{ maxWidth: 1280, marginBottom: 36, color: "var(--foreground)" }}>
               The system comprises five domain services (AccountService, ImageUploadService, ImageVerificationService, MetadataExtractionService, PostService) and a ServiceRegistry for service discovery. ImageVerificationService is written in Python to take advantage of the Roboflow ML ecosystem; the remaining services are Java and Spring Boot.
             </Body>
 
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {["Java", "Spring Boot", "Python", "MySQL", "Microservices", "IBM COS", "Roboflow"].map(t => (
-                <Tag key={t}>{t}</Tag>
-              ))}
-            </div>
+            <CatalogTagPills tags={props.entry.tags} />
           </div>
         </div>
 
@@ -202,42 +204,42 @@ export default function GeeseMapPage(props: WorkPageProps) {
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16, marginBottom: 32 }}>
               <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 8 }}>User Authentication</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   AccountService handles registration and login. Passwords are hashed before storage. Successful login returns an auth token that gates access to post creation and other write operations downstream.
                 </Body>
               </div>
 
               <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 8 }}>Image Ingestion & Storage</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   ImageUploadService accepts image uploads and writes them to IBM Cloud Object Storage, returning a stable URL. Credentials are isolated to this service; no other service has direct bucket access.
                 </Body>
               </div>
 
               <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 8 }}>ML Content Verification</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   ImageVerificationService (Python) calls the Roboflow inference API against the uploaded image and returns a verdict. PostService uses this verdict to decide whether to proceed or reject the post.
                 </Body>
               </div>
 
               <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 8 }}>EXIF Metadata Extraction</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   MetadataExtractionService parses EXIF data from the image to extract GPS coordinates and capture timestamp. Typed exceptions distinguish between missing location and missing timestamp.
                 </Body>
               </div>
 
               <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 8 }}>Post Orchestration</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   PostService sequences calls to all upstream services, assembles the post record from their responses, and persists it to MySQL. It also serves the aggregated location dataset for the heatmap.
                 </Body>
               </div>
 
               <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 8 }}>Service Discovery</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   ServiceRegistry (Spring Cloud Eureka) provides service registration and discovery. Each Spring Boot service registers on startup, enabling location-transparent inter-service communication.
                 </Body>
               </div>
@@ -247,7 +249,7 @@ export default function GeeseMapPage(props: WorkPageProps) {
           {/* ══ 02 SERVICE TOPOLOGY ══ */}
           <div id="topology" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={2} title="Service Topology" />
-            <Body style={{ marginBottom: 24, color: "#000000" }}>
+            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
               The system is organized as six deployable units. The APIGateway was intended to be the single entry point for all inbound traffic, routing requests to the appropriate service and handling cross-cutting concerns like authentication and rate limiting at the boundary. It was scaffolded but is not currently operational, so services accept direct HTTP requests and manage their own CORS configuration independently.
             </Body>
 
@@ -286,7 +288,7 @@ export default function GeeseMapPage(props: WorkPageProps) {
                 </div>
               </div>
 
-              <Body style={{ fontSize: 12, marginTop: 16, color: "#000000" }}>
+              <Body style={{ fontSize: 12, marginTop: 16, color: "var(--foreground)" }}>
                 The strikethrough APIGateway was scaffolded but is not operational. Direct service-to-service calls currently bypass it. ServiceRegistry provides Eureka-based discovery so services resolve each other by name rather than hardcoded address.
               </Body>
             </div>
@@ -317,7 +319,7 @@ export default function GeeseMapPage(props: WorkPageProps) {
           {/* ══ 03 POST CREATION FLOW ══ */}
           <div id="flow" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={3} title="Post Creation Flow" />
-            <Body style={{ marginBottom: 24, color: "#000000" }}>
+            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
               Creating a post is the central operation of the system and the only flow that involves all five services. PostService is the sole orchestrator: it receives the initial request, sequences the upstream calls, and decides at each step whether to proceed or abort. The flow is sequential rather than parallel, meaning a failure at any stage short-circuits the remainder.
             </Body>
 
@@ -340,7 +342,7 @@ export default function GeeseMapPage(props: WorkPageProps) {
                 ))}
               </div>
 
-              <Body style={{ fontSize: 12, marginTop: 16, color: "#000000" }}>
+              <Body style={{ fontSize: 12, marginTop: 16, color: "var(--foreground)" }}>
                 Steps ②–④ are sequential. If ImageVerificationService returns a fail verdict at step ③, PostService aborts without calling MetadataExtractionService or writing to MySQL. The image uploaded to COS in step ② persists regardless of whether the post is ultimately created.
               </Body>
             </div>
@@ -357,7 +359,7 @@ export default function GeeseMapPage(props: WorkPageProps) {
                 <PipelineArrow />
                 <PipelineNode accent={COLORS.rose}>List&lt;LocationDto&gt;</PipelineNode>
               </div>
-              <Body style={{ fontSize: 12, color: "#000000" }}>
+              <Body style={{ fontSize: 12, color: "var(--foreground)" }}>
                 The heatmap query is entirely within PostService. No upstream service calls are needed since all location data was extracted and stored at post creation time.
               </Body>
             </div>
@@ -366,7 +368,7 @@ export default function GeeseMapPage(props: WorkPageProps) {
           {/* ══ 04 SERVICE DEEP DIVES ══ */}
           <div id="services" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={4} title="Service Deep Dives" />
-            <Body style={{ marginBottom: 24, color: "#000000" }}>
+            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
               Each service is a self-contained Spring Boot (or Python) application with its own application context, database connection if needed, and Dockerfile. Selecting a service below shows its internal structure and the reasoning behind its design.
             </Body>
 
@@ -402,11 +404,11 @@ export default function GeeseMapPage(props: WorkPageProps) {
             <TwoCol gap={20}>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: detail.accent, marginBottom: 8, fontFamily: MONO }}>Responsibility</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>{detail.responsibility}</Body>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>{detail.responsibility}</Body>
               </div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: detail.accent, marginBottom: 8, fontFamily: MONO }}>Internal Structure</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>{detail.internals}</Body>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>{detail.internals}</Body>
               </div>
             </TwoCol>
 
@@ -422,13 +424,13 @@ export default function GeeseMapPage(props: WorkPageProps) {
             <TwoCol gap={20}>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Separation of Concerns</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   Each service owns a single domain responsibility. No service touches another's database, and the only orchestration logic lives in PostService where it belongs. This keeps the codebase modular and makes each service independently testable and deployable.
                 </Body>
               </div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Credential Isolation</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   IBM COS credentials are isolated to ImageUploadService, meaning a credential leak in any other service cannot expose the storage bucket. Secrets are externalized to <Code>secretinfo.properties</Code> rather than hardcoded in application config.
                 </Body>
               </div>
@@ -437,13 +439,13 @@ export default function GeeseMapPage(props: WorkPageProps) {
             <TwoCol gap={20}>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Language Fit</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   ImageVerificationService is written in Python based on ecosystem fit rather than language consistency. Roboflow's Python SDK and the broader ML ecosystem have significantly better library support. Runtime isolation is clean since the ML runtime has no dependency on the JVM.
                 </Body>
               </div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Typed Exceptions</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   MetadataExtractionService uses typed exceptions (MissingGeoMetadataException vs MissingDateMetadaException) so the orchestrator can distinguish failure modes rather than catching a generic error. This gives PostService fine-grained control over error handling.
                 </Body>
               </div>
@@ -452,13 +454,13 @@ export default function GeeseMapPage(props: WorkPageProps) {
             <TwoCol gap={20}>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Service Discovery</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   Services are registered with Eureka so PostService resolves addresses by name through <Code>RestClientConfig</Code> rather than using hardcoded URLs. This enables location-transparent communication and makes the system more resilient to service relocation.
                 </Body>
               </div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Data Transfer Objects</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   PostDto and LocationDto decouple the internal Post entity from what is returned to callers. This prevents accidental exposure of internal fields and gives the API contract independence from the database schema.
                 </Body>
               </div>
@@ -472,13 +474,13 @@ export default function GeeseMapPage(props: WorkPageProps) {
             <TwoCol gap={20}>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Backend Services</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   Five services are built with Java and Spring Boot. Each has its own Spring Boot application context, Maven wrapper for reproducible builds, and Dockerfile for containerization. Services can be built and run independently without a shared compose file.
                 </Body>
               </div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Python Service</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   ImageVerificationService is a lightweight Python HTTP service with dependencies declared in <Code>requirements.txt</Code> and the runtime pinned in <Code>runtime.txt</Code>. It downloads images from COS, forwards them to Roboflow, and returns structured verdicts.
                 </Body>
               </div>
@@ -487,13 +489,13 @@ export default function GeeseMapPage(props: WorkPageProps) {
             <TwoCol gap={20}>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Persistence</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   AccountService and PostService each maintain their own MySQL database. There is no shared database between services. IBM Cloud Object Storage handles binary image data, keeping binary content out of the relational databases entirely.
                 </Body>
               </div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>External APIs</div>
-                <Body style={{ fontSize: 13, color: "#000000" }}>
+                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   The Roboflow API is called by ImageVerificationService to run inference on uploaded images. The IBM COS API (via the IBM COS SDK) is called by ImageUploadService. Both integrations are isolated to their respective services.
                 </Body>
               </div>

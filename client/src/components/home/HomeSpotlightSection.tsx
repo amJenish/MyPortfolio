@@ -1,7 +1,7 @@
 import * as React from "react";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { scrollRevealRootMargin } from "@/components/motion/scrollMotion";
-import { Github } from "lucide-react";
+import { Github, ArrowRight } from "lucide-react";
 import { Link } from "wouter";
 import { Badge } from "@/components/ui/badge";
 import type { KaggleProject, Project } from "@/lib/interfaces";
@@ -26,22 +26,22 @@ function itemHref(p: Project | KaggleProject, v: Variant): string {
 function itemSubtitle(p: Project | KaggleProject, v: Variant): string {
   if (v === "software") return "Software project";
   const kp = p as KaggleProject;
-  return `${kp.date} · Notebook report`;
+  return `${kp.date} · Notebook`;
 }
 
 const listVariants: Variants = {
   hidden: {},
   show: {
-    transition: { staggerChildren: 0.08, delayChildren: 0.06 },
+    transition: { staggerChildren: 0.09, delayChildren: 0.06 },
   },
 };
 
 const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 28 },
+  hidden: { opacity: 0, y: 32 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { type: "spring", stiffness: 380, damping: 28 },
+    transition: { type: "spring", stiffness: 360, damping: 28 },
   },
 };
 
@@ -65,9 +65,7 @@ export function HomeSpotlightSection({
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setListRevealed(true);
-          }
+          if (entry.isIntersecting) setListRevealed(true);
         });
       },
       { root: null, rootMargin: scrollRevealRootMargin, threshold: 0 },
@@ -82,17 +80,22 @@ export function HomeSpotlightSection({
 
   return (
     <section className={cn("w-full", className)} aria-labelledby={`spotlight-${variant}-heading`}>
-      <div className="mb-8 w-full">
+      {/* ── Section header ── */}
+      <div className="mb-10 w-full">
         <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
-          <div className="min-w-0 flex-1 text-left">
+          <div className="min-w-0 flex-1 text-left space-y-2">
+            <p className="font-mono text-xs font-semibold uppercase tracking-widest text-primary">
+              {variant === "software" ? "Software engineering" : "Data science & ML"}
+            </p>
             <h2
               id={`spotlight-${variant}-heading`}
               className="font-heading text-2xl font-bold tracking-tight text-foreground md:text-3xl"
             >
               {title}
             </h2>
+            {/* Gradient underline — visual emphasis on section heading */}
             <div
-              className="mt-4 h-1 w-full max-w-2xl rounded-full bg-gradient-to-r from-primary via-primary/50 to-transparent"
+              className="h-1 w-16 rounded-full bg-gradient-to-r from-primary to-primary/20"
               aria-hidden
             />
           </div>
@@ -102,14 +105,16 @@ export function HomeSpotlightSection({
           >
             <Link
               href={seeAllHref}
-              className="inline-flex shrink-0 items-center rounded-xl border border-border bg-card/80 px-4 py-2.5 text-sm font-semibold text-primary shadow-sm transition-colors hover:border-primary/40 hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-border bg-card px-4 py-2.5 text-sm font-semibold text-primary shadow-sm transition-all hover:border-primary/40 hover:bg-primary/[0.06] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {seeAllLabel}
+              <ArrowRight className="h-4 w-4" />
             </Link>
           </motion.div>
         </div>
       </div>
 
+      {/* ── Cards grid ── */}
       <motion.ul
         ref={setListEl}
         className="grid w-full grid-cols-1 gap-6 md:grid-cols-3"
@@ -118,33 +123,47 @@ export function HomeSpotlightSection({
         animate={listActive ? "show" : "hidden"}
       >
         {items.map((p) => (
-          <motion.li key={p.id} variants={reduceMotion ? undefined : cardVariants} className="min-w-0 list-none">
+          <motion.li
+            key={p.id}
+            variants={reduceMotion ? undefined : cardVariants}
+            className="min-w-0 list-none"
+          >
             <article className="home-spotlight-card flex h-full flex-col">
-              <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary/90">{itemSubtitle(p, variant)}</p>
+              {/* Category label — smallest, tertiary hierarchy */}
+              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-primary/80">
+                {itemSubtitle(p, variant)}
+              </p>
+
+              {/* Title — primary hierarchy on card */}
               <h3 className="font-heading mt-3 text-lg font-bold leading-snug tracking-tight text-foreground sm:text-xl">
                 {p.title}
               </h3>
-              <div className="mt-5 flex flex-wrap gap-2 border-t border-border/60 pt-5">
+
+              {/* Tags — secondary, visual grouping */}
+              <div className="mt-5 flex flex-wrap gap-2 border-t border-border/50 pt-5">
                 {p.tags.slice(0, 6).map((tag) => (
                   <Badge
                     key={tag}
                     variant="secondary"
-                    className="border border-primary/20 bg-primary/[0.08] text-xs font-medium text-foreground/90"
+                    className="border border-primary/15 bg-primary/[0.07] text-xs font-medium text-foreground/85"
                   >
                     {tag}
                   </Badge>
                 ))}
               </div>
-              <div className="mt-auto flex flex-wrap items-center gap-3 border-t border-border/60 pt-5">
+
+              {/* CTA buttons — clear primary action */}
+              <div className="mt-auto flex flex-wrap items-center gap-3 border-t border-border/50 pt-5">
                 <motion.div
                   whileHover={reduceMotion ? undefined : { scale: 1.03 }}
                   whileTap={reduceMotion ? undefined : { scale: 0.97 }}
                 >
                   <Link
                     href={itemHref(p, variant)}
-                    className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="inline-flex min-h-10 items-center gap-1.5 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg hover:shadow-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     Open page
+                    <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
                 </motion.div>
                 <motion.div
@@ -155,7 +174,7 @@ export function HomeSpotlightSection({
                     href={p.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex min-h-11 items-center gap-2 rounded-xl border-2 border-border bg-background/50 px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-primary/45 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="inline-flex min-h-10 items-center gap-2 rounded-xl border-2 border-border bg-background/50 px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-primary/45 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <Github className="h-4 w-4 shrink-0" aria-hidden />
                     GitHub

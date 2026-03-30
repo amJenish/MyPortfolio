@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
+/** Section label with number badge — establishes clear reading order */
 export function WorkSectionLabel({
   number,
   title,
@@ -14,16 +15,22 @@ export function WorkSectionLabel({
 }) {
   const n = String(number).padStart(2, "0");
   return (
-    <div id={id} className={cn("mb-7 scroll-mt-28 flex items-center gap-3.5", className)}>
-      <span className="rounded border border-primary/40 bg-primary/[0.06] px-2 py-0.5 font-mono text-xs font-medium text-primary" aria-hidden>
+    <div id={id} className={cn("mb-8 scroll-mt-28 flex items-center gap-4", className)}>
+      <span
+        className="rounded-lg border border-primary/35 bg-primary/[0.08] px-2.5 py-1 font-mono text-xs font-bold text-primary"
+        aria-hidden
+      >
         {n}
       </span>
-      <h2 className="font-heading m-0 text-xl font-bold tracking-tight text-foreground md:text-2xl">{title}</h2>
-      <div className="h-px min-w-[2rem] flex-1 bg-border" aria-hidden />
+      <h2 className="font-heading m-0 text-xl font-bold tracking-tight text-foreground md:text-2xl">
+        {title}
+      </h2>
+      <div className="h-px min-w-[2rem] flex-1 bg-gradient-to-r from-border to-transparent" aria-hidden />
     </div>
   );
 }
 
+/** Metric stat card — strong number emphasis, clear label hierarchy */
 export function WorkStatCard({
   label,
   value,
@@ -41,35 +48,42 @@ export function WorkStatCard({
   return (
     <div
       className={cn(
-        "min-w-[10rem] flex-1 rounded-xl border border-border bg-card p-5 shadow-sm border-t-[3px]",
+        "min-w-[10rem] flex-1 rounded-2xl border border-border bg-card p-6 shadow-sm border-t-[3px]",
         accentClassName ?? "border-t-primary",
         className,
       )}
     >
-      <div className="text-report-label mb-2">{label}</div>
+      <div className="text-report-label mb-2.5">{label}</div>
       <div className="text-report-metric">{value}</div>
-      {sub ? <p className="mt-2 text-left text-sm leading-[1.6] text-muted-foreground">{sub}</p> : null}
+      {sub ? (
+        <p className="mt-2.5 text-left text-sm leading-[1.7] text-muted-foreground">{sub}</p>
+      ) : null}
     </div>
   );
 }
 
+/** Insight pill — subtle, readable, good proximity grouping */
 export function WorkInsightPill({ text, icon }: { text: string; icon?: React.ReactNode }) {
   return (
-    <div className="mb-2.5 flex gap-2.5 rounded-lg border border-border bg-muted/30 p-3.5 last:mb-0">
-      {icon != null ? <span className="shrink-0 text-base leading-none">{icon}</span> : null}
-      <p className="m-0 text-left text-sm leading-[1.6] text-muted-foreground">{text}</p>
+    <div className="mb-3 flex gap-3 rounded-xl border border-border bg-muted/25 p-4 last:mb-0">
+      {icon != null ? (
+        <span className="shrink-0 text-base leading-none">{icon}</span>
+      ) : null}
+      <p className="m-0 text-left text-[0.9375rem] leading-[1.7] text-muted-foreground">{text}</p>
     </div>
   );
 }
 
+/** Inline code chip */
 export function WorkCodeChip({ children }: { children: React.ReactNode }) {
   return (
-    <code className="rounded border border-border bg-slate-950/80 px-1.5 py-0.5 font-mono text-xs text-primary">
+    <code className="rounded-lg border border-border bg-muted/60 px-1.5 py-0.5 font-mono text-xs text-primary">
       {children}
     </code>
   );
 }
 
+/** Chart card — consistent container for all charts */
 export function WorkChartCard({
   title,
   takeaway,
@@ -82,11 +96,13 @@ export function WorkChartCard({
   className?: string;
 }) {
   return (
-    <div className={cn("mb-5 rounded-xl border border-border bg-card p-6 pb-5 shadow-sm", className)}>
+    <div className={cn("mb-6 rounded-2xl border border-border bg-card p-6 pb-5 shadow-sm", className)}>
       {title ? (
-        <div className="text-report-label mb-1.5">{title}</div>
+        <div className="text-report-label mb-2">{title}</div>
       ) : null}
-      {takeaway ? <p className="mb-5 text-left text-sm leading-[1.6] text-muted-foreground">{takeaway}</p> : null}
+      {takeaway ? (
+        <p className="mb-5 text-left text-[0.9375rem] leading-[1.7] text-muted-foreground">{takeaway}</p>
+      ) : null}
       {children}
     </div>
   );
@@ -104,18 +120,21 @@ export function WorkChartTooltip({
 }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm shadow-md">
-      {label != null ? <div className="mb-1 font-medium text-primary">{label}</div> : null}
+    <div className="rounded-xl border border-border bg-card px-4 py-3 text-sm shadow-lg">
+      {label != null ? (
+        <div className="mb-1.5 font-heading font-semibold text-primary">{label}</div>
+      ) : null}
       {payload.map((p, i) => (
         <div key={i} className="text-muted-foreground">
           {p.name}:{" "}
-          <span className="font-medium tabular-nums text-foreground">{String(p.value)}</span>
+          <span className="font-semibold tabular-nums text-foreground">{String(p.value)}</span>
         </div>
       ))}
     </div>
   );
 }
 
+/** Executive summary — prominent, highlighted section */
 export function WorkExecutiveSummary({
   id,
   title = "Summary",
@@ -130,9 +149,9 @@ export function WorkExecutiveSummary({
   return (
     <section
       id={id ?? "summary"}
-      className="work-report-summary scroll-mt-28 space-y-4 rounded-xl border border-primary/25 bg-primary/[0.06] p-6 text-left md:p-8"
+      className="work-report-summary scroll-mt-28 space-y-4 rounded-2xl border border-primary/25 bg-primary/[0.06] p-7 text-left md:p-9"
     >
-      <h3 className="font-heading text-left text-lg font-semibold text-foreground">{title}</h3>
+      <h3 className="font-heading text-left text-lg font-bold text-foreground">{title}</h3>
       {paragraphs.map((p, i) => (
         <p key={i} className="text-report-body">
           {p}
@@ -149,13 +168,14 @@ export function WorkExecutiveSummary({
   );
 }
 
+/** Framing question — blockquote-style emphasis */
 export function WorkFramingQuestion({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-report-body border-l-2 border-primary/50 pl-4 not-italic">{children}</p>
+    <p className="text-report-body border-l-[3px] border-primary/50 pl-5 not-italic">{children}</p>
   );
 }
 
-/** Portfolio reflection: strengths vs planned next steps (`pros` / `cons` kept as prop names for call sites). */
+/** Portfolio reflection: strengths vs planned next steps */
 export function WorkProsCons({
   pros,
   cons,
@@ -168,28 +188,24 @@ export function WorkProsCons({
   futureTitle?: string;
 }) {
   return (
-    <div className="grid gap-4 md:grid-cols-2">
-      <div className="rounded-xl border border-border bg-card p-5">
-        <div className="text-report-label mb-3 text-primary">{doneWellTitle}</div>
-        <ul className="m-0 list-none space-y-2 p-0 text-left text-sm leading-[1.6] text-muted-foreground">
+    <div className="grid gap-5 md:grid-cols-2">
+      <div className="rounded-2xl border border-border bg-card p-6">
+        <div className="text-report-label mb-4 text-primary">{doneWellTitle}</div>
+        <ul className="m-0 list-none space-y-2.5 p-0 text-left text-[0.9375rem] leading-[1.7] text-muted-foreground">
           {pros.map((t, i) => (
-            <li key={i} className="flex gap-2">
-              <span className="shrink-0 font-medium text-primary" aria-hidden>
-                ·
-              </span>
+            <li key={i} className="flex gap-2.5">
+              <span className="shrink-0 font-bold text-primary" aria-hidden>·</span>
               <span>{t}</span>
             </li>
           ))}
         </ul>
       </div>
-      <div className="rounded-xl border border-border bg-card p-5">
-        <div className="text-report-label mb-3 text-accent">{futureTitle}</div>
-        <ul className="m-0 list-none space-y-2 p-0 text-left text-sm leading-[1.6] text-muted-foreground">
+      <div className="rounded-2xl border border-border bg-card p-6">
+        <div className="text-report-label mb-4 text-muted-foreground">{futureTitle}</div>
+        <ul className="m-0 list-none space-y-2.5 p-0 text-left text-[0.9375rem] leading-[1.7] text-muted-foreground">
           {cons.map((t, i) => (
-            <li key={i} className="flex gap-2">
-              <span className="shrink-0 font-medium text-muted-foreground" aria-hidden>
-                ·
-              </span>
+            <li key={i} className="flex gap-2.5">
+              <span className="shrink-0 font-medium text-muted-foreground" aria-hidden>·</span>
               <span>{t}</span>
             </li>
           ))}
@@ -199,6 +215,7 @@ export function WorkProsCons({
   );
 }
 
+/** Figure with caption */
 export function WorkFigure({
   src,
   alt,
@@ -213,17 +230,23 @@ export function WorkFigure({
   const [broken, setBroken] = React.useState(false);
   const showPh = placeholder || broken;
   return (
-    <figure className="my-8 space-y-3">
+    <figure className="my-9 space-y-3">
       <div
         className={cn(
-          "aspect-[16/10] w-full max-w-3xl overflow-hidden rounded-xl border border-border bg-muted/30",
+          "aspect-[16/10] w-full max-w-3xl overflow-hidden rounded-2xl border border-border bg-muted/25",
         )}
       >
         {showPh ? (
-          <div className="flex h-full min-h-[200px] flex-col items-start justify-center gap-2 px-6 text-left">
-            <span className="text-xs font-medium text-muted-foreground">Figure placeholder</span>
-            <p className="max-w-sm text-sm leading-[1.6] text-muted-foreground">
-              Add the image to <code className="rounded bg-muted px-1 text-xs">client/public{src}</code> and set placeholder to false.
+          <div className="flex h-full min-h-[200px] flex-col items-start justify-center gap-2 px-7 text-left">
+            <span className="font-mono text-xs font-medium text-muted-foreground">
+              Figure placeholder
+            </span>
+            <p className="max-w-sm text-[0.9375rem] leading-[1.7] text-muted-foreground">
+              Add the image to{" "}
+              <code className="rounded bg-muted px-1 font-mono text-xs">
+                client/public{src}
+              </code>{" "}
+              and set placeholder to false.
             </p>
           </div>
         ) : (
@@ -236,11 +259,16 @@ export function WorkFigure({
           />
         )}
       </div>
-      {caption ? <figcaption className="max-w-3xl text-left text-sm font-medium leading-[1.6] text-foreground">{caption}</figcaption> : null}
+      {caption ? (
+        <figcaption className="max-w-3xl text-left text-sm font-medium leading-[1.7] text-muted-foreground">
+          {caption}
+        </figcaption>
+      ) : null}
     </figure>
   );
 }
 
+/** Footer links */
 export function WorkFooterLinks({
   github,
   notebook,
@@ -254,15 +282,25 @@ export function WorkFooterLinks({
 }) {
   if (!github && !notebook) return null;
   return (
-    <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-8 font-mono text-xs text-muted-foreground">
-      <div className="flex flex-wrap gap-4">
+    <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-8 font-mono text-xs text-muted-foreground">
+      <div className="flex flex-wrap gap-5">
         {github ? (
-          <a href={github} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+          <a
+            href={github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-primary transition-colors hover:underline"
+          >
             {githubLabel} ↗
           </a>
         ) : null}
         {notebook ? (
-          <a href={notebook} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+          <a
+            href={notebook}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-primary transition-colors hover:underline"
+          >
             {notebookLabel} ↗
           </a>
         ) : null}
@@ -271,22 +309,27 @@ export function WorkFooterLinks({
   );
 }
 
+/** Callout / notice block */
 export function WorkCallout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-lg border border-dashed border-primary/35 bg-muted/20 px-4 py-3 text-left text-sm leading-[1.6] text-muted-foreground">
+    <div className="rounded-xl border border-dashed border-primary/30 bg-primary/[0.04] px-5 py-4 text-left text-[0.9375rem] leading-[1.7] text-muted-foreground">
       {children}
     </div>
   );
 }
 
+/** Data table */
 export function WorkDataTable({ headers, rows }: { headers: string[]; rows: string[][] }) {
   return (
-    <div className="overflow-x-auto rounded-xl border border-border">
+    <div className="overflow-x-auto rounded-2xl border border-border">
       <table className="w-full border-collapse text-sm">
         <thead>
-          <tr className="border-b border-border bg-muted/40">
+          <tr className="border-b border-border bg-muted/35">
             {headers.map((h) => (
-              <th key={h} className="px-4 py-3 text-left font-semibold text-foreground">
+              <th
+                key={h}
+                className="px-5 py-3.5 text-left font-heading text-xs font-bold uppercase tracking-wider text-foreground"
+              >
                 {h}
               </th>
             ))}
@@ -294,9 +337,9 @@ export function WorkDataTable({ headers, rows }: { headers: string[]; rows: stri
         </thead>
         <tbody>
           {rows.map((row, ri) => (
-            <tr key={ri} className="border-b border-border last:border-0">
+            <tr key={ri} className="border-b border-border last:border-0 hover:bg-muted/20">
               {row.map((cell, ci) => (
-                <td key={ci} className="px-4 py-2.5 text-muted-foreground">
+                <td key={ci} className="px-5 py-3 text-[0.9375rem] text-muted-foreground">
                   {cell}
                 </td>
               ))}
@@ -308,9 +351,10 @@ export function WorkDataTable({ headers, rows }: { headers: string[]; rows: stri
   );
 }
 
-export const chartMuted = "#5a746d";
-export const chartPrimary = "#2fd6bb";
+/* Chart color constants — updated to match indigo-violet system */
+export const chartMuted = "#6b7299";
+export const chartPrimary = "#818cf8";
 export const chartRose = "hsl(350 80% 58%)";
-export const chartTeal = "hsl(173 58% 45%)";
-export const chartViolet = "hsl(258 55% 58%)";
+export const chartTeal = "hsl(258 70% 65%)";
+export const chartViolet = "hsl(270 65% 60%)";
 export const chartOrange = "hsl(25 90% 55%)";

@@ -3,15 +3,19 @@ import { C, FONT_MONO, FONT_SANS } from "@/lib/theme";
 
 export { C, FONT_MONO, FONT_SANS };
 
-export function Tag({ children, color = C.teal }: { children: ReactNode; color?: string }): React.JSX.Element {
+/** Primary accent color — uses the CSS variable so it adapts to light/dark mode */
+const PRIMARY = "var(--primary)";
+const PRIMARY_DIM = "var(--primary)";
+
+export function Tag({ children, color = PRIMARY }: { children: ReactNode; color?: string }): React.JSX.Element {
   return (
     <span
       style={{
         fontFamily: FONT_MONO,
         fontSize: 11,
         color,
-        background: `${color}14`,
-        border: `1px solid ${color}30`,
+        background: `color-mix(in srgb, ${color} 12%, transparent)`,
+        border: `1px solid color-mix(in srgb, ${color} 30%, transparent)`,
         padding: "3px 10px",
         borderRadius: 20,
       }}
@@ -21,17 +25,46 @@ export function Tag({ children, color = C.teal }: { children: ReactNode; color?:
   );
 }
 
+/**
+ * Catalog-style keyword pills (matches `ReportCatalogHero` / `entry.tags` styling).
+ * Used by individual project pages so the "keywords" area stays consistent.
+ */
+export function CatalogTagPills({ tags }: { tags: readonly string[] }): React.JSX.Element {
+  return (
+    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      {tags.map((tag) => (
+        <span
+          key={tag}
+          style={{
+            fontFamily: FONT_MONO,
+            fontSize: 11,
+            fontWeight: 500,
+            color: PRIMARY,
+            background: "color-mix(in srgb, var(--primary) 10%, transparent)",
+            border: "1px solid color-mix(in srgb, var(--primary) 25%, transparent)",
+            padding: "4px 12px",
+            borderRadius: 24,
+            letterSpacing: "0.04em",
+          }}
+        >
+          {tag}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 export function Code({ children }: { children: ReactNode }): React.JSX.Element {
   return (
     <code
       style={{
         fontFamily: FONT_MONO,
         fontSize: 11.5,
-        background: C.codeBg,
-        color: C.teal,
+        background: "var(--muted)",
+        color: PRIMARY,
         padding: "2px 7px",
         borderRadius: 4,
-        border: `1px solid ${C.border}`,
+        border: "1px solid var(--border)",
       }}
     >
       {children}
@@ -43,7 +76,7 @@ export function SectionLabel({ n, title }: { n: number; title: string }): React.
   return (
     <div style={{ marginBottom: 36 }}>
       <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
-        <span style={{ fontFamily: FONT_MONO, fontSize: 12, color: C.tealDim, letterSpacing: "0.05em" }}>
+        <span style={{ fontFamily: FONT_MONO, fontSize: 12, color: PRIMARY_DIM, letterSpacing: "0.05em", opacity: 0.7 }}>
           {String(n).padStart(2, "0")}
         </span>
         <h2
@@ -51,7 +84,7 @@ export function SectionLabel({ n, title }: { n: number; title: string }): React.
             fontFamily: FONT_SANS,
             fontSize: 26,
             fontWeight: 700,
-            color: C.text,
+            color: "var(--foreground)",
             margin: 0,
             letterSpacing: -0.5,
           }}
@@ -59,7 +92,7 @@ export function SectionLabel({ n, title }: { n: number; title: string }): React.
           {title}
         </h2>
       </div>
-      <div style={{ height: 1, background: C.border, marginTop: 14 }} />
+      <div style={{ height: 1, background: "var(--border)", marginTop: 14 }} />
     </div>
   );
 }
@@ -70,7 +103,7 @@ export function Body({ children, style }: { children: ReactNode; style?: CSSProp
       style={{
         fontFamily: FONT_SANS,
         fontSize: 15,
-        color: C.textSub,
+        color: "var(--muted-foreground)",
         lineHeight: 1.85,
         margin: 0,
         ...style,
@@ -83,7 +116,7 @@ export function Body({ children, style }: { children: ReactNode; style?: CSSProp
 
 export function Notice({
   children,
-  color = C.teal,
+  color = PRIMARY,
   icon,
 }: {
   children: ReactNode;
@@ -92,7 +125,7 @@ export function Notice({
 }): React.JSX.Element {
   return (
     <div style={{ borderLeft: `2px solid ${color}`, paddingLeft: 16, paddingTop: 2, marginTop: 20 }}>
-      <div style={{ fontSize: 13.5, color: C.textSub, lineHeight: 1.75 }}>
+      <div style={{ fontSize: 13.5, color: "var(--muted-foreground)", lineHeight: 1.75 }}>
         {icon != null && <span style={{ marginRight: 8 }}>{icon}</span>}
         {children}
       </div>
@@ -115,18 +148,18 @@ export function ChartTip({
   return (
     <div
       style={{
-        background: C.surface,
-        border: `1px solid ${C.border}`,
+        background: "var(--card)",
+        border: "1px solid var(--border)",
         padding: "10px 14px",
         borderRadius: 8,
         fontSize: 12,
-        color: C.text,
+        color: "var(--foreground)",
         fontFamily: FONT_MONO,
       }}
     >
-      <div style={{ color: C.teal, marginBottom: 4 }}>{label}</div>
+      <div style={{ color: PRIMARY, marginBottom: 4 }}>{label}</div>
       {payload.map((p, i) => (
-        <div key={i} style={{ color: p.color ?? C.text }}>
+        <div key={i} style={{ color: p.color ?? "var(--foreground)" }}>
           {p.name}: <span style={{ fontWeight: 600 }}>{p.value}</span>
         </div>
       ))}
@@ -148,8 +181,8 @@ export function ChartWrap({
   return (
     <div
       style={{
-        background: C.card,
-        border: `1px solid ${C.border}`,
+        background: "var(--card)",
+        border: "1px solid var(--border)",
         borderRadius: 10,
         padding: "24px 24px 16px",
         position: "relative",
@@ -163,8 +196,8 @@ export function ChartWrap({
             right: 16,
             fontFamily: FONT_MONO,
             fontSize: 11,
-            color: C.textDim,
-            border: `1px solid ${C.border}`,
+            color: "var(--muted-foreground)",
+            border: "1px solid var(--border)",
             padding: "2px 8px",
             borderRadius: 4,
           }}
@@ -177,7 +210,7 @@ export function ChartWrap({
           style={{
             fontFamily: FONT_MONO,
             fontSize: 10.5,
-            color: C.textDim,
+            color: "var(--muted-foreground)",
             marginBottom: 10,
             letterSpacing: "0.02em",
           }}
@@ -186,7 +219,7 @@ export function ChartWrap({
         </div>
       )}
       {note != null && (
-        <p style={{ fontSize: 12.5, color: C.textDim, lineHeight: 1.65, margin: "0 0 18px" }}>{note}</p>
+        <p style={{ fontSize: 12.5, color: "var(--muted-foreground)", lineHeight: 1.65, margin: "0 0 18px" }}>{note}</p>
       )}
       {children}
     </div>
@@ -209,8 +242,8 @@ export function Panel({
   return (
     <div
       style={{
-        background: C.card,
-        border: `1px solid ${C.border}`,
+        background: "var(--card)",
+        border: "1px solid var(--border)",
         borderRadius: 10,
         padding: "22px 24px",
         borderTop: accentColor != null ? `2px solid ${accentColor}` : undefined,
@@ -222,7 +255,7 @@ export function Panel({
   );
 }
 
-export function PanelLabel({ children, color = C.teal }: { children: ReactNode; color?: string }): React.JSX.Element {
+export function PanelLabel({ children, color = PRIMARY }: { children: ReactNode; color?: string }): React.JSX.Element {
   return (
     <div style={{ fontFamily: FONT_MONO, fontSize: 10.5, color, letterSpacing: "0.04em", marginBottom: 12 }}>
       {children}

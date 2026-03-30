@@ -7,16 +7,28 @@ import { ScrollRevealStagger } from "@/components/motion/ScrollRevealStagger";
 export default function Projects() {
   return (
     <Layout>
-      <div className="space-y-10">
-        <ScrollReveal as="section" className="max-w-2xl space-y-3 text-left">
-          <p className="text-xs font-medium text-muted-foreground">Software engineering</p>
-          <h1 className="font-heading text-3xl font-bold tracking-tight md:text-4xl">Projects</h1>
-          <p className="leading-[1.6] text-muted-foreground">
+      <div className="space-y-12">
+        {/* ── Page header ── */}
+        <ScrollReveal as="header" className="max-w-2xl space-y-4 text-left">
+          <p className="font-mono text-xs font-semibold uppercase tracking-widest text-primary">
+            Software engineering
+          </p>
+          <h1 className="font-heading text-4xl font-extrabold tracking-tight md:text-5xl">
+            Projects
+          </h1>
+          <p className="text-[0.9375rem] leading-relaxed text-muted-foreground">
             Backend-heavy work, desktop tools, and one full-stack ML app. Each card links to a full write-up.
           </p>
+          {/* Visual divider with gradient — reinforces section hierarchy */}
+          <div className="h-1 w-24 rounded-full bg-gradient-to-r from-primary to-primary/20" aria-hidden />
         </ScrollReveal>
 
-        <ScrollRevealStagger className="grid grid-cols-1 gap-6 md:grid-cols-2" stagger={0.07} delayChildren={0.08}>
+        {/* ── Project grid ── */}
+        <ScrollRevealStagger
+          className="grid grid-cols-1 gap-6 md:grid-cols-2"
+          stagger={0.07}
+          delayChildren={0.08}
+        >
           {projects.map((project) => (
             <WorkListCard
               key={project.id}

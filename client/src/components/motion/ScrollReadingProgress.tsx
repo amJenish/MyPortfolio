@@ -37,7 +37,7 @@ export function ScrollReadingProgress() {
 
   return (
     <motion.div
-      className="pointer-events-none fixed left-0 right-0 top-[3.25rem] z-[55] h-[2px] origin-left bg-gradient-to-r from-primary via-primary/85 to-primary/50 shadow-[0_0_12px_hsl(165_90%_50%_/_0.35)]"
+      className="pointer-events-none fixed left-0 right-0 top-14 z-[55] h-[2.5px] origin-left bg-gradient-to-r from-primary via-primary/80 to-primary/40 shadow-[0_0_10px_oklch(0.65_0.22_264_/_0.5)]"
       style={{ scaleX }}
       aria-hidden
     />
