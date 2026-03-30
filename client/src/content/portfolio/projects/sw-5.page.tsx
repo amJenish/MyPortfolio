@@ -45,7 +45,7 @@ export const workPageSections = [
 export default function Sw5Page(props: WorkPageProps) {
   return (
     <WorkReportShell {...props}>
-    <div className="theme-body work-report-body mx-auto max-w-[min(100%,60rem)] space-y-10 px-4 pb-16 text-sm sm:px-6 sm:text-base">
+    <div className="theme-body work-report-body mx-auto max-w-[min(100%,80rem)] space-y-10 px-4 pb-16 text-sm sm:px-6 sm:text-base">
 
       <section className="scroll-mt-28 space-y-4">
         <WorkSectionLabel number={1} title="Overview" id="summary" />

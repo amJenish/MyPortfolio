@@ -107,7 +107,7 @@ export function WorkChartTooltip({
     <div className="rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm shadow-md">
       {label != null ? <div className="mb-1 font-medium text-primary">{label}</div> : null}
       {payload.map((p, i) => (
-        <div key={i} className="text-muted-foreground" style={{ color: p.color }}>
+        <div key={i} className="text-muted-foreground">
           {p.name}:{" "}
           <span className="font-medium tabular-nums text-foreground">{String(p.value)}</span>
         </div>

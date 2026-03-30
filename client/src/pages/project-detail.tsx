@@ -1,15 +1,16 @@
-import Layout from "@/components/layout";
 import { projects } from "@/lib/content/registry";
 import { getWorkPage } from "../content/portfolio/registry.ts";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useParams, Link } from "wouter";
+import Layout from "@/components/layout";
 
 export default function ProjectDetail() {
   const params = useParams();
   const projectId = params.id as string;
   const project = projects.find((p) => p.id === projectId);
 
+  // Error state: project not found
   if (!project) {
     return (
       <Layout>
@@ -35,6 +36,7 @@ export default function ProjectDetail() {
 
   const entry = getWorkPage(project.reportSlug);
 
+  // Error state: no report page found
   if (!entry) {
     return (
       <Layout>
@@ -57,10 +59,12 @@ export default function ProjectDetail() {
       </Layout>
     );
   }
+
   const { Page, sections, ownsHero } = entry;
 
+  // Render the work page full-width with navbar and footer preserved
   return (
-    <Layout>
+    <Layout fullWidth>
       <Page
         entry={project}
         backHref="/projects"

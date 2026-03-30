@@ -51,7 +51,13 @@ const navItems = [
   },
 ] as const;
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout({ 
+  children, 
+  fullWidth = false 
+}: { 
+  children: React.ReactNode;
+  fullWidth?: boolean;
+}) {
   const [location] = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const email = profile.email;
@@ -236,10 +242,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         )}
       </AnimatePresence>
 
-      <main
-        id="main-content"
-        className="mx-auto min-h-[calc(100vh-4rem)] w-full max-w-[min(100%,88rem)] px-4 py-8 sm:px-6 sm:py-10 lg:px-12"
-      >
+      {fullWidth ? (
+        // Full-width mode: render children without main container constraints
         <motion.div
           key={location}
           initial={reduceMotion ? false : { opacity: 0, y: 18 }}
@@ -251,7 +255,25 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         >
           {children}
         </motion.div>
-      </main>
+      ) : (
+        // Standard mode: render children in constrained main container
+        <main
+          id="main-content"
+          className="mx-auto min-h-[calc(100vh-4rem)] w-full max-w-[min(100%,88rem)] px-4 py-8 sm:px-6 sm:py-10 lg:px-12"
+        >
+          <motion.div
+            key={location}
+            initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: reduceMotion ? 0 : 0.48,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+          >
+            {children}
+          </motion.div>
+        </main>
+      )}
 
       <footer className="border-t border-border/80 py-8">
         <div className="mx-auto flex w-full max-w-[min(100%,88rem)] flex-col items-center justify-between gap-4 px-4 text-center text-sm text-muted-foreground sm:flex-row sm:text-left sm:px-6 lg:px-8">
