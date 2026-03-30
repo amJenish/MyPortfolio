@@ -10,6 +10,8 @@ import {
   Mail,
   Github,
   Linkedin,
+  Moon,
+  Sun,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
@@ -61,6 +63,28 @@ export default function Layout({
   const [location] = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    const THEME_KEY = "theme";
+    let initial = false;
+
+    try {
+      const saved = window.localStorage.getItem(THEME_KEY);
+      if (saved === "dark") initial = true;
+      else if (saved === "light") initial = false;
+      else initial = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches ?? false;
+    } catch {
+      initial = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches ?? false;
+    }
+
+    // Apply immediately to avoid initial flash.
+    try {
+      document.documentElement.classList.toggle("dark", initial);
+    } catch {
+      // ignore
+    }
+
+    return initial;
+  });
   const email = profile.email;
   const reduceMotion = useReducedMotion();
   const navHover = reduceMotion ? undefined : { y: -1 };
@@ -75,6 +99,15 @@ export default function Layout({
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    try {
+      document.documentElement.classList.toggle("dark", isDark);
+      window.localStorage.setItem("theme", isDark ? "dark" : "light");
+    } catch {
+      // ignore
+    }
+  }, [isDark]);
 
   return (
     <div className="relative z-[1] min-h-screen bg-background font-sans text-foreground selection:bg-primary/25">
@@ -171,12 +204,24 @@ export default function Layout({
             </a>
           </div>
 
+          {/* Night mode toggle */}
+          <motion.button
+            type="button"
+            whileTap={reduceMotion ? undefined : { scale: 0.92 }}
+            onClick={() => setIsDark((d) => !d)}
+            className="ml-auto rounded-lg border border-border p-2 text-muted-foreground hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:ml-0"
+            aria-label={isDark ? "Switch to day mode" : "Switch to night mode"}
+            title={isDark ? "Day mode" : "Night mode"}
+          >
+            {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </motion.button>
+
           {/* Mobile menu toggle */}
           <motion.button
             type="button"
             onClick={() => setIsMobileMenuOpen((o) => !o)}
             whileTap={reduceMotion ? undefined : { scale: 0.92 }}
-            className="ml-auto rounded-lg border border-border p-2 text-muted-foreground hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:ml-0 md:hidden"
+            className="rounded-lg border border-border p-2 text-muted-foreground hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:ml-0 md:hidden"
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-nav"
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}

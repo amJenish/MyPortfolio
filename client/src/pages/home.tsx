@@ -99,7 +99,7 @@ export default function Home() {
               <motion.div variants={heroItem} className="mb-6 flex justify-center">
                 <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/[0.08] px-4 py-1.5 text-xs font-semibold text-primary">
                   <Sparkles className="h-3.5 w-3.5" aria-hidden />
-                  Available for Internships
+                  Available for Work
                   <span className="inline-block h-4 w-px bg-primary/40 animate-blink" aria-hidden />
                 </span>
               </motion.div>
