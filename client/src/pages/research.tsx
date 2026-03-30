@@ -46,7 +46,7 @@ export default function PaperworkPage() {
             Papers &amp; PDFs
           </h1>
           <p className="text-[0.9375rem] leading-relaxed text-muted-foreground">
-            Long-form write-ups and research documents. Select a paper to preview and download.
+            Long-form write-ups and documents. Select a paper to preview and download.
           </p>
           <div className="h-1 w-24 rounded-full bg-gradient-to-r from-primary to-primary/20" aria-hidden />
         </ScrollReveal>

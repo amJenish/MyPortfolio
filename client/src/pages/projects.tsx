@@ -11,13 +11,13 @@ export default function Projects() {
         {/* ── Page header ── */}
         <ScrollReveal as="header" className="max-w-2xl space-y-4 text-left">
           <p className="font-mono text-xs font-semibold uppercase tracking-widest text-primary">
-            Software engineering
+            Software Engineering + ML
           </p>
           <h1 className="font-heading text-4xl font-extrabold tracking-tight md:text-5xl">
             Projects
           </h1>
           <p className="text-[0.9375rem] leading-relaxed text-muted-foreground">
-            Backend-heavy work and full-stack applications building following SWE Principles. Each card links to a full write-up.
+            Backend-heavy work and full-stack applications built following SWE Principles alongside ML Implementations. Each card links to a full write-up.
           </p>
           {/* Visual divider with gradient — reinforces section hierarchy */}
           <div className="h-1 w-24 rounded-full bg-gradient-to-r from-primary to-primary/20" aria-hidden />

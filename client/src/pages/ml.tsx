@@ -18,11 +18,7 @@ export default function Ml() {
             Data science, ML &amp; notebooks
           </h1>
           <p className="text-[0.9375rem] leading-relaxed text-muted-foreground">
-            Structured reports with metrics, tables, and Recharts — drop exported figures under{" "}
-            <code className="rounded-md bg-muted px-1.5 py-0.5 font-mono text-xs text-primary">
-              public/portfolio/notebooks/&lt;slug&gt;/
-            </code>{" "}
-            when ready.
+             Reports with metrics, tables, and Recharts 
           </p>
           <div className="h-1 w-24 rounded-full bg-gradient-to-r from-primary to-primary/20" aria-hidden />
         </ScrollReveal>
@@ -41,7 +37,6 @@ export default function Ml() {
               summary={p.summary}
               tags={p.tags}
               date={p.date}
-              meta="Data-Science, ML"
               metrics={p.cardMetrics}
               variant="ml"
               ctaLabel="View report"

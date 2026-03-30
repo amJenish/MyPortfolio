@@ -29,7 +29,7 @@ export const kaggleProjects: KaggleProject[] = [
   {
     id: "kaggle-2",
     title: "House prices prediction",
-    date: "2026-01-10",
+    date: "2025-01-10",
     summary: "",
     githubUrl: "https://github.com/amJenish/House-Prices-Advanced-Regression",
     tags: ["Python", "XGBoost", "pandas"],
