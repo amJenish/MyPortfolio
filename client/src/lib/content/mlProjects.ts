@@ -16,7 +16,7 @@ export const kaggleProjects: KaggleProject[] = [
     date: "2026-01-24",
     summary: "",
     githubUrl: "https://github.com/amJenish/Telco-Customer-Churn-Prediction",
-    tags: ["Python", "scikit-learn", "pandas", "Gradient Boosting", "Classification", "Feature Engineering"],
+    tags: ["Python", "scikit-learn", "pandas", "Gradient Boosting", "Classification"],
     reportSlug: "telco-churn",
     notebookUrl:
       "https://nbviewer.org/github/amJenish/Telco-Customer-Churn-Prediction/blob/main/Analysis%20and%20Modeling.ipynb",
@@ -32,7 +32,7 @@ export const kaggleProjects: KaggleProject[] = [
     date: "2025-01-10",
     summary: "",
     githubUrl: "https://github.com/amJenish/House-Prices-Advanced-Regression",
-    tags: ["Python", "XGBoost", "CatBoost", "scikit-learn", "pandas", "seaborn", "RandomizedSearchCV"],
+    tags: ["Python", "XGBoost", "CatBoost", "scikit-learn", "pandas", "seaborn", "RandomizedSearchCV", "Feature Engineering"],
     reportSlug: "house-prices",
     notebookUrl:
       "https://nbviewer.org/github/amJenish/House-Prices-Advanced-Regression/blob/main/House%20Prices%20Advanced%20Regression%20Techniques.ipynb",
