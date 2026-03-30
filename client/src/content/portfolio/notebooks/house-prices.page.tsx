@@ -6,6 +6,7 @@ import {
 } from "recharts";
 
 import { FONT_MONO, FONT_SANS } from "./notebookTheme";
+import { Body, Tag } from "../reportPrimitives";
 
 // ── STANDARD CHART COLORS ──────────────────────────────────────────────────
 
@@ -221,25 +222,72 @@ export default function HousingPriceReport(props: WorkPageProps) {
     <div style={{ color: "var(--foreground)", fontFamily: FONT_SANS }}>
 
       {/* ── HERO ── */}
-      <div style={{ borderBottom: `1px solid ${"var(--border)"}`, padding: "72px 0 56px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, backgroundImage: `radial-gradient(circle at 1px 1px, ${"var(--border)"} 1px, transparent 0)`, backgroundSize: "28px 28px", opacity: 0.5 }} />
-        <div style={{ position: "absolute", top: "-20%", left: "60%", width: 600, height: 600, background: `radial-gradient(ellipse, ${CHART_COLORS.warning}08 0%, transparent 65%)`, pointerEvents: "none" }} />
+      <div style={{
+        borderBottom: "1px solid var(--border)",
+        padding: "72px 0 56px",
+        position: "relative",
+        overflow: "hidden",
+      }}>
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage: "linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)",
+            backgroundSize: "48px 48px",
+            opacity: 0.3,
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            top: "-20%",
+            left: "60%",
+            width: 600,
+            height: 600,
+            background: `radial-gradient(ellipse, ${CHART_COLORS.warning}08 0%, transparent 65%)`,
+            pointerEvents: "none",
+          }}
+        />
+
         <div style={{ maxWidth: 980, margin: "0 auto", padding: "0 40px", position: "relative" }}>
-          <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: CHART_COLORS.primary, marginBottom: 20 }}>
-            Machine Learning · Regression · Feature Engineering · Gradient Boosting
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 20, alignItems: "center" }}>
+            <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: "var(--muted-foreground)" }}>
+              Machine Learning · Regression · Feature Engineering · Gradient Boosting
+            </span>
+            <Tag color={CHART_COLORS.success}>Complete</Tag>
           </div>
-          <h1 style={{ fontFamily: FONT_SANS, fontSize: "clamp(32px, 4.5vw, 58px)", fontWeight: 700, margin: "0 0 16px", lineHeight: 1.15, color: "var(--foreground)", letterSpacing: -0.02 }}>
-            Ames Housing:<br /><span style={{ color: CHART_COLORS.primary }}>Predicting Sale Price</span>
+
+          <h1
+            style={{
+              fontFamily: FONT_SANS,
+              fontSize: "clamp(36px, 5vw, 62px)",
+              fontWeight: 700,
+              margin: "0 0 16px",
+              lineHeight: 1.15,
+              color: "var(--foreground)",
+              letterSpacing: -0.02,
+            }}
+          >
+            Ames Housing:
+            <br />
+            <span style={{ color: CHART_COLORS.primary }}>Predicting Sale Price</span>
           </h1>
-          <p style={{ fontSize: 17, color: "var(--muted-foreground)", maxWidth: 680, lineHeight: 1.8, margin: "0 0 14px" }}>
-            A regression project on the Ames Housing dataset, predicting residential sale prices from 80+ structural, locational, and quality features. The central question I set out to answer: <strong style={{ color: "var(--foreground)" }}>how much predictive power can be extracted from systematic feature engineering versus throwing all raw variables at a gradient booster?</strong>
-          </p>
-          <p style={{ fontSize: 15, color: "var(--muted-foreground)", maxWidth: 680, lineHeight: 1.7, margin: "0 0 36px" }}>
-            My baseline Linear Regression achieved R² of <strong style={{ color: "var(--foreground)" }}>87.4%</strong>. Careful feature selection and engineering on a hand-curated 23-feature subset, combined with XGBoost and hyperparameter tuning, pushed that to <strong style={{ color: "var(--foreground)" }}>92.6%</strong> on the held-out test set.
-          </p>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-            {["Python", "XGBoost", "CatBoost", "scikit-learn", "pandas", "seaborn", "RandomizedSearchCV"].map(t => (
-              <span key={t} style={{ fontFamily: FONT_MONO, fontSize: 11, background: "var(--card)", border: `1px solid ${"var(--border)"}`, color: CHART_COLORS.secondary, padding: "5px 12px", borderRadius: 20 }}>{t}</span>
+
+          <Body style={{ maxWidth: 660, marginBottom: 24, color: "var(--foreground)" }}>
+            A regression project on the Ames Housing dataset, predicting residential sale prices from 80+ structural, locational, and quality features. The central question I set out to answer:{" "}
+            <strong style={{ color: "var(--foreground)" }}>
+              how much predictive power can be extracted from systematic feature engineering versus throwing all raw variables at a gradient booster?
+            </strong>
+          </Body>
+
+          <Body style={{ maxWidth: 660, marginBottom: 36, color: "var(--foreground)" }}>
+            My baseline Linear Regression achieved R² of <strong style={{ color: "var(--foreground)" }}>87.4%</strong>. Careful feature selection and engineering on a hand-curated 23-feature subset, combined with XGBoost and hyperparameter tuning, pushed that to{" "}
+            <strong style={{ color: "var(--foreground)" }}>92.6%</strong> on the held-out test set.
+          </Body>
+
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            {props.entry.tags.map((t) => (
+              <Tag key={t}>{t}</Tag>
             ))}
           </div>
         </div>

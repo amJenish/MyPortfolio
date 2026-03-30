@@ -199,7 +199,7 @@ export default function TelcoChurnReport(props: WorkPageProps) {
             </Body>
 
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {["Python", "Scikit-learn", "Gradient Boosting", "Classification", "Feature Engineering"].map(t => (
+              {props.entry.tags.map((t) => (
                 <Tag key={t}>{t}</Tag>
               ))}
             </div>
