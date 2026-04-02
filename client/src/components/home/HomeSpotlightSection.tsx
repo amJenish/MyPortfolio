@@ -24,7 +24,13 @@ function itemHref(p: Project | KaggleProject, v: Variant): string {
 }
 
 function itemSubtitle(p: Project | KaggleProject, v: Variant): string {
-  if (v === "software") return "Software project";
+  if (v === "software") {
+    const proj = p as Project;
+    const slug = proj.reportSlug ?? "";
+    if (slug.startsWith("ai-")) return "Automation Project";
+    if (slug.startsWith("ml-")) return "Machine Learning / Experiment";
+    return "Software project";
+  }
   const kp = p as KaggleProject;
   return `${kp.date} · Notebook`;
 }
@@ -84,7 +90,7 @@ export function HomeSpotlightSection({
         <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
           <div className="min-w-0 flex-1 text-left space-y-2">
             <p className="font-mono text-xs font-semibold uppercase tracking-widest text-primary">
-              {variant === "software" ? "Software engineering" : "Data science & ML"}
+              {variant === "software" ? "Software engineering & More" : "Experiments & write-ups"}
             </p>
             <h2
               id={`spotlight-${variant}-heading`}

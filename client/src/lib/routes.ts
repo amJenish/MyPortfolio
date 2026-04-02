@@ -1,9 +1,11 @@
 /** Canonical paths (hash router: no # prefix here). */
 export const ML_LIST_PATH = "/ml";
+/** Listing alias; detail pages use this base for canonical URLs (`/data/data-1`, …). */
+export const DATA_LIST_PATH = "/data";
 export const PAPERWORK_LIST_PATH = "/paperwork";
 
 export function mlDetailPath(id: string): string {
-  return `${ML_LIST_PATH}/${id}`;
+  return `${DATA_LIST_PATH}/${id}`;
 }
 
 export function isMlSection(path: string): boolean {

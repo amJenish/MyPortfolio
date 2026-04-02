@@ -28,6 +28,36 @@ export const projects: Project[] = [
     highlights: [],
   },
   {
+    id: "4",
+    title: "[In-progress] Reinforcement Learning for Traffic Signal Optimization",
+    summary: "A reinforcement learning model for traffic signal optimization currently in progress, built with Pytorch that allows traffic signals to be optimized for the best traffic flow.",
+    githubUrl: "https://github.com/amJenish/RL-Traffic-Light-Optimization",
+    tags: [
+      "Machine Learning",
+      "Experiment",
+      "Reinforcement Learning",
+      "Traffic Signal Optimization",
+      "DoubleDQN",
+      "SUMO",
+      "TracI",
+      "Policy Optimization",
+      "PyTorch",
+      "Object-Oriented Programming",
+    ],
+    reportSlug: "ml-exp-1",
+    highlights: [],
+  }
+  ,
+  {
+    id: "6",
+    title: "Reply Radar (Email Followup Agent)",
+    summary: "Groq + Llama automation for drafted replies and notification-style workflows.",
+    githubUrl: "https://github.com/amJenish/ReplyRadar",
+    tags: ["Python", "Groq", "LLM", "Automation", "Llama", "Windows", "imaplib", "CustomTkinter", "PyInstaller"],
+    reportSlug: "ai-1",
+    highlights: [],
+  },
+  {
     id: "3",
     title: "[Backend] Student enrollment system",
     summary: "A backend for a student enrollment system built with Java and Servlets that allows students to enroll in courses, admins to manage the enrollment system and professors to manage their courses.",
@@ -36,13 +66,4 @@ export const projects: Project[] = [
     reportSlug: "sw-3",
     highlights: [],
   },
-  {
-    id: "4",
-    title: "[In-progress] Reinforcement Learning for Traffic Signal Optimization",
-    summary: "A reinforcement learning model for traffic signal optimization currently in progress, built with Pytorch that allows traffic signals to be optimized for the best traffic flow.",
-    githubUrl: "https://github.com/amJenish/RL-Traffic-Light-Optimization",
-    tags: ["Python", "Pytorch", "Reinforcement Learning", "DoubleDQN", "Policy Optimization", "SUMO", "TracI", "Object-Oriented Programming"],
-    reportSlug: "sw-4",
-    highlights: [],
-  }
 ];

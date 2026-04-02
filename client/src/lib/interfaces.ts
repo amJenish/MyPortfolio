@@ -27,6 +27,8 @@ export interface KaggleProject extends WorkEntry {
   /** Shown on Data/ML cards and detail */
   date: string;
   reportSlug: string;
+  /** Old URL segments (e.g. kaggle-1) — still accepted; router redirects to canonical `id` */
+  legacyIds?: string[];
 }
 
 export interface ResearchPaper {

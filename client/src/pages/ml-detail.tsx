@@ -1,14 +1,27 @@
-import { kaggleProjects } from "@/lib/content/registry";
+import { findMlProjectByRouteId } from "@/lib/content/mlProjects";
 import { getWorkPage } from "../content/portfolio/registry.ts";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { useParams, Link } from "wouter";
+import { useParams, Link, useLocation } from "wouter";
+import { useEffect } from "react";
 import Layout from "@/components/layout";
+import { DATA_LIST_PATH, mlDetailPath } from "@/lib/routes";
 
 export default function MlDetail() {
   const params = useParams();
   const notebookId = params.id as string;
-  const notebook = kaggleProjects.find((n) => n.id === notebookId);
+  const [, setLocation] = useLocation();
+  const notebook = findMlProjectByRouteId(notebookId);
+
+  useEffect(() => {
+    if (notebook && notebook.id !== notebookId) {
+      setLocation(mlDetailPath(notebook.id), { replace: true });
+    }
+  }, [notebook, notebookId, setLocation]);
+
+  if (notebook && notebook.id !== notebookId) {
+    return null;
+  }
 
   // Error state: notebook not found
   if (!notebook) {
@@ -16,7 +29,7 @@ export default function MlDetail() {
       <Layout>
         <div className="mx-auto max-w-lg space-y-6 py-16 text-left">
           <Link
-            href="/ml"
+            href={DATA_LIST_PATH}
             className="inline-flex items-center gap-2 text-sm font-medium text-primary"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -26,7 +39,7 @@ export default function MlDetail() {
           <p className="text-muted-foreground text-sm">
             That ID is not in the list.
           </p>
-          <Link href="/ml">
+          <Link href={DATA_LIST_PATH}>
             <Button>All notebooks</Button>
           </Link>
         </div>
@@ -42,7 +55,7 @@ export default function MlDetail() {
       <Layout>
         <div className="mx-auto max-w-lg space-y-6 py-16 text-left">
           <Link
-            href="/ml"
+            href={DATA_LIST_PATH}
             className="inline-flex items-center gap-2 text-sm font-medium text-primary"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -52,7 +65,7 @@ export default function MlDetail() {
           <p className="text-muted-foreground text-sm">
             This notebook does not have a registered report page yet.
           </p>
-          <Link href="/ml">
+          <Link href={DATA_LIST_PATH}>
             <Button>All notebooks</Button>
           </Link>
         </div>
@@ -67,7 +80,7 @@ export default function MlDetail() {
     <Layout fullWidth>
       <Page
         entry={notebook}
-        backHref="/ml"
+        backHref={DATA_LIST_PATH}
         backLabel="Back to Data & ML"
         categoryLabel="Data & ML"
         sections={sections}
