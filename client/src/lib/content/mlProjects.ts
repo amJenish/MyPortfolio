@@ -19,7 +19,7 @@ export const kaggleProjects: KaggleProject[] = [
   {
     id: "data-3",
     legacyIds: ["kaggle-3"],
-    title: "Job–Resume Fit Prediction",
+    title: "Job–Resume Match Classification",
     date: "2025-12-10",
     summary: "",
     githubUrl: "https://github.com/amJenish/Job-Resume-Matching",
@@ -45,7 +45,7 @@ export const kaggleProjects: KaggleProject[] = [
   {
     id: "data-1",
     legacyIds: ["kaggle-1"],
-    title: "Telco customer churn",
+    title: "Telco Customer Churn Analysis & Classification",
     date: "2025-10-24",
     summary: "",
     githubUrl: "https://github.com/amJenish/Telco-Customer-Churn-Prediction",
@@ -61,7 +61,7 @@ export const kaggleProjects: KaggleProject[] = [
   {
     id: "data-2",
     legacyIds: ["kaggle-2"],
-    title: "House prices prediction",
+    title: "Housing Prices Prediction: Analysis & Regression",
     date: "2025-01-10",
     summary: "",
     githubUrl: "https://github.com/amJenish/House-Prices-Advanced-Regression",
