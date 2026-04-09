@@ -39,7 +39,23 @@ export const kaggleProjects: KaggleProject[] = [
     ],
     reportSlug: "job-resume",
     notebookUrl: "https://nbviewer.org/github/amJenish/Job-Resume-Matching/blob/main/Main.ipynb",
-    cardMetrics: [{ label: "Acc (val)", value: "~87%" }],
+    cardMetrics: [{ label: "Acc (val)", value: "~88%" }],
+    highlights: [],
+  },
+  {
+    id: "data-1",
+    legacyIds: ["kaggle-1"],
+    title: "Telco customer churn",
+    date: "2025-10-24",
+    summary: "",
+    githubUrl: "https://github.com/amJenish/Telco-Customer-Churn-Prediction",
+    tags: ["Python", "scikit-learn", "pandas", "Gradient Boosting", "Classification"],
+    reportSlug: "telco-churn",
+    notebookUrl:
+      "https://nbviewer.org/github/amJenish/Telco-Customer-Churn-Prediction/blob/main/Analysis%20and%20Modeling.ipynb",
+    cardMetrics: [
+      { label: "Churn Recall", value: "90%" },
+    ],
     highlights: [],
   },
   {
@@ -53,23 +69,9 @@ export const kaggleProjects: KaggleProject[] = [
     reportSlug: "house-prices",
     notebookUrl:
       "https://nbviewer.org/github/amJenish/House-Prices-Advanced-Regression/blob/main/House%20Prices%20Advanced%20Regression%20Techniques.ipynb",
-    cardMetrics: [{ label: "Test R²", value: "~92%" }],
-    highlights: [],
-  },
-  {
-    id: "data-1",
-    legacyIds: ["kaggle-1"],
-    title: "Telco customer churn",
-    date: "2025-01-24",
-    summary: "",
-    githubUrl: "https://github.com/amJenish/Telco-Customer-Churn-Prediction",
-    tags: ["Python", "scikit-learn", "pandas", "Gradient Boosting", "Classification"],
-    reportSlug: "telco-churn",
-    notebookUrl:
-      "https://nbviewer.org/github/amJenish/Telco-Customer-Churn-Prediction/blob/main/Analysis%20and%20Modeling.ipynb",
     cardMetrics: [
-      { label: "AUC", value: "83.6%" },
-      { label: "Acc", value: "79.5%" },
+      { label: "Test R²", value: "92.6%" },
+      { label: "Best CV R²", value: "88.3%" },
     ],
     highlights: [],
   },

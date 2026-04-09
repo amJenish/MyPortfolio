@@ -1,4 +1,5 @@
-import { useState, type ReactNode } from "react";
+// @refresh reset
+import { type ReactNode } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, Cell, Legend,
@@ -15,15 +16,18 @@ import {
 import type { WorkPageProps } from "../workPageTypes";
 import { WorkReportShell } from "@/components/work/WorkReportShell";
 
-// ── STANDARD CHART COLORS ──────────────────────────────────────────────────
+// ── CHART COLORS ───────────────────────────────────────────────────────────
 
 const CHART_COLORS = {
-  primary: "#6366f1",    // Indigo (primary)
-  success: "#22c55e",    // Green
-  warning: "#f59e0b",    // Amber/Orange
-  danger: "#ef4444",     // Red
-  secondary: "#06b6d4",  // Cyan
+  primary:   "#6366f1",
+  success:   "#22c55e",
+  warning:   "#f59e0b",
+  danger:    "#ef4444",
+  secondary: "#06b6d4",
+  purple:    "#a855f7",
 };
+
+// ── DATA ───────────────────────────────────────────────────────────────────
 
 const tenureChurn = [
   { group: "0 to 6 mo",   rate: 53.3, fill: CHART_COLORS.danger },
@@ -34,51 +38,121 @@ const tenureChurn = [
 ];
 
 const paymentChurn = [
-  { method: "E Check",       rate: 45.3, fill: CHART_COLORS.danger },
-  { method: "Mailed check",  rate: 19.2, fill: CHART_COLORS.warning },
-  { method: "Bank transfer", rate: 16.7, fill: CHART_COLORS.secondary },
-  { method: "Credit card",   rate: 15.3, fill: CHART_COLORS.secondary },
+  { method: "E Check",        rate: 45.3, fill: CHART_COLORS.danger },
+  { method: "Mailed check",   rate: 19.2, fill: CHART_COLORS.warning },
+  { method: "Bank transfer",  rate: 16.7, fill: CHART_COLORS.secondary },
+  { method: "Credit card",    rate: 15.3, fill: CHART_COLORS.secondary },
+];
+
+const contractChurn = [
+  { type: "Month to month", rate: 42.7, fill: CHART_COLORS.danger },
+  { type: "One year",       rate: 11.3, fill: CHART_COLORS.warning },
+  { type: "Two year",       rate: 2.8,  fill: CHART_COLORS.secondary },
+];
+
+const internetChurn = [
+  { type: "Fiber optic", rate: 41.9, fill: CHART_COLORS.danger },
+  { type: "DSL",         rate: 19.0, fill: CHART_COLORS.warning },
+  { type: "No service",  rate: 7.4,  fill: CHART_COLORS.secondary },
+];
+
+const demographicChurn = [
+  { segment: "Senior citizen",  rate: 41.7, fill: CHART_COLORS.danger },
+  { segment: "No partner",      rate: 33.0, fill: CHART_COLORS.warning },
+  { segment: "No dependents",   rate: 31.3, fill: CHART_COLORS.warning },
+  { segment: "Non senior",      rate: 23.6, fill: CHART_COLORS.secondary },
+  { segment: "Has partner",     rate: 19.7, fill: CHART_COLORS.secondary },
+  { segment: "Has dependents",  rate: 15.5, fill: CHART_COLORS.secondary },
+];
+
+const serviceChurn = [
+  { service: "No online security",  rate: 41.8, fill: CHART_COLORS.danger },
+  { service: "No tech support",     rate: 41.7, fill: CHART_COLORS.danger },
+  { service: "Paperless billing",   rate: 33.6, fill: CHART_COLORS.warning },
+  { service: "Has tech support",    rate: 15.2, fill: CHART_COLORS.secondary },
+  { service: "Has online security", rate: 14.6, fill: CHART_COLORS.secondary },
+  { service: "Paper billing",       rate: 16.4, fill: CHART_COLORS.secondary },
+];
+
+const monthlyChargesData = [
+  { group: "< $35",      churned: 9.2,  retained: 90.8 },
+  { group: "$35 to $55", churned: 16.4, retained: 83.6 },
+  { group: "$55 to $75", churned: 28.1, retained: 71.9 },
+  { group: "$75 to $95", churned: 34.7, retained: 65.3 },
+  { group: "> $95",      churned: 38.5, retained: 61.5 },
 ];
 
 const featureImportance = [
   { feature: "Paperless Billing", importance: 1.71 },
-  { feature: "Contract 1yr",   importance: 1.79 },
+  { feature: "Contract 1yr",      importance: 1.79 },
   { feature: "Online Security",   importance: 2.14 },
-  { feature: "E Check Payment",  importance: 2.14 },
-  { feature: "Contract 2yr",   importance: 2.16 },
+  { feature: "E Check Payment",   importance: 2.14 },
+  { feature: "Contract 2yr",      importance: 2.16 },
   { feature: "Tech Support",      importance: 2.18 },
-  { feature: "Fiber Optic",      importance: 2.63 },
+  { feature: "Fiber Optic",       importance: 2.63 },
   { feature: "Monthly Charges",   importance: 8.33 },
-  { feature: "Tenure",           importance: 9.60 },
+  { feature: "Tenure",            importance: 9.60 },
   { feature: "Total Charges",     importance: 10.24 },
 ];
 
-const classReport = [
-  { label: "Precision", churned: 65, retained: 83 },
-  { label: "Recall",    churned: 48, retained: 91 },
-  { label: "F1 Score",  churned: 55, retained: 87 },
+const modelComparison = [
+  { name: "SVM",                acc: "75.6%", prec: "90%", rec: "9%",  f1: "17%", hl: false },
+  { name: "KNN",                acc: "76.9%", prec: "61%", rec: "37%", f1: "46%", hl: false },
+  { name: "Logistic Reg.",      acc: "77.0%", prec: "55%", rec: "73%", f1: "63%", hl: false },
+  { name: "XGBoost",            acc: "77.0%", prec: "59%", rec: "50%", f1: "54%", hl: false },
+  { name: "Random Forest",      acc: "79.3%", prec: "66%", rec: "44%", f1: "53%", hl: false },
+  { name: "Grad. Boosting",     acc: "80.3%", prec: "67%", rec: "51%", f1: "58%", hl: false },
+  { name: "Hist GBM t=0.35 ★", acc: "66.0%", prec: "44%", rec: "90%", f1: "59%", hl: true  },
 ];
+
+const modelRecallData = [
+  { model: "SVM",               recall: 9,  fill: "#94a3b8" },
+  { model: "Log. Regression",   recall: 73, fill: "#94a3b8" },
+  { model: "KNN",               recall: 37, fill: "#94a3b8" },
+  { model: "XGBoost",           recall: 50, fill: "#94a3b8" },
+  { model: "Random Forest",     recall: 44, fill: "#94a3b8" },
+  { model: "Grad. Boosting",    recall: 51, fill: CHART_COLORS.warning },
+  { model: "Hist GBM (t=0.35)", recall: 90, fill: CHART_COLORS.primary },
+];
+
+const confusionMatrix = [
+  { label: "True Positive",  value: 504, sub: "Correctly predicted churn",    fill: CHART_COLORS.success },
+  { label: "False Positive", value: 653, sub: "Incorrectly flagged as churn", fill: CHART_COLORS.warning },
+  { label: "False Negative", value: 57,  sub: "Missed churn cases",           fill: CHART_COLORS.danger },
+  { label: "True Negative",  value: 896, sub: "Correctly predicted retained", fill: CHART_COLORS.secondary },
+];
+
+const classReport = [
+  { label: "Precision", churned: 44, retained: 94 },
+  { label: "Recall",    churned: 90, retained: 58 },
+  { label: "F1 Score",  churned: 59, retained: 72 },
+];
+
+const hyperparamResults = [
+  { params: "lr=0.05, depth=3", cv: 61.2, test: 59.8 },
+  { params: "lr=0.05, depth=5", cv: 60.8, test: 59.1 },
+  { params: "lr=0.10, depth=3", cv: 60.5, test: 58.7 },
+  { params: "lr=0.10, depth=5", cv: 60.1, test: 58.3 },
+];
+
+const engineeredFeatures = [
+  { name: "charge_ratio",            desc: "TotalCharges / (MonthlyCharges + 1), normalized lifetime value" },
+  { name: "AvgAmtPaidOverall",       desc: "TotalCharges / tenure, average monthly spend over customer lifetime" },
+  { name: "short_tenure",            desc: "Binary flag: tenure < 12 months" },
+  { name: "fiber_no_security",       desc: "Fiber optic subscriber with no online security" },
+  { name: "no_support_services",     desc: "No tech support AND no online security" },
+  { name: "risk_score",              desc: "Sum of 9 independent risk indicators" },
+  { name: "senior_month_to_month",   desc: "Senior citizen on a month to month contract" },
+  { name: "high_charge_no_contract", desc: "Top quartile monthly charges on month to month" },
+];
+
+// ── TOOLTIP ────────────────────────────────────────────────────────────────
 
 type TooltipPayloadItem = {
   name?: string;
   value?: string | number | ReadonlyArray<string | number>;
   color?: string;
 };
-
-function formatTooltipDisplay(name: string | undefined, value: unknown): string {
-  if (typeof value !== "number") return String(value ?? "");
-  const n = (name ?? "").toLowerCase();
-  const asPercent =
-    n.includes("rate") ||
-    n.includes("accuracy") ||
-    n.includes("auc") ||
-    n.includes("importance") ||
-    n.includes("precision") ||
-    n.includes("recall") ||
-    n.includes("f1") ||
-    n.includes("(class");
-  return asPercent ? `${value}%` : String(value);
-}
 
 function Tip({
   active,
@@ -101,29 +175,64 @@ function Tip({
       fontFamily: FONT_MONO,
     }}>
       <div style={{ color: CHART_COLORS.primary, marginBottom: 4 }}>{label}</div>
-      {payload.map((p, i) => (
-        <div key={i} style={{ color: p.color || "var(--foreground)" }}>
-          {p.name}: <span style={{ fontWeight: 600 }}>{formatTooltipDisplay(p.name, p.value)}</span>
-        </div>
-      ))}
+      {payload.map((p, i) => {
+        const val = typeof p.value === "number" ? `${p.value}%` : String(p.value ?? "");
+        return (
+          <div key={i} style={{ color: p.color ?? "var(--foreground)" }}>
+            {p.name}: <span style={{ fontWeight: 600 }}>{val}</span>
+          </div>
+        );
+      })}
     </div>
   );
 }
 
+// ── LOCAL PRIMITIVES ───────────────────────────────────────────────────────
+
+function ChartCard({ title, subtitle, children }: { title: string; subtitle?: string; children: ReactNode }) {
+  return (
+    <div style={{ padding: 24, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+      <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 4 }}>{title}</div>
+      {subtitle
+        ? <div style={{ fontSize: 11, color: "var(--muted-foreground)", marginBottom: 16 }}>{subtitle}</div>
+        : <div style={{ marginBottom: 16 }} />
+      }
+      {children}
+    </div>
+  );
+}
+
+function StatCard({ label, value, sub, color }: { label: string; value: string; sub?: string; color?: string }) {
+  return (
+    <div style={{ padding: "20px 24px", border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+      <div style={{ fontSize: 11, color: "var(--muted-foreground)", fontFamily: FONT_MONO, marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.5 }}>{label}</div>
+      <div style={{ fontSize: 28, fontWeight: 700, color: color ?? CHART_COLORS.primary, fontFamily: FONT_MONO, lineHeight: 1.1, marginBottom: 4 }}>{value}</div>
+      {sub && <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>{sub}</div>}
+    </div>
+  );
+}
+
+// ── PAGE SECTIONS ──────────────────────────────────────────────────────────
+
 export const workPageSections = [
-  { id: "telco-overview", label: "Overview" },
-  { id: "telco-problem", label: "Problem Statement" },
-  { id: "telco-insights", label: "Data Insights" },
-  { id: "telco-features", label: "Key Drivers" },
-  { id: "telco-models", label: "Model Selection" },
-  { id: "telco-evaluation", label: "Evaluation Results" },
-  { id: "telco-conclusions", label: "Conclusions and Future Work" },
+  { id: "telco-overview",    label: "Overview" },
+  { id: "telco-dataset",     label: "Dataset & Cleaning" },
+  { id: "telco-eda",         label: "Exploratory Analysis" },
+  { id: "telco-notes",       label: "Analytical Notes" },
+  { id: "telco-features",    label: "Feature Engineering" },
+  { id: "telco-models",      label: "Model Selection" },
+  { id: "telco-tuning",      label: "Hyperparameter Tuning" },
+  { id: "telco-evaluation",  label: "Evaluation Results" },
+  { id: "telco-conclusions", label: "Conclusions" },
 ] as const;
+
+// ── PAGE ───────────────────────────────────────────────────────────────────
 
 export default function TelcoChurnAnalysis(props: WorkPageProps) {
   return (
     <WorkReportShell {...props}>
       <div style={{ color: "var(--foreground)", fontFamily: FONT_SANS, textAlign: "left" }}>
+
         {/* ── HERO ── */}
         <div style={{
           borderBottom: "1px solid var(--border)",
@@ -132,19 +241,14 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
           overflow: "hidden",
         }}>
           <div style={{
-            position: "absolute",
-            inset: 0,
+            position: "absolute", inset: 0,
             backgroundImage: `linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)`,
-            backgroundSize: "48px 48px",
-            opacity: 0.3,
+            backgroundSize: "48px 48px", opacity: 0.3,
           }} />
           <div style={{
-            position: "absolute",
-            top: "-20%",
-            left: "60%",
-            width: 600,
-            height: 600,
-            background: "radial-gradient(ellipse, rgb(245, 158, 11 / 0.08) 0%, transparent 65%)",
+            position: "absolute", top: "-20%", left: "60%",
+            width: 600, height: 600,
+            background: "radial-gradient(ellipse, rgba(245,158,11,0.08) 0%, transparent 65%)",
             pointerEvents: "none",
           }} />
 
@@ -169,161 +273,291 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
               <span style={{ color: CHART_COLORS.primary }}>Churn Prediction Analysis</span>
             </h1>
 
-            <Body style={{ maxWidth: 660, marginBottom: 24, color: "var(--foreground)" }}>
-              This study explores the Telco Customer Churn dataset from Kaggle, focusing on identifying patterns and developing predictive models for customer attrition. The analysis encompasses data exploration, feature importance, and model evaluation.
+            <Body style={{ maxWidth: 660, marginBottom: 24 }}>
+              In this study I explore the Telco Customer Churn dataset from Kaggle, covering the full
+              analytical pipeline: data cleaning, exploratory analysis, feature engineering,
+              model selection, hyperparameter tuning, and final evaluation.
             </Body>
 
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {props.entry.tags.map((t) => (
-                <Tag key={t}>{t}</Tag>
-              ))}
+              {props.entry.tags.map((t) => <Tag key={t}>{t}</Tag>)}
             </div>
           </div>
         </div>
 
         <div style={{ maxWidth: 1280, margin: "0 auto", padding: "64px 40px" }}>
+
           {/* ══ 01 OVERVIEW ══ */}
           <div id="telco-overview" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={1} title="Overview" />
-            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
-              This project utilizes machine learning to predict customer churn within a telecom dataset. By analyzing 19 distinct features, a Gradient Boosting model was developed, achieving an accuracy of 79.4%. The objective was to understand the factors contributing to customer attrition and assess the predictive performance of various models.
+            <Body>
+              In this project I built a machine learning pipeline to predict customer churn within a
+              telecommunications dataset. The goal was to feed predictions into a low cost automated
+              intervention — specifically an email or small discount offer to at‑risk customers. Given
+              that framing, maximising the number of real churners caught matters more than overall
+              accuracy, because missing a churner is costly while sending an offer to a loyal customer
+              is essentially harmless.
             </Body>
-
+            <Body>
+              Working across 7,032 cleaned records and 21 original features, I settled on a
+              Hist Gradient Boosting classifier with class balancing and a tuned decision threshold
+              of 0.35 as the final model. It catches 90% of real churners, which is the number that
+              matters most for this use case.
+            </Body>
             <Notice color={CHART_COLORS.primary} icon="★">
-              A key aspect of this study involved balancing precision and recall to effectively characterize the churn phenomenon within the dataset.
+              Because the intervention is low cost, I intentionally optimised for recall over
+              precision. The final model flags more customers than will actually churn, but in a
+              context where the downside of a false positive is just an unnecessary email, that is
+              an acceptable tradeoff to catch 9 out of 10 genuine churn cases.
             </Notice>
-          </div>
 
-          {/* ══ 02 PROBLEM STATEMENT ══ */}
-          <div id="telco-problem" className="scroll-mt-28" style={{ marginBottom: 88 }}>
-            <SectionLabel n={2} title="Problem Statement" />
-            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
-              Customer churn presents a significant challenge in competitive markets. This analysis investigates the underlying factors and predictive capabilities of machine learning models to identify patterns associated with customer attrition in the provided dataset.
-            </Body>
-
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-              gap: 16,
-              marginBottom: 32,
-            }}>
-              <div style={{
-                padding: 20,
-                border: "1px solid var(--border)",
-                borderRadius: 8,
-                backgroundColor: "var(--card)",
-              }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: CHART_COLORS.primary, marginBottom: 8 }}>Churn Rate Observation</div>
-                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>Approximately 27% of customers in this dataset exhibited churn behavior, representing 1,869 instances available for predictive analysis.</Body>
-              </div>
-
-              <div style={{
-                padding: 20,
-                border: "1px solid var(--border)",
-                borderRadius: 8,
-                backgroundColor: "var(--card)",
-              }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: CHART_COLORS.primary, marginBottom: 8 }}>Predictive Model Utility</div>
-                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>Developing a model capable of identifying customers with a high propensity to churn enables a deeper understanding of the factors involved.</Body>
-              </div>
-
-              <div style={{
-                padding: 20,
-                border: "1px solid var(--border)",
-                borderRadius: 8,
-                backgroundColor: "var(--card)",
-              }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: CHART_COLORS.primary, marginBottom: 8 }}>Evaluation Metric Focus</div>
-                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>A model with high precision is crucial for ensuring that identified churn risks are genuinely indicative of attrition, thereby maximizing the interpretability of the results.</Body>
-              </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
+              <StatCard label="Total Records" value="7,032" sub="after cleaning" />
+              <StatCard label="Features" value="21" sub="original columns" color={CHART_COLORS.secondary} />
+              <StatCard label="Churn Rate" value="26.5%" sub="1,869 churned customers" color={CHART_COLORS.danger} />
+              <StatCard label="Churn Recall" value="90%" sub="Hist GBM, threshold 0.35" color={CHART_COLORS.success} />
+              <StatCard label="Models Tested" value="7" sub="including XGBoost" color={CHART_COLORS.warning} />
             </div>
           </div>
 
-          {/* ══ 03 DATA INSIGHTS ══ */}
-          <div id="telco-insights" className="scroll-mt-28" style={{ marginBottom: 88 }}>
-            <SectionLabel n={3} title="Data Insights" />
-            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
-              Initial data exploration revealed distinct patterns related to customer tenure, payment methods, and monthly charges. These factors emerged as significant indicators within the dataset.
+          {/* ══ 02 DATASET & CLEANING ══ */}
+          <div id="telco-dataset" className="scroll-mt-28" style={{ marginBottom: 88 }}>
+            <SectionLabel n={2} title="Dataset Structure and Cleaning" />
+            <Body>
+              The raw dataset contains 7,043 records with 21 columns spanning demographic
+              attributes, service subscriptions, contract terms, billing details, and a binary
+              churn label. A data quality check revealed that <Code>TotalCharges</Code> was ingested
+              as an object column rather than a numeric type. Eleven records with blank strings were
+              dropped — each had zero tenure and no churn, making them uninformative. A consistency
+              audit confirmed that all internet‑dependent service flags resolve
+              to <Code>"No internet service"</Code> whenever <Code>InternetService</Code> is set to
+              No, with no cross‑field contradictions.
             </Body>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 24 }}>
-              <div style={{
-                padding: 24,
-                border: "1px solid var(--border)",
-                borderRadius: 8,
-                backgroundColor: "var(--card)",
-              }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 16 }}>
-                  Chart 1: Churn Rate by Tenure Group
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
+              {[
+                {
+                  title: "Null Handling",
+                  body: "Eleven rows with blank TotalCharges values were identified using a regex replacement pass before casting to float. All had zero tenure and no churn.",
+                },
+                {
+                  title: "TotalCharges Discrepancy",
+                  body: "2,323 mismatches exceeding a $50 tolerance between TotalCharges and tenure × MonthlyCharges — likely mid‑cycle plan changes or promotions recorded in billing history.",
+                },
+                {
+                  title: "Consistency Checks",
+                  body: "All six internet‑dependent feature columns were verified against the parent InternetService column. No inconsistencies surfaced across the audit.",
+                },
+              ].map((card) => (
+                <div key={card.title} style={{ padding: 20, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: CHART_COLORS.primary, marginBottom: 8 }}>{card.title}</div>
+                  <Body style={{ fontSize: 13 }}>{card.body}</Body>
                 </div>
-                <ResponsiveContainer width="100%" height={280}>
+              ))}
+            </div>
+          </div>
+
+          {/* ══ 03 EDA ══ */}
+          <div id="telco-eda" className="scroll-mt-28" style={{ marginBottom: 88 }}>
+            <SectionLabel n={3} title="Exploratory Data Analysis" />
+            <Body>
+              Several categorical variables showed strong associations with churn, while continuous
+              features like monthly charges and tenure displayed meaningful distributional shifts
+              between the two groups.
+            </Body>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
+              <ChartCard title="Chart 1: Churn Rate by Tenure Group" subtitle="New customers churn at a dramatically elevated rate">
+                <ResponsiveContainer width="100%" height={260}>
                   <BarChart data={tenureChurn}>
                     <CartesianGrid vertical={false} stroke="var(--border)" />
                     <XAxis dataKey="group" tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} axisLine={false} tickLine={false} />
                     <YAxis domain={[0, 60]} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `${v}%`} />
                     <Tooltip content={<Tip />} cursor={{ fill: "rgba(255,255,255,0.1)" }} />
                     <Bar dataKey="rate" name="Churn Rate" radius={[4, 4, 0, 0]}>
-                      {tenureChurn.map((d, i) => (
-                        <Cell key={i} fill={d.fill} />
-                      ))}
+                      {tenureChurn.map((d, i) => <Cell key={i} fill={d.fill} />)}
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
-                <Body style={{ fontSize: 12, color: "var(--foreground)", marginTop: 12 }}>
-                  Customers in their initial 6 months of service exhibit the highest churn rate at 53%, indicating a strong correlation between early tenure and attrition, while long-term customers demonstrate greater stability.
+                <Body style={{ fontSize: 12, marginTop: 12, marginBottom: 0 }}>
+                  Customers in their first six months churn at 53.3%, more than five times the rate of customers beyond four years. Retention risk decays sharply after the first year.
                 </Body>
-              </div>
+              </ChartCard>
 
-              <div style={{
-                padding: 24,
-                border: "1px solid var(--border)",
-                borderRadius: 8,
-                backgroundColor: "var(--card)",
-              }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 16 }}>
-                  Chart 2: Churn Rate by Payment Method
-                </div>
-                <ResponsiveContainer width="100%" height={280}>
+              <ChartCard title="Chart 2: Churn Rate by Payment Method" subtitle="Electronic check users churn at nearly triple the rate of card payers">
+                <ResponsiveContainer width="100%" height={260}>
                   <BarChart data={paymentChurn}>
                     <CartesianGrid vertical={false} stroke="var(--border)" />
                     <XAxis dataKey="method" tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} axisLine={false} tickLine={false} />
                     <YAxis domain={[0, 50]} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `${v}%`} />
                     <Tooltip content={<Tip />} cursor={{ fill: "rgba(255,255,255,0.1)" }} />
                     <Bar dataKey="rate" name="Churn Rate" radius={[4, 4, 0, 0]}>
-                      {paymentChurn.map((d, i) => (
-                        <Cell key={i} fill={d.fill} />
-                      ))}
+                      {paymentChurn.map((d, i) => <Cell key={i} fill={d.fill} />)}
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
-                <Body style={{ fontSize: 12, color: "var(--foreground)", marginTop: 12 }}>
-                  A churn rate of 45% among customers using Electronic Checks suggests a notable association between this payment method and customer attrition.
+                <Body style={{ fontSize: 12, marginTop: 12, marginBottom: 0 }}>
+                  Electronic check payers churn at 45.3%, roughly 2.4× higher than automatic payment options. They are also disproportionately represented among senior citizens.
                 </Body>
-              </div>
+              </ChartCard>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
+              <ChartCard title="Chart 3: Churn Rate by Contract Type" subtitle="Commitment level is inversely proportional to attrition">
+                <ResponsiveContainer width="100%" height={260}>
+                  <BarChart data={contractChurn}>
+                    <CartesianGrid vertical={false} stroke="var(--border)" />
+                    <XAxis dataKey="type" tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <YAxis domain={[0, 50]} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `${v}%`} />
+                    <Tooltip content={<Tip />} cursor={{ fill: "rgba(255,255,255,0.1)" }} />
+                    <Bar dataKey="rate" name="Churn Rate" radius={[4, 4, 0, 0]}>
+                      {contractChurn.map((d, i) => <Cell key={i} fill={d.fill} />)}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+                <Body style={{ fontSize: 12, marginTop: 12, marginBottom: 0 }}>
+                  Month‑to‑month customers churn at 42.7% vs 2.8% on two‑year contracts. Over half the dataset (55%) is on month‑to‑month plans, making contract type one of the most actionable levers.
+                </Body>
+              </ChartCard>
+
+              <ChartCard title="Chart 4: Churn Rate by Internet Service Type" subtitle="Fiber optic subscribers display a notably elevated churn signal">
+                <ResponsiveContainer width="100%" height={260}>
+                  <BarChart data={internetChurn}>
+                    <CartesianGrid vertical={false} stroke="var(--border)" />
+                    <XAxis dataKey="type" tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <YAxis domain={[0, 50]} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `${v}%`} />
+                    <Tooltip content={<Tip />} cursor={{ fill: "rgba(255,255,255,0.1)" }} />
+                    <Bar dataKey="rate" name="Churn Rate" radius={[4, 4, 0, 0]}>
+                      {internetChurn.map((d, i) => <Cell key={i} fill={d.fill} />)}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+                <Body style={{ fontSize: 12, marginTop: 12, marginBottom: 0 }}>
+                  Fiber optic customers churn at 41.9%, more than double the DSL rate. The pattern likely reflects the competitive fiber market and higher price points attracting price‑sensitive customers.
+                </Body>
+              </ChartCard>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
+              <ChartCard title="Chart 5: Churn Rate by Demographic Segment" subtitle="Household structure and age carry measurable retention implications">
+                <ResponsiveContainer width="100%" height={280}>
+                  <BarChart data={demographicChurn} layout="vertical">
+                    <CartesianGrid horizontal={false} stroke="var(--border)" />
+                    <XAxis type="number" domain={[0, 50]} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `${v}%`} />
+                    <YAxis type="category" dataKey="segment" width={140} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <Tooltip content={<Tip />} cursor={{ fill: "rgba(255,255,255,0.1)" }} />
+                    <Bar dataKey="rate" name="Churn Rate" radius={[0, 4, 4, 0]}>
+                      {demographicChurn.map((d, i) => <Cell key={i} fill={d.fill} />)}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+                <Body style={{ fontSize: 12, marginTop: 12, marginBottom: 0 }}>
+                  Senior citizens churn at 41.7% despite representing only 16.2% of the dataset. Customers without a partner or dependents churn at rates above 30%.
+                </Body>
+              </ChartCard>
+
+              <ChartCard title="Chart 6: Churn Rate by Service Addons" subtitle="Security and support subscriptions are strongly associated with retention">
+                <ResponsiveContainer width="100%" height={280}>
+                  <BarChart data={serviceChurn} layout="vertical">
+                    <CartesianGrid horizontal={false} stroke="var(--border)" />
+                    <XAxis type="number" domain={[0, 50]} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `${v}%`} />
+                    <YAxis type="category" dataKey="service" width={160} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <Tooltip content={<Tip />} cursor={{ fill: "rgba(255,255,255,0.1)" }} />
+                    <Bar dataKey="rate" name="Churn Rate" radius={[0, 4, 4, 0]}>
+                      {serviceChurn.map((d, i) => <Cell key={i} fill={d.fill} />)}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+                <Body style={{ fontSize: 12, marginTop: 12, marginBottom: 0 }}>
+                  Customers lacking online security or tech support churn at rates near 42%. Subscribers to these add‑on services churn at roughly one third that rate.
+                </Body>
+              </ChartCard>
+            </div>
+
+            <ChartCard title="Chart 7: Churn Composition by Monthly Charge Band" subtitle="Higher spend customers defect at elevated rates, compounding revenue impact">
+              <ResponsiveContainer width="100%" height={240}>
+                <BarChart data={monthlyChargesData}>
+                  <CartesianGrid vertical={false} stroke="var(--border)" />
+                  <XAxis dataKey="group" tick={{ fill: "var(--muted-foreground)", fontSize: 12 }} axisLine={false} tickLine={false} />
+                  <YAxis domain={[0, 100]} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `${v}%`} />
+                  <Tooltip content={<Tip />} cursor={{ fill: "rgba(255,255,255,0.1)" }} />
+                  <Bar dataKey="retained" name="Retained %" stackId="a" fill={CHART_COLORS.success} />
+                  <Bar dataKey="churned" name="Churned %" stackId="a" fill={CHART_COLORS.danger} radius={[4, 4, 0, 0]} />
+                  <Legend iconType="circle" wrapperStyle={{ paddingTop: 16, fontSize: 12 }} />
+                </BarChart>
+              </ResponsiveContainer>
+              <Body style={{ fontSize: 12, marginTop: 12, marginBottom: 0 }}>
+                Churn rises monotonically with monthly spend. The mean monthly charge for churned customers ($74.44) is $13.14 higher than for retained customers ($61.31).
+              </Body>
+            </ChartCard>
+          </div>
+
+          {/* ══ 04 ANALYTICAL NOTES ══ */}
+          <div id="telco-notes" className="scroll-mt-28" style={{ marginBottom: 88 }}>
+            <SectionLabel n={4} title="Analytical Notes" />
+            <Body>
+              Several patterns are orthogonal and reinforce each other. Fiber optic internet, high
+              monthly charges, and month‑to‑month contracts frequently co‑occur among churned customers.
+            </Body>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 12 }}>
+              {[
+                { icon: "○", color: "var(--muted-foreground)", text: "Gender shows no meaningful difference in churn rate across the dataset." },
+                { icon: "▲", color: CHART_COLORS.danger,       text: "New customers (< 12 months) are the highest risk segment for early churn." },
+                { icon: "▲", color: CHART_COLORS.danger,       text: "Higher monthly charges are consistently associated with greater attrition." },
+                { icon: "▲", color: CHART_COLORS.danger,       text: "Month‑to‑month contract holders represent the majority of churned customers." },
+                { icon: "▲", color: CHART_COLORS.danger,       text: "Electronic check payment is strongly linked to churn, partially confounded by senior citizen demographics." },
+                { icon: "▲", color: CHART_COLORS.danger,       text: "Fiber optic subscribers churn noticeably more often than DSL or no internet customers." },
+                { icon: "▼", color: CHART_COLORS.success,      text: "Customers with dependents are substantially less likely to churn." },
+                { icon: "▼", color: CHART_COLORS.success,      text: "Having a partner correlates with higher retention rates." },
+                { icon: "▲", color: CHART_COLORS.warning,      text: "Senior citizens churn at disproportionately high rates relative to their share of the customer base." },
+                { icon: "▼", color: CHART_COLORS.success,      text: "Online security subscribers exhibit roughly one third the churn rate of those without it." },
+                { icon: "▲", color: CHART_COLORS.warning,      text: "Paperless billing customers are more likely to churn, possibly a proxy for price‑comparison‑savvy users." },
+                { icon: "▼", color: CHART_COLORS.success,      text: "Technical support subscribers display substantially better retention, similar to online security." },
+              ].map((item, i) => (
+                <div key={i} style={{ padding: "14px 16px", border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)", display: "flex", gap: 10 }}>
+                  <span style={{ color: item.color, fontSize: 16, flexShrink: 0, marginTop: 2 }}>{item.icon}</span>
+                  <Body style={{ fontSize: 13, margin: 0 }}>{item.text}</Body>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* ══ 04 KEY DRIVERS ══ */}
+          {/* ══ 05 FEATURE ENGINEERING ══ */}
           <div id="telco-features" className="scroll-mt-28" style={{ marginBottom: 88 }}>
-            <SectionLabel n={4} title="Key Drivers of Churn" />
-            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
-              The predictive model identified financial metrics and contract terms as the most influential features in determining customer churn. Specifically, total charges and tenure collectively contributed nearly 20% to the model's decision-making process.
+            <SectionLabel n={5} title="Feature Engineering" />
+            <Body>
+              Categorical variables were binary encoded, ordinal contract terms were mapped to integers,
+              and eight composite features were derived to capture interaction effects identified during exploration.
             </Body>
 
-            <div style={{
-              padding: 24,
-              border: "1px solid var(--border)",
-              borderRadius: 8,
-              backgroundColor: "var(--card)",
-            }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 16 }}>
-                Chart 3: Top 10 Features by Importance
+            <div style={{ padding: 24, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)", marginBottom: 24 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 16 }}>Engineered Features</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+                <div style={{ padding: "8px 12px", fontSize: 11, fontWeight: 600, color: "var(--muted-foreground)", borderBottom: "1px solid var(--border)" }}>Feature Name</div>
+                <div style={{ padding: "8px 12px", fontSize: 11, fontWeight: 600, color: "var(--muted-foreground)", borderBottom: "1px solid var(--border)" }}>Description</div>
+                {engineeredFeatures.map((f) => (
+                  <div key={f.name} style={{ display: "contents" }}>
+                    <div style={{ padding: "10px 12px", fontSize: 12, fontFamily: FONT_MONO, color: CHART_COLORS.primary, borderBottom: "1px solid var(--border)" }}>{f.name}</div>
+                    <div style={{ padding: "10px 12px", fontSize: 13, color: "var(--foreground)", borderBottom: "1px solid var(--border)" }}>{f.desc}</div>
+                  </div>
+                ))}
               </div>
+            </div>
+
+            <Notice color={CHART_COLORS.warning} icon="◈">
+              The <Code>risk_score</Code> feature aggregates nine binary risk indicators
+              (senior citizen status, high monthly charges, short tenure, month‑to‑month contract,
+              fiber without security, no support services, paperless billing, electronic check,
+              and extra internet add‑ons) into a single composite score.
+            </Notice>
+
+            <ChartCard title="Chart 8: Top 10 Features by Importance (Random Forest Baseline)" subtitle="Financial history and tenure dominate; contract and security add meaningful signal">
               <ResponsiveContainer width="100%" height={340}>
                 <BarChart data={featureImportance} layout="vertical" barCategoryGap="22%">
                   <CartesianGrid horizontal={false} stroke="var(--border)" />
                   <XAxis type="number" tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `${v}%`} />
-                  <YAxis type="category" dataKey="feature" tick={{ fill: "var(--muted-foreground)", fontSize: 12 }} axisLine={false} tickLine={false} width={128} />
+                  <YAxis type="category" dataKey="feature" width={128} tick={{ fill: "var(--muted-foreground)", fontSize: 12 }} axisLine={false} tickLine={false} />
                   <Tooltip content={<Tip />} cursor={{ fill: "rgba(255,255,255,0.1)" }} />
                   <Bar dataKey="importance" name="Importance" radius={[0, 5, 5, 0]}>
                     {featureImportance.map((d, i) => (
@@ -332,100 +566,182 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
-            </div>
+              <Body style={{ fontSize: 12, marginTop: 12, marginBottom: 0 }}>
+                Total charges, tenure, and monthly charges collectively account for nearly 28% of model importance. A three‑feature ablation using only these variables achieved 75.6% accuracy.
+              </Body>
+            </ChartCard>
           </div>
 
-          {/* ══ 05 MODEL SELECTION ══ */}
+          {/* ══ 06 MODEL SELECTION ══ */}
           <div id="telco-models" className="scroll-mt-28" style={{ marginBottom: 88 }}>
-            <SectionLabel n={5} title="Model Selection" />
-            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
-              Five different machine learning algorithms were evaluated to determine the most suitable predictive model. Gradient Boosting demonstrated the most balanced performance, achieving an accuracy of 79.4% while maintaining a robust precision, indicating its effectiveness in identifying churn instances.
+            <SectionLabel n={6} title="Model Selection" />
+            <Body>
+              Seven algorithm configurations were evaluated on a consistent 70/30 train‑test split.
+              Standard Gradient Boosting produced the highest raw accuracy at 80.3% but only caught
+              51% of actual churners. Hist Gradient Boosting with class balancing and a 0.35 decision
+              threshold pushed churn recall to 90%.
             </Body>
 
-            <div style={{
-              padding: 24,
-              border: "1px solid var(--border)",
-              borderRadius: 8,
-              backgroundColor: "var(--card)",
-              marginBottom: 24,
-            }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 16 }}>
-                Algorithm Performance Comparison
+            <ChartCard title="Chart 9: Churn Recall Comparison Across Models" subtitle="The shift from accuracy to recall optimisation is visible in the final model">
+              <ResponsiveContainer width="100%" height={280}>
+                <BarChart data={modelRecallData} barCategoryGap="30%">
+                  <CartesianGrid vertical={false} stroke="var(--border)" />
+                  <XAxis dataKey="model" tick={{ fill: "var(--muted-foreground)", fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <YAxis domain={[0, 100]} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `${v}%`} />
+                  <Tooltip content={<Tip />} cursor={{ fill: "rgba(255,255,255,0.1)" }} />
+                  <Bar dataKey="recall" name="Churn Recall" radius={[4, 4, 0, 0]}>
+                    {modelRecallData.map((d, i) => <Cell key={i} fill={d.fill} />)}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartCard>
+
+            <div style={{ marginTop: 20, padding: 24, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 16 }}>Full Algorithm Comparison</div>
+              <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr", borderBottom: "1px solid var(--border)" }}>
+                {["Model", "Accuracy", "Precision", "Recall", "F1 (Churn)"].map(h => (
+                  <div key={h} style={{ padding: "10px 14px", fontSize: 11, fontWeight: 600, color: "var(--muted-foreground)" }}>{h}</div>
+                ))}
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 0, borderBottom: "1px solid var(--border)" }}>
-                <div style={{ padding: "12px 18px", fontSize: 12, fontWeight: 600, color: "var(--muted-foreground)" }}>Model</div>
-                <div style={{ padding: "12px 18px", fontSize: 12, fontWeight: 600, color: "var(--muted-foreground)" }}>Accuracy</div>
-                <div style={{ padding: "12px 18px", fontSize: 12, fontWeight: 600, color: "var(--muted-foreground)" }}>Precision</div>
-                <div style={{ padding: "12px 18px", fontSize: 12, fontWeight: 600, color: "var(--muted-foreground)" }}>Recall</div>
-              </div>
-              {[
-                { name: "KNN", acc: "77.1%", prec: "52%", rec: "61%", hl: false },
-                { name: "SVM", acc: "75.6%", prec: "90%", rec: "9%", hl: false },
-                { name: "Logistic Regression", acc: "77.0%", prec: "55%", rec: "73%", hl: false },
-                { name: "Random Forest", acc: "79.3%", prec: "66%", rec: "44%", hl: false },
-                { name: "Gradient Boosting ★", acc: "79.4%", prec: "65%", rec: "48%", hl: true },
-              ].map(({ name, acc, prec, rec, hl }) => (
+              {modelComparison.map(({ name, acc, prec, rec, f1, hl }) => (
                 <div key={name} style={{
-                  display: "grid",
-                  gridTemplateColumns: "2fr 1fr 1fr 1fr",
-                  padding: "12px 18px",
-                  fontSize: 13,
+                  display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr",
+                  fontSize: 13, padding: "10px 14px",
                   color: hl ? CHART_COLORS.primary : "var(--foreground)",
-                  background: hl ? "rgba(99, 102, 241, 0.08)" : "transparent",
+                  background: hl ? "rgba(99,102,241,0.08)" : "transparent",
                   borderBottom: "1px solid var(--border)",
                   fontFamily: hl ? FONT_MONO : "inherit",
                 }}>
-                  <span>{name}</span>
-                  <span>{acc}</span>
-                  <span>{prec}</span>
-                  <span>{rec}</span>
+                  <span>{name}</span><span>{acc}</span><span>{prec}</span><span>{rec}</span><span>{f1}</span>
+                </div>
+              ))}
+            </div>
+
+            <Notice color={CHART_COLORS.warning} icon="◈">
+              The accuracy drop from 80% to 66% is a product of the model flagging customers more
+              aggressively. A model that scores 80% accuracy by missing half the churners would be
+              less useful for what this is built to do.
+            </Notice>
+          </div>
+
+          {/* ══ 07 HYPERPARAMETER TUNING ══ */}
+          <div id="telco-tuning" className="scroll-mt-28" style={{ marginBottom: 88 }}>
+            <SectionLabel n={7} title="Hyperparameter Tuning" />
+            <Body>
+              GridSearchCV with 3‑fold cross‑validation was run across 32 parameter combinations,
+              scored on churn F1 rather than accuracy. The search space covered learning rate, tree
+              depth, minimum samples per leaf, number of iterations, and L2 regularisation.
+            </Body>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 24 }}>
+              <ChartCard title="Chart 10: CV vs Test Churn F1 by Config" subtitle="Top 4 configurations, scored on churn F1 not accuracy">
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={hyperparamResults} barCategoryGap="25%">
+                    <CartesianGrid vertical={false} stroke="var(--border)" />
+                    <XAxis dataKey="params" tick={{ fill: "var(--muted-foreground)", fontSize: 10 }} axisLine={false} tickLine={false} />
+                    <YAxis domain={[55, 65]} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `${v}%`} />
+                    <Tooltip content={<Tip />} cursor={{ fill: "rgba(255,255,255,0.1)" }} />
+                    <Bar dataKey="cv" name="CV Churn F1" fill={CHART_COLORS.secondary} radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="test" name="Test Churn F1" fill={CHART_COLORS.primary} radius={[4, 4, 0, 0]} />
+                    <Legend iconType="circle" wrapperStyle={{ paddingTop: 12, fontSize: 11 }} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartCard>
+
+              <div style={{ padding: 24, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 16 }}>Selected Hyperparameters</div>
+                {([
+                  ["learning_rate",     "0.05"],
+                  ["max_depth",         "5"],
+                  ["min_samples_leaf",  "10"],
+                  ["max_iter",          "100"],
+                  ["l2_regularization", "0.1"],
+                  ["class_weight",      "balanced"],
+                  ["threshold",         "0.35"],
+                  ["CV Churn F1",       "61.2%"],
+                  ["Test Churn F1",     "59.8%"],
+                ] as [string, string][]).map(([k, v]) => (
+                  <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid var(--border)", fontSize: 13 }}>
+                    <Code>{k}</Code>
+                    <span style={{ fontFamily: FONT_MONO, fontSize: 12, color: CHART_COLORS.primary }}>{v}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* ══ 08 EVALUATION ══ */}
+          <div id="telco-evaluation" className="scroll-mt-28" style={{ marginBottom: 88 }}>
+            <SectionLabel n={8} title="Evaluation Results" />
+            <Body>
+              The final model was evaluated on a held‑out test set of 2,110 subscribers. Among 561
+              actual churners, the model caught 504, giving a recall of 90%. It missed 57 and
+              unnecessarily flagged 653 loyal customers — an acceptable cost for the recall it
+              produces in a low‑cost intervention context.
+            </Body>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
+              <ChartCard title="Chart 11: Confusion Matrix (2,110 test records)" subtitle="57 missed churners vs 653 unnecessarily flagged loyal customers">
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 8 }}>
+                  {confusionMatrix.map((cell) => (
+                    <div key={cell.label} style={{ padding: "20px 16px", borderRadius: 8, border: `1px solid ${cell.fill}44`, background: `${cell.fill}11`, textAlign: "center" }}>
+                      <div style={{ fontSize: 32, fontWeight: 700, fontFamily: FONT_MONO, color: cell.fill, lineHeight: 1.1, marginBottom: 6 }}>
+                        {cell.value.toLocaleString()}
+                      </div>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 4 }}>{cell.label}</div>
+                      <div style={{ fontSize: 11, color: "var(--muted-foreground)" }}>{cell.sub}</div>
+                    </div>
+                  ))}
+                </div>
+              </ChartCard>
+
+              <ChartCard title="Chart 12: Classification Report by Class" subtitle="Precision, recall, and F1 across both outcome classes">
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={classReport} barCategoryGap="30%">
+                    <CartesianGrid vertical={false} stroke="var(--border)" />
+                    <XAxis dataKey="label" tick={{ fill: "var(--muted-foreground)", fontSize: 12 }} axisLine={false} tickLine={false} />
+                    <YAxis domain={[0, 100]} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `${v}%`} />
+                    <Tooltip content={<Tip />} cursor={{ fill: "rgba(255,255,255,0.1)" }} />
+                    <Bar dataKey="churned" name="Churned" fill={CHART_COLORS.danger} radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="retained" name="Retained" fill={CHART_COLORS.success} radius={[4, 4, 0, 0]} />
+                    <Legend iconType="circle" wrapperStyle={{ paddingTop: 16, fontSize: 12 }} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartCard>
+            </div>
+
+            <Notice color={CHART_COLORS.warning} icon="◈">
+              The wide gap between churned and retained class metrics is intentional. If the
+              intervention cost were high, a different threshold or scoring objective would be the
+              right call.
+            </Notice>
+          </div>
+
+          {/* ══ 09 CONCLUSIONS ══ */}
+          <div id="telco-conclusions" className="scroll-mt-28" style={{ marginBottom: 88 }}>
+            <SectionLabel n={9} title="Conclusions and Future Work" />
+            <Body>
+              The final model catches 90% of real churners while missing only 57 out of 561 in the
+              test set. Financial engagement metrics like total charges, tenure, and monthly spend
+              carried the strongest predictive signal. The shift to Hist Gradient Boosting with class
+              balancing and threshold tuning was what ultimately moved recall to a usable level.
+            </Body>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
+              {[
+                { title: "Threshold Monitoring",      color: CHART_COLORS.primary,   body: "The 0.35 threshold could be re-tested across multiple folds and time splits, which may potentially further improve confidence in recall stability and reduce sensitivity to a single test sample." },
+                { title: "Advanced Explainability",   color: CHART_COLORS.secondary, body: "SHAP-based explanation layers could be added for prediction-level attribution, which may potentially improve further trust, auditability, and decision quality in retention workflows." },
+                { title: "Interaction Feature Depth", color: CHART_COLORS.warning,   body: "A broader sweep of two-way and three-way interaction features could be explored, which may potentially improve further detection of compound churn signals missed by single-feature effects." },
+                { title: "Segment Level Modeling",    color: CHART_COLORS.purple,    body: "Separate models could be trained for concentrated risk groups, such as fiber users on month-to-month contracts, which may potentially improve segment-level precision while preserving strong recall." },
+              ].map((card) => (
+                <div key={card.title} style={{ padding: 20, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: card.color, marginBottom: 8 }}>{card.title}</div>
+                  <Body style={{ fontSize: 13, margin: 0 }}>{card.body}</Body>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* ══ 06 EVALUATION RESULTS ══ */}
-          <div id="telco-evaluation" className="scroll-mt-28" style={{ marginBottom: 88 }}>
-            <SectionLabel n={6} title="Evaluation Results" />
-            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
-              The final Gradient Boosting model was evaluated on an independent test set of 2,110 subscribers. It achieved a recall of 48%, successfully identifying nearly half of all churn instances, and maintained a precision of 65%. This indicates that for every 100 predictions of churn, 65 were accurate.
-            </Body>
-
-            <div style={{
-              padding: 24,
-              border: "1px solid var(--border)",
-              borderRadius: 8,
-              backgroundColor: "var(--card)",
-            }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 16 }}>
-                Precision and Recall by Class
-              </div>
-              <ResponsiveContainer width="100%" height={210}>
-                <BarChart data={classReport} barCategoryGap="30%">
-                  <CartesianGrid vertical={false} stroke="var(--border)" />
-                  <XAxis dataKey="label" tick={{ fill: "var(--muted-foreground)", fontSize: 12 }} axisLine={false} tickLine={false} />
-                  <YAxis domain={[0, 100]} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `${v}%`} />
-                  <Tooltip content={<Tip />} cursor={{ fill: "rgba(255,255,255,0.1)" }} />
-                  <Bar dataKey="churned" name="Churned" fill={CHART_COLORS.danger} radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="retained" name="Retained" fill={CHART_COLORS.success} radius={[4, 4, 0, 0]} />
-                  <Legend iconType="circle" wrapperStyle={{ paddingTop: 20, fontSize: 12 }} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          {/* ══ 07 CONCLUSIONS AND FUTURE WORK ══ */}
-          <div id="telco-conclusions" className="scroll-mt-28" style={{ marginBottom: 88 }}>
-            <SectionLabel n={7} title="Conclusions and Future Work" />
-            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
-              This analysis provides a comprehensive understanding of subscriber behavior within the Telco Churn dataset. By examining usage patterns and contract terms, valuable insights into factors influencing customer loyalty were obtained.
-            </Body>
-            <ul style={{ listStyle: "disc", paddingLeft: 20, color: "var(--muted-foreground)", lineHeight: 1.8 }}>
-              <li>Further investigation into the characteristics of high-risk subscriber segments.</li>
-              <li>Exploration of alternative feature engineering techniques to enhance predictive power.</li>
-              <li>Integration of advanced explainability methods to interpret individual predictions.</li>
-            </ul>
-          </div>
         </div>
       </div>
     </WorkReportShell>
