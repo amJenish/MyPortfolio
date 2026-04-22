@@ -10,7 +10,7 @@ type WorkListCardProps = {
   href: string;
   title: string;
   summary: string;
-  tags: string[];
+  tags?: string[];
   date?: string;
   meta?: string;
   metrics?: CardMetric[];
@@ -87,12 +87,12 @@ export function WorkListCard({
 
           {/* Tags */}
           <div className="mt-auto flex flex-wrap gap-1.5 pt-1">
-            {tags.slice(0, 6).map((tag) => (
+            {tags?.slice(0, 6).map((tag) => (
               <Badge key={tag} variant="secondary" className="text-xs font-normal">
                 {tag}
               </Badge>
             ))}
-            {tags.length > 6 && (
+            {tags && tags.length > 6 && (
               <Badge variant="outline" className="text-xs font-normal">
                 +{tags.length - 6}
               </Badge>

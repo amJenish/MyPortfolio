@@ -228,7 +228,7 @@ export default function HousingPriceAnalysis(props: WorkPageProps) {
             </Body>
 
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {props.entry.tags.map((t) => (
+              {props.entry.tags?.map((t) => (
                 <Tag key={t}>{t}</Tag>
               ))}
             </div>

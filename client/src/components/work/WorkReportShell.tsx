@@ -106,7 +106,7 @@ function ReportCatalogHero({
 
         {/* Tags — tertiary, small pills */}
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          {entry.tags.map((tag) => (
+          {entry.tags?.map((tag) => (
             <span
               key={tag}
               style={{

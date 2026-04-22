@@ -17,29 +17,26 @@ export function findMlProjectByRouteId(routeId: string): KaggleProject | undefin
 
 export const kaggleProjects: KaggleProject[] = [
   {
+    id: "data-4",
+    legacyIds: ["kaggle-4"],
+    title: "Transaction Fraud Anomaly Analysis and Detection",
+    date: "2026-04-20",
+    summary: "A data analysis project examining PaySim's synthetic financial transaction dataset to identify fraud patterns, engineer predictive signals, and build a realistic detection model constrained to pre-settlement information only.",
+    githubUrl: "https://github.com/amJenish/Transaction-Fraud-Detection-Notebook",
+    reportSlug: "fraud-anomaly",
+    notebookUrl:
+      "https://nbviewer.org/github/amJenish/Transaction-Fraud-Detection-Notebook/tree/main/",
+    highlights: [],
+  },
+  {
     id: "data-3",
     legacyIds: ["kaggle-3"],
     title: "Job–Resume Match Classification",
     date: "2025-12-10",
-    summary: "",
+    summary: "A controlled NLP study isolating how much performance gain in resume–job matching comes from better representations versus more expressive classifiers, including a hybrid of semantic and symbolic features, finding that fine-tuning the encoder contributes far more than upgrading the model.",
     githubUrl: "https://github.com/amJenish/Job-Resume-Matching",
-    tags: [
-      "Python",
-      "NLP",
-      "scikit-learn",
-      "spaCy",
-      "pandas",
-      "PyTorch",
-      "TensorFlow",
-      "SentenceTransformers",
-      "HuggingFace",
-      "MiniLM",
-      "XGBoost",
-      "LightGBM",
-    ],
     reportSlug: "job-resume",
     notebookUrl: "https://nbviewer.org/github/amJenish/Job-Resume-Matching/blob/main/Main.ipynb",
-    cardMetrics: [{ label: "Acc (val)", value: "~88%" }],
     highlights: [],
   },
   {
@@ -47,15 +44,11 @@ export const kaggleProjects: KaggleProject[] = [
     legacyIds: ["kaggle-1"],
     title: "Telco Customer Churn Analysis & Classification",
     date: "2025-10-24",
-    summary: "",
+    summary: "A machine learning pipeline predicting telecom customer churn, deliberately optimised for recall over accuracy under the assumption that outreach costs are low, catching 90% of real churners using a tuned Hist Gradient Boosting classifier.",
     githubUrl: "https://github.com/amJenish/Telco-Customer-Churn-Prediction",
-    tags: ["Python", "scikit-learn", "pandas", "Gradient Boosting", "Classification"],
     reportSlug: "telco-churn",
     notebookUrl:
       "https://nbviewer.org/github/amJenish/Telco-Customer-Churn-Prediction/blob/main/Analysis%20and%20Modeling.ipynb",
-    cardMetrics: [
-      { label: "Churn Recall", value: "90%" },
-    ],
     highlights: [],
   },
   {
@@ -63,16 +56,11 @@ export const kaggleProjects: KaggleProject[] = [
     legacyIds: ["kaggle-2"],
     title: "Housing Prices Prediction: Analysis & Regression",
     date: "2025-01-10",
-    summary: "",
+    summary: "A regression analysis predicting residential property prices on the Ames Housing dataset, comparing models from linear regression to tuned gradient boosting, with domain-informed feature engineering across 79 variables.",
     githubUrl: "https://github.com/amJenish/House-Prices-Advanced-Regression",
-    tags: ["Python", "XGBoost", "CatBoost", "scikit-learn", "pandas", "seaborn", "RandomizedSearchCV", "Feature Engineering"],
     reportSlug: "house-prices",
     notebookUrl:
       "https://nbviewer.org/github/amJenish/House-Prices-Advanced-Regression/blob/main/House%20Prices%20Advanced%20Regression%20Techniques.ipynb",
-    cardMetrics: [
-      { label: "Test R²", value: "92.6%" },
-      { label: "Best CV R²", value: "88.3%" },
-    ],
     highlights: [],
   },
 ];

@@ -4,6 +4,7 @@ import BreastCancerPage, { workPageSections as breastCancerSections } from "./no
 import HousePricesPage, { workPageSections as housePricesSections } from "./notebooks/house-prices.page";
 import JobResumePage, { workPageSections as jobResumeSections } from "./notebooks/job-resume.page";
 import ReplyRadarPage, { workPageSections as replyRadarSections } from "./notebooks/reply-radar.page";
+import FraudAnomalyPage, { workPageSections as fraudAnomalySections } from "./notebooks/fraud-anomaly.page";
 import Ai1Page, { workPageSections as ai1Sections } from "./projects/ai-1.page";
 import NeuralScratchPage, { workPageSections as neuralScratchSections } from "./notebooks/neural-scratch.page";
 import Sw5Page, { workPageSections as sw5Sections } from "./projects/sw-5.page";
@@ -30,6 +31,7 @@ export const workPageRegistry: Record<string, WorkPageEntry> = {
   "house-prices": { Page: HousePricesPage, sections: housePricesSections, ownsHero: true },
   "job-resume": { Page: JobResumePage, sections: jobResumeSections, ownsHero: true },
   "reply-radar": { Page: ReplyRadarPage, sections: replyRadarSections, ownsHero: true },
+  "fraud-anomaly": { Page: FraudAnomalyPage, sections: fraudAnomalySections, ownsHero: true },
   "ai-1": { Page: Ai1Page, sections: ai1Sections, ownsHero: true },
   "neural-scratch": { Page: NeuralScratchPage, sections: neuralScratchSections },
   "rl-traffic": { Page: Sw4Page, sections: sw4Sections, ownsHero: true },

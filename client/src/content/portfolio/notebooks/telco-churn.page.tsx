@@ -280,7 +280,7 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
             </Body>
 
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {props.entry.tags.map((t) => <Tag key={t}>{t}</Tag>)}
+              {props.entry.tags?.map((t) => <Tag key={t}>{t}</Tag>)}
             </div>
           </div>
         </div>

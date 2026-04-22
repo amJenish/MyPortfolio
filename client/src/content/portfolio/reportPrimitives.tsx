@@ -29,7 +29,8 @@ export function Tag({ children, color = PRIMARY }: { children: ReactNode; color?
  * Catalog-style keyword pills (matches `ReportCatalogHero` / `entry.tags` styling).
  * Used by individual project pages so the "keywords" area stays consistent.
  */
-export function CatalogTagPills({ tags }: { tags: readonly string[] }): React.JSX.Element {
+export function CatalogTagPills({ tags }: { tags?: readonly string[] }): React.JSX.Element | null {
+  if (!tags?.length) return null;
   return (
     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
       {tags.map((tag) => (

@@ -7,7 +7,7 @@ export interface WorkEntry {
   title: string;
   /** Short plain-text blurb for cards and hero */
   summary: string;
-  tags: string[];
+  tags?: string[];
   githubUrl: string;
   videoUrl?: string;
   date?: string;

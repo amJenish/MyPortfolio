@@ -3,7 +3,6 @@ import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { scrollRevealRootMargin } from "@/components/motion/scrollMotion";
 import { Github, ArrowRight } from "lucide-react";
 import { Link } from "wouter";
-import { Badge } from "@/components/ui/badge";
 import type { KaggleProject, Project } from "@/lib/interfaces";
 import { mlDetailPath } from "@/lib/routes";
 import { cn } from "@/lib/utils";
@@ -133,7 +132,7 @@ export function HomeSpotlightSection({
             variants={reduceMotion ? undefined : cardVariants}
             className="min-w-0 list-none"
           >
-            <article className="home-spotlight-card flex h-full flex-col">
+            <article className="home-spotlight-card flex min-h-[23rem] flex-col">
               {/* Category label — smallest, tertiary hierarchy */}
               <p className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-primary/80">
                 {itemSubtitle(p, variant)}
@@ -144,18 +143,26 @@ export function HomeSpotlightSection({
                 {p.title}
               </h3>
 
-              {/* Tags — secondary, visual grouping */}
-              <div className="mt-5 flex flex-wrap gap-2 border-t border-border/50 pt-5">
-                {p.tags.slice(0, 6).map((tag) => (
-                  <Badge
-                    key={tag}
-                    variant="secondary"
-                    className="border border-primary/15 bg-primary/[0.07] text-xs font-medium text-foreground/85"
-                  >
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
+              {p.summary ? (
+                <p className="mt-4 text-sm leading-[1.75] text-muted-foreground">
+                  {p.summary}
+                </p>
+              ) : null}
+
+              {p.cardMetrics?.length ? (
+                <div className="mt-5 flex flex-wrap gap-2 border-t border-border/50 pt-5">
+                  {p.cardMetrics.map((metric) => (
+                    <span
+                      key={`${metric.label}-${metric.value}`}
+                      className="inline-flex items-center rounded-full border border-border bg-muted/50 px-3 py-1 text-xs font-medium tabular-nums text-foreground"
+                    >
+                      <span className="text-muted-foreground">{metric.label}</span>
+                      <span className="mx-1.5 text-border">·</span>
+                      <span className="font-semibold">{metric.value}</span>
+                    </span>
+                  ))}
+                </div>
+              ) : null}
 
               {/* CTA buttons — clear primary action */}
               <div className="mt-auto flex flex-wrap items-center gap-3 border-t border-border/50 pt-5">

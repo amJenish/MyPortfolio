@@ -5,8 +5,8 @@
 
 export const HOME_SPOTLIGHT_PROJECT_IDS = ["5", "2", "4"] as const;
 
-// Job–Resume first, then Telco, then House.
-export const HOME_SPOTLIGHT_NOTEBOOK_IDS = ["data-3", "data-1", "data-2"] as const;
+// Job-Resume first, then Fraud Anomaly, then Telco.
+export const HOME_SPOTLIGHT_NOTEBOOK_IDS = ["data-3", "data-4", "data-1"] as const;
 
 export function resolveSpotlightByIds<T extends { id: string }>(
   all: T[],
