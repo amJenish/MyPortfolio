@@ -33,7 +33,7 @@ export const kaggleProjects: KaggleProject[] = [
     legacyIds: ["kaggle-3"],
     title: "Job–Resume Match Classification",
     date: "2025-12-10",
-    summary: "A controlled NLP study isolating how much performance gain in resume–job matching comes from better representations versus more expressive classifiers, including a hybrid of semantic and symbolic features, finding that fine-tuning the encoder contributes far more than upgrading the model.",
+    summary: "A controlled NLP study isolating how much performance gain in resume–job matching comes from better representations versus more expressive classifiers, including a hybrid of semantic and symbolic features.",
     githubUrl: "https://github.com/amJenish/Job-Resume-Matching",
     reportSlug: "job-resume",
     notebookUrl: "https://nbviewer.org/github/amJenish/Job-Resume-Matching/blob/main/Main.ipynb",
