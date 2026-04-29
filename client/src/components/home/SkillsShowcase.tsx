@@ -22,9 +22,6 @@ export function SkillsShowcase({
   return (
     <div className={cn("space-y-5", className)}>
       <div className="space-y-1">
-        <p className="font-mono text-xs font-semibold uppercase tracking-widest text-primary">
-          Tech stack
-        </p>
         <h2 id="skills-heading" className="font-heading text-2xl font-bold md:text-3xl">
           {heading}
         </h2>

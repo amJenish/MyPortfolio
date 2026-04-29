@@ -17,7 +17,7 @@ export function WorkSectionLabel({
   return (
     <div id={id} className={cn("mb-8 scroll-mt-28 flex items-center gap-4", className)}>
       <span
-        className="rounded-lg border border-primary/35 bg-primary/[0.08] px-2.5 py-1 font-mono text-xs font-bold text-primary"
+        className="rounded-lg border border-accent-highlight/35 bg-accent-highlight/[0.12] px-2.5 py-1 font-mono text-xs font-bold text-accent-highlight"
         aria-hidden
       >
         {n}
@@ -49,12 +49,12 @@ export function WorkStatCard({
     <div
       className={cn(
         "min-w-[10rem] flex-1 rounded-2xl border border-border bg-card p-6 shadow-sm border-t-[3px]",
-        accentClassName ?? "border-t-primary",
+        accentClassName ?? "border-t-accent-highlight",
         className,
       )}
     >
       <div className="text-report-label mb-2.5">{label}</div>
-      <div className="text-report-metric">{value}</div>
+      <div className="text-report-metric text-accent-highlight">{value}</div>
       {sub ? (
         <p className="mt-2.5 text-left text-sm leading-[1.7] text-muted-foreground">{sub}</p>
       ) : null}
@@ -358,3 +358,5 @@ export const chartRose = "hsl(350 80% 58%)";
 export const chartTeal = "hsl(258 70% 65%)";
 export const chartViolet = "hsl(270 65% 60%)";
 export const chartOrange = "hsl(25 90% 55%)";
+
+

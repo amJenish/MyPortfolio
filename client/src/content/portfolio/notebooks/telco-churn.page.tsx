@@ -15,15 +15,16 @@ import {
 } from "../reportPrimitives";
 import type { WorkPageProps } from "../workPageTypes";
 import { WorkReportShell } from "@/components/work/WorkReportShell";
+import { ChartCard } from "@/components/work/reportWidgets";
 
 // ── CHART COLORS ───────────────────────────────────────────────────────────
 
 const CHART_COLORS = {
-  primary:   "#6366f1",
-  success:   "#22c55e",
-  warning:   "#f59e0b",
-  danger:    "#ef4444",
-  secondary: "#06b6d4",
+  primary:   "var(--primary)",
+  success:   "var(--chart-success, #16a34a)",
+  warning:   "var(--accent-highlight)",
+  danger:    "var(--chart-danger, #dc2626)",
+  secondary: "var(--chart-2)",
   purple:    "#a855f7",
 };
 
@@ -169,7 +170,7 @@ function Tip({
       background: "var(--card)",
       border: "1px solid var(--border)",
       padding: "10px 14px",
-      borderRadius: 8,
+      borderRadius: "var(--radius-md)",
       fontSize: 13,
       color: "var(--foreground)",
       fontFamily: FONT_MONO,
@@ -189,22 +190,9 @@ function Tip({
 
 // ── LOCAL PRIMITIVES ───────────────────────────────────────────────────────
 
-function ChartCard({ title, subtitle, children }: { title: string; subtitle?: string; children: ReactNode }) {
-  return (
-    <div style={{ padding: 24, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
-      <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 4 }}>{title}</div>
-      {subtitle
-        ? <div style={{ fontSize: 11, color: "var(--muted-foreground)", marginBottom: 16 }}>{subtitle}</div>
-        : <div style={{ marginBottom: 16 }} />
-      }
-      {children}
-    </div>
-  );
-}
-
 function StatCard({ label, value, sub, color }: { label: string; value: string; sub?: string; color?: string }) {
   return (
-    <div style={{ padding: "20px 24px", border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+    <div style={{ padding: "20px 24px", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
       <div style={{ fontSize: 11, color: "var(--muted-foreground)", fontFamily: FONT_MONO, marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.5 }}>{label}</div>
       <div style={{ fontSize: 28, fontWeight: 700, color: color ?? CHART_COLORS.primary, fontFamily: FONT_MONO, lineHeight: 1.1, marginBottom: 4 }}>{value}</div>
       {sub && <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>{sub}</div>}
@@ -242,8 +230,8 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
         }}>
           <div style={{
             position: "absolute", inset: 0,
-            backgroundImage: `linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)`,
-            backgroundSize: "48px 48px", opacity: 0.3,
+            backgroundImage: "radial-gradient(circle, var(--border) 1px, transparent 1px)",
+            backgroundSize: "28px 28px", opacity: 0.4,
           }} />
           <div style={{
             position: "absolute", top: "-20%", left: "60%",
@@ -252,7 +240,7 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
             pointerEvents: "none",
           }} />
 
-          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 40px", position: "relative" }}>
+          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(1rem, 4vw, 3rem)", position: "relative" }}>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 20, alignItems: "center" }}>
               <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: "var(--muted-foreground)" }}>
                 Machine Learning · Customer Analytics · Predictive Modeling
@@ -350,7 +338,7 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
                   body: "All six internet dependent feature columns were verified against the parent InternetService column. No inconsistencies surfaced across the audit.",
                 },
               ].map((card) => (
-                <div key={card.title} style={{ padding: 20, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+                <div key={card.title} style={{ padding: 20, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: CHART_COLORS.primary, marginBottom: 8 }}>{card.title}</div>
                   <Body style={{ fontSize: 13 }}>{card.body}</Body>
                 </div>
@@ -367,7 +355,7 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
               between the two groups.
             </Body>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))", gap: 20, marginBottom: 20 }}>
               <ChartCard title="Chart 1: Churn Rate by Tenure Group" subtitle="New customers churn at a dramatically elevated rate">
                 <ResponsiveContainer width="100%" height={260}>
                   <BarChart data={tenureChurn}>
@@ -403,7 +391,7 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
               </ChartCard>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))", gap: 20, marginBottom: 20 }}>
               <ChartCard title="Chart 3: Churn Rate by Contract Type" subtitle="Commitment level is inversely proportional to attrition">
                 <ResponsiveContainer width="100%" height={260}>
                   <BarChart data={contractChurn}>
@@ -439,7 +427,7 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
               </ChartCard>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))", gap: 20, marginBottom: 20 }}>
               <ChartCard title="Chart 5: Churn Rate by Demographic Segment" subtitle="Household structure and age carry measurable retention implications">
                 <ResponsiveContainer width="100%" height={280}>
                   <BarChart data={demographicChurn} layout="vertical">
@@ -516,7 +504,7 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
                 { icon: "▲", color: CHART_COLORS.warning,      text: "Paperless billing customers are more likely to churn, possibly a proxy for users who actively compare prices." },
                 { icon: "▼", color: CHART_COLORS.success,      text: "Technical support subscribers display substantially better retention, similar to online security." },
               ].map((item, i) => (
-                <div key={i} style={{ padding: "14px 16px", border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)", display: "flex", gap: 10 }}>
+                <div key={i} style={{ padding: "14px 16px", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)", display: "flex", gap: 10 }}>
                   <span style={{ color: item.color, fontSize: 16, flexShrink: 0, marginTop: 2 }}>{item.icon}</span>
                   <Body style={{ fontSize: 13, margin: 0 }}>{item.text}</Body>
                 </div>
@@ -532,9 +520,9 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
               and eight composite features were derived to capture interaction effects identified during exploration.
             </Body>
 
-            <div style={{ padding: 24, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)", marginBottom: 24 }}>
+            <div style={{ padding: 24, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)", marginBottom: 24 }}>
               <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 16 }}>Engineered Features</div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))" }}>
                 <div style={{ padding: "8px 12px", fontSize: 11, fontWeight: 600, color: "var(--muted-foreground)", borderBottom: "1px solid var(--border)" }}>Feature Name</div>
                 <div style={{ padding: "8px 12px", fontSize: 11, fontWeight: 600, color: "var(--muted-foreground)", borderBottom: "1px solid var(--border)" }}>Description</div>
                 {engineeredFeatures.map((f) => (
@@ -597,7 +585,7 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
               </ResponsiveContainer>
             </ChartCard>
 
-            <div style={{ marginTop: 20, padding: 24, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+            <div style={{ marginTop: 20, padding: 24, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
               <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 16 }}>Full Algorithm Comparison</div>
               <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr", borderBottom: "1px solid var(--border)" }}>
                 {["Model", "Accuracy", "Precision", "Recall", "F1 (Churn)"].map(h => (
@@ -634,7 +622,7 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
               depth, minimum samples per leaf, number of iterations, and L2 regularisation.
             </Body>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 24 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))", gap: 20, marginBottom: 24 }}>
               <ChartCard title="Chart 10: CV vs Test Churn F1 by Config" subtitle="Top 4 configurations, scored on churn F1 not accuracy">
                 <ResponsiveContainer width="100%" height={220}>
                   <BarChart data={hyperparamResults} barCategoryGap="25%">
@@ -649,7 +637,7 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
                 </ResponsiveContainer>
               </ChartCard>
 
-              <div style={{ padding: 24, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+              <div style={{ padding: 24, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 16 }}>Selected Hyperparameters</div>
                 {([
                   ["learning_rate",     "0.05"],
@@ -681,11 +669,11 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
               produces given the assumptions baked into the design.
             </Body>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))", gap: 20, marginBottom: 20 }}>
               <ChartCard title="Chart 11: Confusion Matrix (2,110 test records)" subtitle="57 missed churners vs 653 unnecessarily flagged loyal customers">
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 8 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))", gap: 12, marginTop: 8 }}>
                   {confusionMatrix.map((cell) => (
-                    <div key={cell.label} style={{ padding: "20px 16px", borderRadius: 8, border: `1px solid ${cell.fill}44`, background: `${cell.fill}11`, textAlign: "center" }}>
+                    <div key={cell.label} style={{ padding: "20px 16px", borderRadius: "var(--radius-md)", border: `1px solid ${cell.fill}44`, background: `${cell.fill}11`, textAlign: "center" }}>
                       <div style={{ fontSize: 32, fontWeight: 700, fontFamily: FONT_MONO, color: cell.fill, lineHeight: 1.1, marginBottom: 6 }}>
                         {cell.value.toLocaleString()}
                       </div>
@@ -735,7 +723,7 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
                 { title: "Interaction Feature Depth", color: CHART_COLORS.warning,   body: "A broader sweep of two way and three way interaction features could surface compound churn signals missed by individual feature effects." },
                 { title: "Segment Level Modeling",    color: CHART_COLORS.purple,    body: "Separate models trained on concentrated risk groups — such as fiber users on month to month contracts — could improve segment level precision while preserving strong recall." },
               ].map((card) => (
-                <div key={card.title} style={{ padding: 20, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+                <div key={card.title} style={{ padding: 20, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: card.color, marginBottom: 8 }}>{card.title}</div>
                   <Body style={{ fontSize: 13, margin: 0 }}>{card.body}</Body>
                 </div>
@@ -748,3 +736,5 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
     </WorkReportShell>
   );
 }
+
+

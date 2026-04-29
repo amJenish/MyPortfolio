@@ -14,6 +14,7 @@ import {
 import { HomeSpotlightSection } from "@/components/home/HomeSpotlightSection";
 import { SkillsShowcase } from "@/components/home/SkillsShowcase";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
+import { SectionDivider } from "@/components/home/SectionDivider";
 import { scrollEase } from "@/components/motion/scrollMotion";
 import { cn } from "@/lib/utils";
 
@@ -98,7 +99,7 @@ export default function Home() {
               {/* Availability badge */}
               <motion.div variants={heroItem} className="mb-6 flex justify-center">
                 <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/[0.08] px-4 py-1.5 text-xs font-semibold text-primary">
-                  <Sparkles className="h-3.5 w-3.5" aria-hidden />
+                  <Sparkles className="h-3.5 w-3.5 text-accent-highlight" aria-hidden />
                   Available for Work
                   <span className="inline-block h-4 w-px bg-primary/40 animate-blink" aria-hidden />
                 </span>
@@ -107,7 +108,7 @@ export default function Home() {
               {/* Name — largest element, maximum hierarchy */}
               <motion.h1
                 variants={heroItem}
-                className="font-heading text-5xl font-extrabold tracking-tight text-foreground sm:text-6xl md:text-7xl"
+                className="gradient-heading font-heading text-5xl font-extrabold tracking-tight sm:text-6xl md:text-7xl"
               >
                 {profile.name}
               </motion.h1>
@@ -117,8 +118,8 @@ export default function Home() {
                 variants={heroItem}
                 className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
               >
-                Computer Science student focused on software engineering and machine learning,
-                with experience building backend systems and practical ML models.
+                CS student at Western University building full-stack systems with React, TypeScript, and Python-backed APIs,
+                then pressure-testing ideas through reproducible Data & ML notebook studies.
               </motion.p>
 
               {/* CTA buttons — strong emphasis, clear primary action */}
@@ -161,19 +162,22 @@ export default function Home() {
                   </Button>
                 </motion.div>
               </motion.div>
+
+              <motion.p variants={heroItem} className="mt-6 text-xs text-muted-foreground">
+                Computer Science · Western University
+              </motion.p>
             </motion.div>
           </div>
         </section>
 
+        <SectionDivider />
+
         {/* ── About + Skills ── */}
         <section className="grid gap-12 lg:grid-cols-2 lg:gap-16" aria-labelledby="about-heading">
           <ScrollReveal as="div" className="space-y-5">
-            <div className="space-y-1">
-              <p className="font-mono text-xs font-semibold uppercase tracking-widest text-primary">About</p>
-              <h2 id="about-heading" className="font-heading text-2xl font-bold md:text-3xl">
-                About me
-              </h2>
-            </div>
+            <h2 id="about-heading" className="font-heading text-2xl font-bold md:text-3xl">
+              About me
+            </h2>
             <div className="prose prose-neutral max-w-none text-muted-foreground prose-p:leading-[1.75] prose-p:text-[0.9375rem]">
               <p>{profile.bio}</p>
             </div>
@@ -189,8 +193,9 @@ export default function Home() {
             variant="software"
             items={spotlightProjects}
             title="Projects"
+            eyebrow={null}
             seeAllHref="/projects"
-            seeAllLabel="All projects"
+            seeAllLabel="See all projects"
           />
         </ScrollReveal>
 
@@ -199,11 +204,14 @@ export default function Home() {
           <HomeSpotlightSection
             variant="ml"
             items={spotlightNotebooks}
-            title="Notebooks"
+            title="Analytical & Research Thinking"
+            eyebrow={null}
             seeAllHref={ML_LIST_PATH}
             seeAllLabel={`All notebooks (${kaggleProjects.length})`}
           />
         </ScrollReveal>
+
+        <SectionDivider />
 
         {/* ── Paperwork CTA ── */}
         <ScrollReveal
@@ -213,7 +221,6 @@ export default function Home() {
           delay={0.06}
         >
           <div className="space-y-1">
-            <p className="font-mono text-xs font-semibold uppercase tracking-widest text-primary">Paperwork</p>
             <h2 id="paperwork-home-heading" className="font-heading text-2xl font-bold md:text-3xl">
               Papers &amp; PDFs
             </h2>
@@ -234,8 +241,8 @@ export default function Home() {
                   <FileText className="h-6 w-6" />
                 </span>
                 <div>
-                  <p className="font-heading font-semibold text-foreground">Papers &amp; PDFs</p>
-                  <p className="mt-0.5 text-sm text-muted-foreground">{researchPapers.length} available</p>
+                  <p className="font-heading font-semibold text-foreground">{researchPapers.length} documents available</p>
+                  <p className="mt-0.5 text-sm text-muted-foreground">Research notes and PDF writeups</p>
                 </div>
               </div>
               <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />

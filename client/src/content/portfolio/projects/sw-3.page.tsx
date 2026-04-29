@@ -38,7 +38,7 @@ function PipelineNode({ accent, children }: { accent: string; children: ReactNod
         fontSize: 12,
         fontWeight: 500,
         padding: "8px 12px",
-        borderRadius: 8,
+        borderRadius: "var(--radius-md)",
         border: `1px solid color-mix(in srgb, ${accent} 40%, transparent)`,
         backgroundColor: `color-mix(in srgb, ${accent} 12%, transparent)`,
         color: accent,
@@ -92,7 +92,7 @@ export default function StudentEnrollmentPage(props: WorkPageProps) {
             pointerEvents: "none",
           }} />
 
-          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 40px", position: "relative" }}>
+          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(1rem, 4vw, 3rem)", position: "relative" }}>
             <h1 style={{
               fontFamily: SANS,
               fontSize: "clamp(30px, 4.5vw, 54px)",
@@ -143,42 +143,42 @@ export default function StudentEnrollmentPage(props: WorkPageProps) {
           <div id="built" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={2} title="Core Features" />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16, marginBottom: 32 }}>
-              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Student Enrollment</div>
                 <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   Students can browse available course offerings, check prerequisite completion status, and register for courses. Enrollment is blocked if prerequisites are unmet, seats are full, or the offering conflicts with an existing schedule entry.
                 </Body>
               </div>
 
-              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Professor Role</div>
                 <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   The professor role exposes read access to assigned course offerings and enrolled student rosters. Teaching load tracking is handled by the administrator layer. The professor servlet path is explicitly scoped to their assigned courses.
                 </Body>
               </div>
 
-              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Administrator Control</div>
                 <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   Administrators manage the full academic structure: creating programs, defining courses and prerequisites, scheduling offerings, assigning professors, and controlling enrollment periods. User lifecycle management is also scoped to this role.
                 </Body>
               </div>
 
-              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Prerequisite Enforcement</div>
                 <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   The <Code>PrerequisitesDAO</Code> models prerequisite chains per course. Before any enrollment is committed, <Code>EnrollmentManagementServices</Code> queries the student's completed course history and validates against all required predecessors.
                 </Body>
               </div>
 
-              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Schedule Conflict Detection</div>
                 <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   <Code>ScheduleConflictValidator</Code> runs at registration time to prevent students from booking overlapping course offerings. Conflicts are detected by querying the student's existing enrollments and checking for time slot overlap.
                 </Body>
               </div>
 
-              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Seat Management</div>
                 <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   Each course offering has a fixed seat capacity. <Code>EnrollmentManagementServices</Code> queries the current enrollment count before accepting a new registration. Seat availability is checked atomically with the enrollment commit.
@@ -195,7 +195,7 @@ export default function StudentEnrollmentPage(props: WorkPageProps) {
             </Body>
 
             {/* Architecture diagram */}
-            <div style={{ padding: 20, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)", marginBottom: 24 }}>
+            <div style={{ padding: 20, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)", marginBottom: 24 }}>
               <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 20 }}>Layered architecture</div>
 
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
@@ -269,7 +269,7 @@ export default function StudentEnrollmentPage(props: WorkPageProps) {
                 { name: "AuditDAO", desc: "Audit logging, enrollment history" },
                 { name: "ReportDAO", desc: "Analytics, enrollment statistics, dashboards" },
               ].map((dao, i) => (
-                <div key={i} style={{ padding: 12, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--muted)" }}>
+                <div key={i} style={{ padding: 12, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--muted)" }}>
                   <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 6, fontFamily: MONO }}>{dao.name}</div>
                   <Body style={{ fontSize: 12, color: "var(--muted-foreground)" }}>{dao.desc}</Body>
                 </div>
@@ -419,3 +419,5 @@ export default function StudentEnrollmentPage(props: WorkPageProps) {
     </WorkReportShell>
   );
 }
+
+

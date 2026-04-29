@@ -32,5 +32,5 @@ export const C = {
 
 export type ThemeColor = (typeof C)[keyof typeof C];
 
-export const FONT_SANS = '"Plus Jakarta Sans", "Inter", system-ui, sans-serif';
-export const FONT_MONO = '"JetBrains Mono", "Fira Code", ui-monospace, monospace';
+export const FONT_SANS = "var(--font-sans)";
+export const FONT_MONO = "var(--font-mono)";

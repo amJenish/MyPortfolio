@@ -66,3 +66,5 @@ export default function NeuralScratchPage(props: WorkPageProps) {
     </WorkReportShell>
   );
 }
+
+

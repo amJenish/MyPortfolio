@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, LineChart, Line, Legend,
@@ -73,6 +74,7 @@ export const workPageSections = [
 
 export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element {
   const [activeReward, setActiveReward] = useState<RewardTab>("DeltaWaitTime");
+  const reduceMotion = useReducedMotion();
 
   const rewardDetail: Record<RewardTab, RewardDetail> = {
     WaitTime: {
@@ -140,7 +142,7 @@ export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element
             pointerEvents: "none",
           }} />
 
-          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 40px", position: "relative" }}>
+          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(1rem, 4vw, 3rem)", position: "relative" }}>
             <h1 style={{
               fontFamily: SANS,
               fontSize: "clamp(30px, 4.5vw, 54px)",
@@ -271,7 +273,7 @@ export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element
               ] as { name: string; file: string; color: string; note: string }[]).map(({ name, file, color, note }) => (
                 <div key={name} style={{
                   background: "var(--card)", border: "1px solid var(--border)",
-                  borderRadius: 8, padding: "16px", borderLeft: `2px solid ${color}`,
+                  borderRadius: "var(--radius-md)", padding: "16px", borderLeft: `2px solid ${color}`,
                 }}>
                   <div style={{ fontFamily: MONO, fontSize: 11, color, marginBottom: 2 }}>{name}</div>
                   <div style={{ fontFamily: MONO, fontSize: 10, color: "var(--muted-foreground)", marginBottom: 10 }}>{file}</div>
@@ -341,6 +343,7 @@ export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element
                   <button
                     key={tab} type="button"
                     onClick={() => { setActiveReward(tab); }}
+                    className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     style={{
                       flex: 1, fontFamily: MONO, fontSize: 11,
                       padding: "12px 8px", cursor: "pointer",
@@ -358,11 +361,19 @@ export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element
               })}
             </div>
 
-            <div style={{
-              background: "var(--card)", border: "1px solid var(--border)",
-              borderTop: "none", borderRadius: "0 0 10px 10px",
-              padding: "28px", marginBottom: 20,
-            }}>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeReward}
+                initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: -8 }}
+                transition={{ duration: reduceMotion ? 0 : 0.2, ease: [0.16, 1, 0.3, 1] }}
+                style={{
+                  background: "var(--card)", border: "1px solid var(--border)",
+                  borderTop: "none", borderRadius: "0 0 10px 10px",
+                  padding: "28px", marginBottom: 20,
+                }}
+              >
               <div style={{
                 display: "flex", justifyContent: "space-between", alignItems: "center",
                 marginBottom: 20, flexWrap: "wrap", gap: 12,
@@ -383,7 +394,8 @@ export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element
                 <span style={{ fontFamily: MONO, fontSize: 10, color: "rgb(245, 158, 11)", display: "block", marginBottom: 4 }}>Risk</span>
                 <span style={{ fontSize: 13, color: "var(--muted-foreground)", lineHeight: 1.7 }}>{rd.risk}</span>
               </div>
-            </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
         </div>
@@ -391,3 +403,5 @@ export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element
     </WorkReportShell>
   );
 }
+
+

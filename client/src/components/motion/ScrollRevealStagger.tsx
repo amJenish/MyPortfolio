@@ -1,5 +1,5 @@
 import * as React from "react";
-import { motion, type HTMLMotionProps, type Variants } from "framer-motion";
+import { motion, type HTMLMotionProps, type Variants, useReducedMotion } from "framer-motion";
 import {
   getScrollRevealStaggerItemVariants,
   scrollRevealDuration,
@@ -27,7 +27,7 @@ export function ScrollRevealStagger({
   duration = scrollRevealDuration,
   ...rest
 }: Props) {
-  const reduceMotion = false;
+  const reduceMotion = useReducedMotion();
   const [rootEl, setRootEl] = React.useState<Element | null>(null);
   const [revealed, setRevealed] = React.useState(false);
 

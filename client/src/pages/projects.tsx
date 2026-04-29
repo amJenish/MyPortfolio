@@ -3,6 +3,7 @@ import { WorkListCard } from "@/components/work/WorkListCard";
 import { projects } from "@/lib/content/registry";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { ScrollRevealStagger } from "@/components/motion/ScrollRevealStagger";
+import { SectionDivider } from "@/components/home/SectionDivider";
 import {
   scrollRevealRouteDelayChildren,
   scrollRevealRouteDuration,
@@ -15,9 +16,6 @@ export default function Projects() {
       <div className="space-y-12">
         {/* ── Page header ── */}
         <ScrollReveal as="header" className="max-w-2xl space-y-4 text-left" duration={scrollRevealRouteDuration}>
-          <p className="font-mono text-xs font-semibold uppercase tracking-widest text-primary">
-            Software Engineering + ML
-          </p>
           <h1 className="font-heading text-4xl font-extrabold tracking-tight md:text-5xl">
             Projects
           </h1>
@@ -27,6 +25,8 @@ export default function Projects() {
           {/* Visual divider with gradient — reinforces section hierarchy */}
           <div className="h-1 w-24 rounded-full bg-gradient-to-r from-primary to-primary/20" aria-hidden />
         </ScrollReveal>
+
+        <SectionDivider />
 
         {/* ── Project grid ── */}
         <ScrollRevealStagger

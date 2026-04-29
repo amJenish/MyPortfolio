@@ -3,6 +3,8 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, Cell,
 } from "recharts";
+import { Button } from "@/components/ui/button";
+import { BookOpen, Github, Play } from "lucide-react";
 import {
   Body,
   Code,
@@ -18,11 +20,11 @@ import { WorkReportShell } from "@/components/work/WorkReportShell";
 // ── STANDARD COLORS ────────────────────────────────────────────────────────
 
 const COLORS = {
-  primary: "#6366f1",    // Indigo (primary)
-  success: "#22c55e",    // Green
-  warning: "#f59e0b",    // Amber/Orange
-  danger: "#ef4444",     // Red
-  secondary: "#06b6d4",  // Cyan
+  primary: "var(--primary)",
+  success: "var(--chart-success, #16a34a)",
+  warning: "var(--accent-highlight)",
+  danger: "var(--chart-danger, #dc2626)",
+  secondary: "var(--chart-2)",
 };
 
 const workflowSteps = [
@@ -86,7 +88,7 @@ export default function ReplyRadarReport(props: WorkPageProps) {
             pointerEvents: "none",
           }} />
 
-          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 40px", position: "relative" }}>
+          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(1rem, 4vw, 3rem)", position: "relative" }}>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 20, alignItems: "center" }}>
               <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: "var(--muted-foreground)" }}>
                 AI Automation · Windows Utility · Productivity Tool
@@ -109,6 +111,58 @@ export default function ReplyRadarReport(props: WorkPageProps) {
             <Body style={{ maxWidth: 660, marginBottom: 24, color: "var(--foreground)" }}>
               Professionals often spend hours sifting through noise like newsletters and automated updates. I built ReplyRadar to act as a digital filter: a background agent that uses Llama 3 to find the emails that actually need a human touch.
             </Body>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))",
+                gap: 12,
+                borderTop: "1px solid var(--border)",
+                borderBottom: "1px solid var(--border)",
+                padding: "20px 0",
+                marginBottom: 24,
+              }}
+            >
+              {[
+                { value: "60s", label: "Cycle", sub: "Wakes every minute" },
+                { value: "5", label: "Core Modules", sub: "Agent plus four services" },
+                { value: "3d", label: "Default Stop Window", sub: "Stop reminding after N days" },
+                { value: "8h", label: "Default Reminder", sub: "Follow-up cadence" },
+              ].map((metric) => (
+                <div key={metric.label} style={{ padding: "8px 0" }}>
+                  <div style={{ fontFamily: FONT_MONO, fontSize: 30, fontWeight: 800, color: COLORS.primary, lineHeight: 1, marginBottom: 8 }}>
+                    {metric.value}
+                  </div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 2 }}>{metric.label}</div>
+                  <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>{metric.sub}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center", marginBottom: 24 }}>
+              <Button asChild size="lg" variant="default" className="gap-2 font-mono text-xs font-bold">
+                <a href={props.entry.githubUrl} target="_blank" rel="noopener noreferrer">
+                  <Github className="h-4 w-4" />
+                  GitHub
+                </a>
+              </Button>
+              {props.entry.notebookUrl ? (
+                <Button variant="outline" size="lg" asChild className="gap-2 font-mono text-xs font-medium">
+                  <a href={props.entry.notebookUrl} target="_blank" rel="noopener noreferrer">
+                    <BookOpen className="h-4 w-4" />
+                    Notebook
+                  </a>
+                </Button>
+              ) : null}
+              {props.entry.videoUrl ? (
+                <Button variant="outline" size="lg" asChild className="gap-2 font-mono text-xs font-medium">
+                  <a href={props.entry.videoUrl} target="_blank" rel="noopener noreferrer">
+                    <Play className="h-4 w-4" />
+                    Demo video
+                  </a>
+                </Button>
+              ) : null}
+            </div>
 
             <CatalogTagPills tags={props.entry.tags} />
           </div>
@@ -137,7 +191,7 @@ export default function ReplyRadarReport(props: WorkPageProps) {
             <div style={{
               padding: 24,
               border: "1px solid var(--border)",
-              borderRadius: 8,
+              borderRadius: "var(--radius-md)",
               backgroundColor: "var(--card)",
               marginBottom: 32,
             }}>
@@ -148,7 +202,7 @@ export default function ReplyRadarReport(props: WorkPageProps) {
                 {workflowSteps.map((s, i) => (
                   <div key={i} style={{
                     padding: "16px",
-                    borderRadius: 8,
+                    borderRadius: "var(--radius-md)",
                     border: `1px solid var(--border)`,
                     background: "rgba(255,255,255,0.02)",
                     textAlign: "center"
@@ -168,11 +222,11 @@ export default function ReplyRadarReport(props: WorkPageProps) {
               Before running the agent, you need two essential keys to ensure secure access and high performance classification.
             </Body>
             
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))", gap: 20 }}>
               <div style={{
                 padding: 24,
                 border: "1px solid var(--border)",
-                borderRadius: 8,
+                borderRadius: "var(--radius-md)",
                 backgroundColor: "var(--card)",
               }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.primary, marginBottom: 8 }}>Gmail App Password</div>
@@ -181,7 +235,7 @@ export default function ReplyRadarReport(props: WorkPageProps) {
               <div style={{
                 padding: 24,
                 border: "1px solid var(--border)",
-                borderRadius: 8,
+                borderRadius: "var(--radius-md)",
                 backgroundColor: "var(--card)",
               }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.secondary, marginBottom: 8 }}>Groq API Key</div>
@@ -230,7 +284,7 @@ export default function ReplyRadarReport(props: WorkPageProps) {
                   style={{
                     padding: "18px 20px",
                     border: "1px solid var(--border)",
-                    borderRadius: 8,
+                    borderRadius: "var(--radius-md)",
                     backgroundColor: "var(--card)",
                   }}
                 >
@@ -296,7 +350,7 @@ export default function ReplyRadarReport(props: WorkPageProps) {
                     display: "block",
                     marginLeft: "auto",
                     marginRight: "auto",
-                    borderRadius: 8,
+                    borderRadius: "var(--radius-md)",
                     border: "1px solid var(--border)",
                     boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                   }}
@@ -333,7 +387,7 @@ export default function ReplyRadarReport(props: WorkPageProps) {
             <div style={{
               padding: 24,
               border: "1px solid var(--border)",
-              borderRadius: 8,
+              borderRadius: "var(--radius-md)",
               backgroundColor: "var(--card)",
               marginBottom: 24,
             }}>
@@ -370,3 +424,5 @@ export default function ReplyRadarReport(props: WorkPageProps) {
     </WorkReportShell>
   );
 }
+
+

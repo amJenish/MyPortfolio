@@ -7,6 +7,7 @@ import { ChevronRight, FileText, Download, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { ScrollRevealStagger } from "@/components/motion/ScrollRevealStagger";
+import { SectionDivider } from "@/components/home/SectionDivider";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   scrollEase,
@@ -45,9 +46,6 @@ export default function PaperworkPage() {
           className="paperwork-hero max-w-2xl space-y-4 rounded-3xl border border-border/70 p-8 text-left shadow-md md:p-10"
           duration={scrollRevealRouteDuration}
         >
-          <p className="font-mono text-xs font-semibold uppercase tracking-widest text-primary">
-            Paperwork
-          </p>
           <h1 className="font-heading text-4xl font-extrabold tracking-tight text-foreground md:text-5xl">
             Papers &amp; PDFs
           </h1>
@@ -56,6 +54,8 @@ export default function PaperworkPage() {
           </p>
           <div className="h-1 w-24 rounded-full bg-gradient-to-r from-primary to-primary/20" aria-hidden />
         </ScrollReveal>
+
+        <SectionDivider />
 
         {/* ── Two-column layout ── */}
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-3">

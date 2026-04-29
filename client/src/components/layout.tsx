@@ -156,17 +156,22 @@ export default function Layout({
                     whileHover={navHover}
                     whileTap={navTap}
                     className={cn(
-                      "relative inline-flex items-center gap-2 rounded-lg px-3.5 py-2 font-sans text-sm font-medium transition-colors",
+                      "relative inline-flex items-center gap-2 rounded-lg px-3.5 py-2 font-sans text-sm font-medium transition-all duration-200",
                       isActive
-                        ? "bg-primary/10 text-primary"
+                        ? "bg-primary/10 text-primary shadow-[0_0_0_1px_oklch(from_var(--primary)_l_c_h_/_0.25),0_0_14px_oklch(from_var(--primary)_l_c_h_/_0.15)]"
                         : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
                     )}
+                    style={
+                      isActive
+                        ? {
+                            boxShadow:
+                              "0 0 0 1px oklch(from var(--primary) l c h / 0.25), 0 0 14px oklch(from var(--primary) l c h / 0.15)",
+                          }
+                        : undefined
+                    }
                   >
                     <Icon className="h-4 w-4 opacity-80" aria-hidden />
                     {item.label}
-                    {isActive && (
-                      <span className="absolute bottom-1 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full bg-primary" />
-                    )}
                   </motion.span>
                 </Link>
               );
@@ -263,9 +268,9 @@ export default function Layout({
                       <Link key={item.href} href={item.href}>
                         <span
                           className={cn(
-                            "flex items-center gap-3 rounded-xl px-4 py-3 font-sans text-sm font-medium transition-colors",
+                            "flex items-center gap-3 rounded-xl px-4 py-3 font-sans text-sm font-medium transition-all duration-200",
                             isActive
-                              ? "bg-primary/10 text-primary"
+                              ? "bg-primary/10 text-primary shadow-[0_0_0_1px_oklch(from_var(--primary)_l_c_h_/_0.25),0_0_14px_oklch(from_var(--primary)_l_c_h_/_0.15)]"
                               : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
                           )}
                         >
@@ -338,38 +343,54 @@ export default function Layout({
       )}
 
       {/* ── Footer ── */}
-      <footer className="border-t border-border/60 py-10">
-        <div className="mx-auto flex w-full max-w-[min(100%,88rem)] flex-col items-center justify-between gap-5 px-4 sm:flex-row sm:px-6 lg:px-8">
-          <div className="text-center sm:text-left">
-            <p className="font-heading text-sm font-semibold text-foreground">Jenish Paudel</p>
-            <p className="mt-0.5 text-xs text-muted-foreground">Computer Science @ Western University</p>
+      <footer className="bg-background">
+        <div
+          className="h-px w-full"
+          style={{
+            background: "linear-gradient(90deg, transparent 0%, var(--border) 30%, var(--border) 70%, transparent 100%)",
+          }}
+        />
+        <div className="mx-auto w-full max-w-[min(100%,88rem)] px-4 py-10 sm:px-6 lg:px-8">
+          {/* Brand mark and copyright section */}
+          <div className="mb-8 flex flex-col items-center gap-3 border-b border-border/40 pb-8 text-center sm:flex-row sm:justify-between sm:text-left">
+            <div>
+              <div className="flex flex-col items-center gap-0.5 sm:items-start">
+                <span className="font-heading text-sm font-bold text-foreground">Jenish Paudel</span>
+                <span className="font-mono text-[10px] font-medium tracking-widest text-primary uppercase">Portfolio</span>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Jenish Paudel</p>
           </div>
-          <div className="flex flex-wrap justify-center gap-5 text-sm text-muted-foreground">
-            <a
-              href={profile.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 rounded-sm transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <Github className="h-3.5 w-3.5" />
-              GitHub
-            </a>
-            <a
-              href={profile.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 rounded-sm transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <Linkedin className="h-3.5 w-3.5" />
-              LinkedIn
-            </a>
-            <a
-              href={`mailto:${email}`}
-              className="flex items-center gap-1.5 rounded-sm transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <Mail className="h-3.5 w-3.5" />
-              Email
-            </a>
+
+          {/* Links section */}
+          <div className="flex flex-wrap justify-center gap-5 text-sm text-muted-foreground sm:justify-between">
+            <div className="flex flex-wrap justify-center gap-5 sm:justify-start">
+              <a
+                href={profile.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 rounded-sm transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <Github className="h-3.5 w-3.5" />
+                GitHub
+              </a>
+              <a
+                href={profile.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 rounded-sm transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <Linkedin className="h-3.5 w-3.5" />
+                LinkedIn
+              </a>
+              <a
+                href={`mailto:${email}`}
+                className="flex items-center gap-1.5 rounded-sm transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <Mail className="h-3.5 w-3.5" />
+                Email
+              </a>
+            </div>
           </div>
         </div>
       </footer>

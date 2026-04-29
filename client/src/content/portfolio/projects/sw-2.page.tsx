@@ -1,4 +1,7 @@
 import { useState, type ReactNode } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { BookOpen, Github, Play } from "lucide-react";
 import {
   Body,
   Code,
@@ -83,12 +86,12 @@ const serviceDetails: Record<ServiceKey, ServiceDetail> = {
 
 export const workPageSections = [
   { id: "summary", label: "Overview" },
-  { id: "built", label: "1. System Capabilities" },
-  { id: "topology", label: "2. Service Topology" },
-  { id: "flow", label: "3. Post Creation Flow" },
-  { id: "services", label: "4. Service Deep Dives" },
-  { id: "choices", label: "5. Engineering Decisions" },
-  { id: "stack", label: "6. Technical Stack" },
+  { id: "built", label: "System Capabilities" },
+  { id: "topology", label: "Service Topology" },
+  { id: "flow", label: "Post Creation Flow" },
+  { id: "services", label: "Service Deep Dives" },
+  { id: "choices", label: "Engineering Decisions" },
+  { id: "stack", label: "Technical Stack" },
 ] as const;
 
 // ── COMPONENTS ──────────────────────────────────────────────────────────────────
@@ -101,7 +104,7 @@ function PipelineNode({ accent, children, wide }: { accent: string; children: Re
         fontSize: 12,
         fontWeight: 500,
         padding: wide ? "10px 16px" : "8px 12px",
-        borderRadius: 8,
+        borderRadius: "var(--radius-md)",
         border: `1px solid color-mix(in srgb, ${accent} 40%, transparent)`,
         backgroundColor: `color-mix(in srgb, ${accent} 12%, transparent)`,
         color: accent,
@@ -126,7 +129,7 @@ function ServiceBadge({ name, lang, accent }: { name: string; lang: string; acce
     <div
       style={{
         padding: 12,
-        borderRadius: 8,
+        borderRadius: "var(--radius-md)",
         border: `1px solid color-mix(in srgb, ${accent} 30%, transparent)`,
         backgroundColor: `color-mix(in srgb, ${accent} 8%, transparent)`,
       }}
@@ -142,6 +145,7 @@ function ServiceBadge({ name, lang, accent }: { name: string; lang: string; acce
 export default function GeeseMapPage(props: WorkPageProps) {
   const [activeService, setActiveService] = useState<ServiceKey>("PostService");
   const detail = serviceDetails[activeService];
+  const reduceMotion = useReducedMotion();
 
   return (
     <WorkReportShell {...props}>
@@ -174,7 +178,7 @@ export default function GeeseMapPage(props: WorkPageProps) {
             pointerEvents: "none",
           }} />
 
-          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 40px", position: "relative" }}>
+          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(1rem, 4vw, 3rem)", position: "relative" }}>
             <h1 style={{
               fontFamily: SANS,
               fontSize: "clamp(30px, 4.5vw, 54px)",
@@ -192,6 +196,58 @@ export default function GeeseMapPage(props: WorkPageProps) {
               The system comprises five domain services (AccountService, ImageUploadService, ImageVerificationService, MetadataExtractionService, PostService) and a ServiceRegistry for service discovery. ImageVerificationService is written in Python to take advantage of Roboflow's ML Model ; the remaining services are Java and Spring Boot.
             </Body>
 
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+                gap: 12,
+                borderTop: "1px solid var(--border)",
+                borderBottom: "1px solid var(--border)",
+                padding: "20px 0",
+                marginBottom: 24,
+              }}
+            >
+              {[
+                { value: "5", label: "Domain Services", sub: "Auth, upload, verify, metadata, orchestration" },
+                { value: "1", label: "Python Service", sub: "Image verification via Roboflow" },
+                { value: "2", label: "External APIs", sub: "IBM COS and Roboflow" },
+                { value: "6", label: "Deployable Units", sub: "Five services plus Eureka" },
+              ].map((metric) => (
+                <div key={metric.label} style={{ padding: "8px 0" }}>
+                  <div style={{ fontFamily: MONO, fontSize: 30, fontWeight: 800, color: "var(--primary)", lineHeight: 1, marginBottom: 8 }}>
+                    {metric.value}
+                  </div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 2 }}>{metric.label}</div>
+                  <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>{metric.sub}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center", marginBottom: 24 }}>
+              <Button asChild size="lg" variant="default" className="gap-2 font-mono text-xs font-bold">
+                <a href={props.entry.githubUrl} target="_blank" rel="noopener noreferrer">
+                  <Github className="h-4 w-4" />
+                  GitHub
+                </a>
+              </Button>
+              {props.entry.notebookUrl ? (
+                <Button variant="outline" size="lg" asChild className="gap-2 font-mono text-xs font-medium">
+                  <a href={props.entry.notebookUrl} target="_blank" rel="noopener noreferrer">
+                    <BookOpen className="h-4 w-4" />
+                    Notebook
+                  </a>
+                </Button>
+              ) : null}
+              {props.entry.videoUrl ? (
+                <Button variant="outline" size="lg" asChild className="gap-2 font-mono text-xs font-medium">
+                  <a href={props.entry.videoUrl} target="_blank" rel="noopener noreferrer">
+                    <Play className="h-4 w-4" />
+                    Demo video
+                  </a>
+                </Button>
+              ) : null}
+            </div>
+
             <CatalogTagPills tags={props.entry.tags} />
           </div>
         </div>
@@ -202,42 +258,42 @@ export default function GeeseMapPage(props: WorkPageProps) {
           <div id="built" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={1} title="System Capabilities" />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16, marginBottom: 32 }}>
-              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 8 }}>User Authentication</div>
                 <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   AccountService handles registration and login. Passwords are hashed before storage. Successful login returns an auth token that gates access to post creation and other write operations downstream.
                 </Body>
               </div>
 
-              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 8 }}>Image Ingestion & Storage</div>
                 <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   ImageUploadService accepts image uploads and writes them to IBM Cloud Object Storage, returning a stable URL. Credentials are isolated to this service; no other service has direct bucket access.
                 </Body>
               </div>
 
-              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 8 }}>ML Content Verification</div>
                 <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   ImageVerificationService (Python) calls the Roboflow inference API against the uploaded image and returns a verdict. PostService uses this verdict to decide whether to proceed or reject the post.
                 </Body>
               </div>
 
-              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 8 }}>EXIF Metadata Extraction</div>
                 <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   MetadataExtractionService parses EXIF data from the image to extract GPS coordinates and capture timestamp. Typed exceptions distinguish between missing location and missing timestamp.
                 </Body>
               </div>
 
-              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 8 }}>Post Orchestration</div>
                 <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   PostService sequences calls to all upstream services, assembles the post record from their responses, and persists it to MySQL. It also serves the aggregated location dataset for the heatmap.
                 </Body>
               </div>
 
-              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 8 }}>Service Discovery</div>
                 <Body style={{ fontSize: 13, color: "var(--foreground)" }}>
                   ServiceRegistry (Spring Cloud Eureka) provides service registration and discovery. Each Spring Boot service registers on startup, enabling location-transparent inter-service communication.
@@ -254,14 +310,14 @@ export default function GeeseMapPage(props: WorkPageProps) {
             </Body>
 
             {/* Topology diagram */}
-            <div style={{ padding: 20, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)", marginBottom: 24 }}>
+            <div style={{ padding: 20, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)", marginBottom: 24 }}>
               <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 20 }}>Service topology</div>
 
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
                   <PipelineNode accent={COLORS.muted}>Client</PipelineNode>
                   <PipelineArrow />
-                  <div style={{ fontFamily: MONO, fontSize: 11, padding: "8px 12px", borderRadius: 8, border: `1px solid color-mix(in srgb, ${COLORS.muted} 40%, transparent)`, color: COLORS.muted, textDecoration: "line-through", opacity: 0.4 }}>
+                  <div style={{ fontFamily: MONO, fontSize: 11, padding: "8px 12px", borderRadius: "var(--radius-md)", border: `1px solid color-mix(in srgb, ${COLORS.muted} 40%, transparent)`, color: COLORS.muted, textDecoration: "line-through", opacity: 0.4 }}>
                     APIGateway (not operational)
                   </div>
                   <PipelineArrow />
@@ -304,7 +360,7 @@ export default function GeeseMapPage(props: WorkPageProps) {
             </div>
 
             {/* Inter-service communication */}
-            <div style={{ padding: 16, borderRadius: 8, border: "1px solid var(--border)", backgroundColor: "var(--muted)", fontFamily: MONO, fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.6 }}>
+            <div style={{ padding: 16, borderRadius: "var(--radius-md)", border: "1px solid var(--border)", backgroundColor: "var(--muted)", fontFamily: MONO, fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.6 }}>
               <div style={{ marginBottom: 12, fontSize: 11, fontWeight: 600, color: "var(--muted-foreground)" }}>Inter-service call map</div>
               <div><span style={{ color: COLORS.rose }}>PostService</span> → <span style={{ color: COLORS.orange }}>ImageUploadService</span> (upload image, receive COS URL)</div>
               <div><span style={{ color: COLORS.rose }}>PostService</span> → <span style={{ color: COLORS.purple }}>ImageVerificationService</span> (verify image content via Roboflow)</div>
@@ -324,7 +380,7 @@ export default function GeeseMapPage(props: WorkPageProps) {
             </Body>
 
             {/* Full post creation pipeline */}
-            <div style={{ padding: 20, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)", marginBottom: 24 }}>
+            <div style={{ padding: 20, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)", marginBottom: 24 }}>
               <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 16 }}>Post creation pipeline</div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -348,7 +404,7 @@ export default function GeeseMapPage(props: WorkPageProps) {
             </div>
 
             {/* Heatmap query flow */}
-            <div style={{ padding: 20, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+            <div style={{ padding: 20, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
               <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 12 }}>Heatmap data query flow</div>
               <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
                 <PipelineNode accent={COLORS.muted}>Client GET /posts/heatmap</PipelineNode>
@@ -382,6 +438,7 @@ export default function GeeseMapPage(props: WorkPageProps) {
                     key={s}
                     type="button"
                     onClick={() => setActiveService(s)}
+                    className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     style={{
                       fontFamily: MONO,
                       fontSize: 12,
@@ -401,20 +458,30 @@ export default function GeeseMapPage(props: WorkPageProps) {
             </div>
 
             {/* Service detail */}
-            <TwoCol gap={20}>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: detail.accent, marginBottom: 8, fontFamily: MONO }}>Responsibility</div>
-                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>{detail.responsibility}</Body>
-              </div>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: detail.accent, marginBottom: 8, fontFamily: MONO }}>Internal Structure</div>
-                <Body style={{ fontSize: 13, color: "var(--foreground)" }}>{detail.internals}</Body>
-              </div>
-            </TwoCol>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeService}
+                initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: -8 }}
+                transition={{ duration: reduceMotion ? 0 : 0.2, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <TwoCol gap={20}>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: detail.accent, marginBottom: 8, fontFamily: MONO }}>Responsibility</div>
+                    <Body style={{ fontSize: 13, color: "var(--foreground)" }}>{detail.responsibility}</Body>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: detail.accent, marginBottom: 8, fontFamily: MONO }}>Internal Structure</div>
+                    <Body style={{ fontSize: 13, color: "var(--foreground)" }}>{detail.internals}</Body>
+                  </div>
+                </TwoCol>
 
-            <Notice color={detail.accent} icon="★">
-              <strong>{activeService}</strong> — {detail.noteworthy}
-            </Notice>
+                <Notice color={detail.accent} icon="★">
+                  <strong>{activeService}</strong> — {detail.noteworthy}
+                </Notice>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           {/* ══ 05 ENGINEERING DECISIONS ══ */}
@@ -508,26 +575,38 @@ export default function GeeseMapPage(props: WorkPageProps) {
 
             <div style={{ marginBottom: 40 }}>
               <div style={{ fontSize: 14, fontWeight: 700, color: "var(--foreground)", marginBottom: 16 }}>What went well</div>
-              <ul style={{ listStyle: "disc", paddingLeft: 20, color: "var(--muted-foreground)", lineHeight: 1.8 }}>
-                <li>Each service's responsibility is genuinely narrow: no service touches another's database, and orchestration logic lives in PostService where it belongs.</li>
-                <li>IBM COS credentials are isolated to ImageUploadService, meaning a credential leak in any other service cannot expose the storage bucket.</li>
-                <li>Python was chosen for ImageVerificationService based on ecosystem fit rather than language consistency, with clean runtime isolation.</li>
-                <li>Typed exceptions in MetadataExtractionService allow the orchestrator to distinguish failure modes rather than catching generic errors.</li>
-                <li>Secrets are externalized to <Code>secretinfo.properties</Code> so the main application config can be committed to source control safely.</li>
-                <li>Services register with Eureka so PostService resolves addresses by name through RestClientConfig rather than using hardcoded URLs.</li>
-              </ul>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 12 }}>
+                {[
+                  "Each service keeps a narrow responsibility: no service touches another service's database, and orchestration remains in PostService.",
+                  "IBM COS credentials are isolated to ImageUploadService, so a leak in another service cannot expose the bucket.",
+                  "Python was chosen for ImageVerificationService based on ecosystem fit, with clean runtime isolation from JVM services.",
+                  "Typed exceptions in MetadataExtractionService let the orchestrator distinguish failure modes instead of catching generic errors.",
+                  "Secrets are externalized to secretinfo.properties so the primary app config can remain safely commit-ready.",
+                  "Services register with Eureka so PostService resolves by name through RestClientConfig rather than hardcoded URLs.",
+                ].map((item) => (
+                  <div key={item} style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-md)", background: "var(--card)", padding: "14px 16px" }}>
+                    <Body style={{ fontSize: 13, color: "var(--foreground)" }}>{item}</Body>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div>
               <div style={{ fontSize: 14, fontWeight: 700, color: "var(--foreground)", marginBottom: 16 }}>Future improvements</div>
-              <ul style={{ listStyle: "disc", paddingLeft: 20, color: "var(--muted-foreground)", lineHeight: 1.8 }}>
-                <li>Complete the APIGateway so auth validation, CORS policy, and routing are enforced at the boundary rather than duplicated across every service.</li>
-                <li>Add a circuit breaker (Resilience4j) around PostService's upstream calls so a slow or unavailable ImageVerificationService does not cause post creation to hang indefinitely.</li>
-                <li>Add a cleanup mechanism for orphaned COS objects when post creation fails after the upload step but before the database write.</li>
-                <li>Introduce a Docker Compose file so the full service mesh can be started and torn down in a single command for local development and integration testing.</li>
-                <li>Add integration tests that spin up real service instances and exercise the full post creation pipeline end to end.</li>
-                <li>Version the inter-service HTTP contracts so a breaking change in one service's response schema does not silently corrupt another service's parsing logic.</li>
-              </ul>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 12 }}>
+                {[
+                  "Complete the APIGateway so auth validation, CORS policy, and routing are enforced at the boundary instead of duplicated across services.",
+                  "Add a circuit breaker around PostService upstream calls so a slow verification service cannot stall post creation.",
+                  "Add cleanup for orphaned COS objects when flow fails after upload but before database commit.",
+                  "Introduce Docker Compose so the service mesh starts and stops in one command for local integration testing.",
+                  "Add end-to-end integration tests that run real services through the full post creation pipeline.",
+                  "Version inter-service HTTP contracts so response schema changes cannot silently break downstream parsing.",
+                ].map((item) => (
+                  <div key={item} style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-md)", background: "var(--card)", padding: "14px 16px" }}>
+                    <Body style={{ fontSize: 13, color: "var(--foreground)" }}>{item}</Body>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -536,3 +615,5 @@ export default function GeeseMapPage(props: WorkPageProps) {
     </WorkReportShell>
   );
 }
+
+

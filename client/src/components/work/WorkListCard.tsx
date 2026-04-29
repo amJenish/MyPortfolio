@@ -15,7 +15,7 @@ type WorkListCardProps = {
   meta?: string;
   metrics?: CardMetric[];
   ctaLabel?: string;
-  /** Visual accent: software = neutral, ml = left accent bar */
+  /** Reserved for variant-specific styling */
   variant?: WorkListCardVariant;
   /** Merged onto the card `<article>` */
   articleClassName?: string;
@@ -30,7 +30,7 @@ export function WorkListCard({
   meta,
   metrics,
   ctaLabel,
-  variant = "software",
+  variant: _variant = "software",
   articleClassName,
 }: WorkListCardProps) {
   return (
@@ -38,9 +38,8 @@ export function WorkListCard({
       <article
         className={cn(
           "group relative flex h-full min-h-[11rem] flex-col rounded-2xl border border-border bg-card p-6 sm:p-7",
-          "transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/[0.08]",
+          "transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/45 hover:shadow-[0_0_0_1px_oklch(from_var(--primary)_l_c_h_/_0.12),0_12px_40px_oklch(from_var(--primary)_l_c_h_/_0.1)]",
           "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background",
-          variant === "ml" && "border-l-[3px] border-l-primary/70 pl-[calc(1.5rem-3px)] sm:pl-[calc(1.75rem-3px)]",
           articleClassName,
         )}
       >
@@ -79,7 +78,7 @@ export function WorkListCard({
                 >
                   <span className="text-muted-foreground">{m.label}</span>
                   <span className="mx-1.5 text-border">·</span>
-                  <span className="font-semibold">{m.value}</span>
+                  <span className="font-semibold text-accent-highlight">{m.value}</span>
                 </span>
               ))}
             </div>
@@ -87,8 +86,17 @@ export function WorkListCard({
 
           {/* Tags */}
           <div className="mt-auto flex flex-wrap gap-1.5 pt-1">
-            {tags?.slice(0, 6).map((tag) => (
-              <Badge key={tag} variant="secondary" className="text-xs font-normal">
+            {tags?.slice(0, 6).map((tag, index) => (
+              <Badge
+                key={tag}
+                variant="secondary"
+                className={cn(
+                  "text-xs font-normal",
+                  index === 0
+                    ? "border-accent-highlight/30 bg-accent-highlight/[0.12] text-accent-highlight"
+                    : "",
+                )}
+              >
                 {tag}
               </Badge>
             ))}

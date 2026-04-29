@@ -1,5 +1,5 @@
 import * as React from "react";
-import { motion, type HTMLMotionProps } from "framer-motion";
+import { motion, type HTMLMotionProps, useReducedMotion } from "framer-motion";
 import {
   getScrollRevealMotion,
   scrollEase,
@@ -38,7 +38,7 @@ export function ScrollReveal({
   duration = scrollRevealDuration,
   ...rest
 }: ScrollRevealProps) {
-  const reduceMotion = false;
+  const reduceMotion = useReducedMotion();
   const [rootEl, setRootEl] = React.useState<Element | null>(null);
   const [revealed, setRevealed] = React.useState(false);
 

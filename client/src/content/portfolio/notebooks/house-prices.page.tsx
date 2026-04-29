@@ -16,16 +16,16 @@ import {
 } from "../reportPrimitives";
 import type { WorkPageProps } from "../workPageTypes";
 import { WorkReportShell } from "@/components/work/WorkReportShell";
+import { AnalysisBlock, ChartCard } from "@/components/work/reportWidgets";
 
 // ── STANDARD CHART COLORS ──────────────────────────────────────────────────
 
 const CHART_COLORS = {
-  primary: "#6366f1",    // Indigo (primary)
-  primaryDim: "#4f46e5", // Darker indigo for borders
-  success: "#22c55e",    // Green
-  warning: "#f59e0b",    // Amber/Orange
-  danger: "#ef4444",     // Red
-  secondary: "#06b6d4",  // Cyan
+  primary: "var(--primary)",
+  success: "var(--chart-success, #16a34a)",
+  warning: "var(--accent-highlight)",
+  danger: "var(--chart-danger, #dc2626)",
+  secondary: "var(--chart-2)",
 };
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
@@ -119,7 +119,7 @@ function Tip({
 }): React.JSX.Element | null {
   if (!active || !payload?.length) return null;
   return (
-    <div style={{ background: "var(--card)", border: "1px solid var(--border)", padding: "10px 14px", borderRadius: 8, fontSize: 13, color: "var(--foreground)", fontFamily: FONT_MONO }}>
+    <div style={{ background: "var(--card)", border: "1px solid var(--border)", padding: "10px 14px", borderRadius: "var(--radius-md)", fontSize: 13, color: "var(--foreground)", fontFamily: FONT_MONO }}>
       <div style={{ color: CHART_COLORS.primary, marginBottom: 4 }}>{label}</div>
       {payload.map((p, i) => (
         <div key={i} style={{ color: p.color || "var(--foreground)" }}>
@@ -130,30 +130,12 @@ function Tip({
   );
 }
 
-function ChartCard({ label, note, children }: { label?: string; note?: ReactNode; children: ReactNode }): React.JSX.Element {
-  return (
-    <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 12, padding: "28px 28px 20px" }}>
-      {label ? <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: "var(--muted-foreground)", marginBottom: 6 }}>{label}</div> : null}
-      {note ? <p style={{ margin: "0 0 20px", fontSize: 13.5, color: "var(--muted-foreground)", lineHeight: 1.7 }}>{note}</p> : null}
-      {children}
-    </div>
-  );
-}
 
 function TableRow({ label, value, highlight }: { label: string; value: string; highlight?: boolean }): React.JSX.Element {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 18px", borderBottom: `1px solid ${"var(--border)"}`, fontSize: 13, color: highlight ? CHART_COLORS.primary : "var(--muted-foreground)", background: highlight ? `${CHART_COLORS.primary}08` : "transparent" }}>
       <span>{label}</span>
       <span style={{ fontFamily: FONT_MONO, color: highlight ? CHART_COLORS.primary : "var(--foreground)" }}>{value}</span>
-    </div>
-  );
-}
-
-function AnalysisBlock({ heading, children }: { heading?: string; children: ReactNode }): React.JSX.Element {
-  return (
-    <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderLeft: `3px solid ${CHART_COLORS.primary}`, borderRadius: "0 10px 10px 0", padding: "16px 20px", marginTop: 16 }}>
-      {heading ? <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: CHART_COLORS.primary, marginBottom: 8 }}>{heading}</div> : null}
-      <div style={{ fontSize: 14, color: "var(--muted-foreground)", lineHeight: 1.8 }}>{children}</div>
     </div>
   );
 }
@@ -188,9 +170,9 @@ export default function HousingPriceAnalysis(props: WorkPageProps) {
           <div style={{
             position: "absolute",
             inset: 0,
-            backgroundImage: `linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)`,
-            backgroundSize: "48px 48px",
-            opacity: 0.3,
+            backgroundImage: "radial-gradient(circle, var(--border) 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+            opacity: 0.4,
           }} />
           <div style={{
             position: "absolute",
@@ -202,7 +184,7 @@ export default function HousingPriceAnalysis(props: WorkPageProps) {
             pointerEvents: "none",
           }} />
 
-          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 40px", position: "relative" }}>
+          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(1rem, 4vw, 3rem)", position: "relative" }}>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 20, alignItems: "center" }}>
               <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: "var(--muted-foreground)" }}>
                 Regression Analysis · Machine Learning · Ames Housing Dataset
@@ -258,7 +240,7 @@ export default function HousingPriceAnalysis(props: WorkPageProps) {
             <div style={{
               padding: 24,
               border: "1px solid var(--border)",
-              borderRadius: 8,
+              borderRadius: "var(--radius-md)",
               backgroundColor: "var(--card)",
               marginBottom: 24,
             }}>
@@ -294,7 +276,7 @@ export default function HousingPriceAnalysis(props: WorkPageProps) {
               The exploratory phase revealed that while dimensional features like living area are important, subjective ratings like overall quality often show the strongest correlation with price.
             </Notice>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 24 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))", gap: 20, marginBottom: 24 }}>
               <ChartCard
                 label="Chart 2: Foundation Type vs. Key Metrics"
                 note={<>Properties with <Code>PConc</Code> (Poured Concrete) foundations consistently show higher average prices and quality ratings compared to <Code>CBlock</Code> (Cinder Block) foundations.</>}
@@ -330,7 +312,7 @@ export default function HousingPriceAnalysis(props: WorkPageProps) {
               </ChartCard>
             </div>
 
-            <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 12, overflow: "hidden" }}>
+            <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: "var(--radius-lg)", overflow: "hidden" }}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr", background: "var(--card)", padding: "11px 18px", fontFamily: FONT_MONO, fontSize: 11, color: "var(--muted-foreground)", borderBottom: `1px solid ${"var(--border)"}` }}>
                 <span>Shape</span><span>Avg Price ($K)</span><span>Avg Lot Area (sqft)</span><span>Price per SF ($)</span><span>Avg Quality</span>
               </div>
@@ -372,7 +354,7 @@ export default function HousingPriceAnalysis(props: WorkPageProps) {
             </ChartCard>
 
             {/* Full results table */}
-            <div style={{ marginTop: 20, background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 12, overflow: "hidden" }}>
+            <div style={{ marginTop: 20, background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: "var(--radius-lg)", overflow: "hidden" }}>
               <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 2fr", background: "var(--card)", padding: "11px 18px", fontFamily: FONT_MONO, fontSize: 11, color: "var(--muted-foreground)", borderBottom: `1px solid ${"var(--border)"}` }}>
                 <span>Model</span><span>Features</span><span>R² (test)</span><span>Notes</span>
               </div>
@@ -389,7 +371,7 @@ export default function HousingPriceAnalysis(props: WorkPageProps) {
               ))}
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 20 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))", gap: 16, marginTop: 20 }}>
               <AnalysisBlock heading="Why my curated features matched or beat the comprehensive set">
                 The 73-feature comprehensive set includes near-zero-variance features, and several engineered scores of uncertain quality (such as the exterior durability-age interaction, which involves domain assumptions I couldn't validate against external benchmarks). My curated 23-feature set discards these and focuses on signals I confirmed through importance analysis. XGBoost's built-in regularisation likely compensates for both sets, but the curated set may provide cleaner gradients.
               </AnalysisBlock>
@@ -458,7 +440,7 @@ export default function HousingPriceAnalysis(props: WorkPageProps) {
                   </div>
                 ))}
               </div>
-              <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 12, overflow: "hidden", alignSelf: "start" }}>
+              <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: "var(--radius-lg)", overflow: "hidden", alignSelf: "start" }}>
                 <div style={{ padding: "14px 18px", borderBottom: `1px solid ${"var(--border)"}`, fontFamily: FONT_MONO, fontSize: 11, color: "var(--muted-foreground)" }}>TUNING SUMMARY (CURATED SET)</div>
                 <TableRow label="Search strategy"     value="RandomizedSearchCV" />
                 <TableRow label="Combinations tried"  value="50" />
@@ -481,7 +463,7 @@ export default function HousingPriceAnalysis(props: WorkPageProps) {
               Reflecting on the analysis, there are several limitations to the current approach. The dataset is a snapshot in time, which makes it difficult to capture the true evolution of property values. Additionally, the heavy reliance on a single subjective rating (Overall Quality) presents a potential risk for generalization.
             </Body>
             <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 20 }}>
-              <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 12, padding: "24px" }}>
+              <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: "var(--radius-lg)", padding: "24px" }}>
                 <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: CHART_COLORS.danger, marginBottom: 18 }}>Known limitations</div>
                 <div style={{ marginBottom: 18, paddingBottom: 18, borderBottom: `1px solid ${"var(--border)"}` }}>
                   <strong style={{ fontSize: 13.5, color: "var(--foreground)", display: "block", marginBottom: 6 }}>Positive CV to test gap raises leakage concerns</strong>
@@ -508,7 +490,7 @@ export default function HousingPriceAnalysis(props: WorkPageProps) {
             <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
               To further refine the analysis, I would focus on several key areas to improve the model's robustness and the depth of the insights.
             </Body>
-            <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 12, padding: "24px" }}>
+            <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: "var(--radius-lg)", padding: "24px" }}>
               <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: CHART_COLORS.secondary, marginBottom: 18 }}>High-value next steps</div>
               <div style={{ marginBottom: 18, paddingBottom: 18, borderBottom: `1px solid ${"var(--border)"}` }}>
                 <strong style={{ fontSize: 13.5, color: "var(--foreground)", display: "block", marginBottom: 6 }}>Log-transform the target variable</strong>
@@ -534,3 +516,6 @@ export default function HousingPriceAnalysis(props: WorkPageProps) {
     </WorkReportShell>
   );
 }
+
+
+

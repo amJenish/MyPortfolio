@@ -1,4 +1,6 @@
 import { type ReactNode } from "react";
+import { Button } from "@/components/ui/button";
+import { BookOpen, Github, Play } from "lucide-react";
 import {
   CatalogTagPills,
   Body,
@@ -11,6 +13,7 @@ import {
 } from "../reportPrimitives";
 import type { WorkPageProps } from "@/content/portfolio/workPageTypes";
 import { WorkReportShell } from "@/components/work/WorkReportShell";
+import { ScrollReveal } from "@/components/motion/ScrollReveal";
 
 const COLORS = {
   teal: "var(--primary)",
@@ -19,11 +22,11 @@ const COLORS = {
 
 export const workPageSections = [
   { id: "summary", label: "Overview" },
-  { id: "capabilities", label: "1. Core Capabilities" },
-  { id: "pipelines", label: "2. Dual-Pipeline Architecture" },
-  { id: "ingestion", label: "3. Ingestion Pipeline" },
-  { id: "retrieval", label: "4. Retrieval & Generation" },
-  { id: "stack", label: "5. Technical Stack" },
+  { id: "capabilities", label: "Core Capabilities" },
+  { id: "pipelines", label: "Dual-Pipeline Architecture" },
+  { id: "ingestion", label: "Ingestion Pipeline" },
+  { id: "retrieval", label: "Retrieval & Generation" },
+  { id: "stack", label: "Technical Stack" },
 ] as const;
 
 function PipelineNode({ accent, children }: { accent: string; children: ReactNode }) {
@@ -34,7 +37,7 @@ function PipelineNode({ accent, children }: { accent: string; children: ReactNod
         fontSize: 12,
         fontWeight: 500,
         padding: "8px 12px",
-        borderRadius: 8,
+        borderRadius: "var(--radius-md)",
         border: `1px solid color-mix(in srgb, ${accent} 40%, transparent)`,
         backgroundColor: `color-mix(in srgb, ${accent} 12%, transparent)`,
         color: accent,
@@ -84,7 +87,7 @@ export default function RAGStudyAssistantPage(props: WorkPageProps) {
             pointerEvents: "none",
           }} />
 
-          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 40px", position: "relative" }}>
+          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(1rem, 4vw, 3rem)", position: "relative" }}>
             <h1 style={{
               fontFamily: SANS,
               fontSize: "clamp(30px, 4.5vw, 54px)",
@@ -102,56 +105,108 @@ export default function RAGStudyAssistantPage(props: WorkPageProps) {
               The architecture separates ingestion (asynchronous, compute-heavy) from retrieval (synchronous, latency-sensitive). ElasticSearch provides hybrid keyword + vector search. The FastAPI backend orchestrates the RAG pipeline. React with Blueprint UI provides the frontend. Everything runs in Docker containers.
             </Body>
 
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+                gap: 12,
+                borderTop: "1px solid var(--border)",
+                borderBottom: "1px solid var(--border)",
+                padding: "20px 0",
+                marginBottom: 24,
+              }}
+            >
+              {[
+                { value: "2", label: "Pipelines", sub: "Ingestion and retrieval" },
+                { value: "3", label: "LLM Calls", sub: "Summarize, rewrite, answer" },
+                { value: "3", label: "Backend Modules", sub: "DataManagement, RAG, core" },
+                { value: "3", label: "Containers", sub: "API, ElasticSearch, frontend" },
+              ].map((metric) => (
+                <div key={metric.label} style={{ padding: "8px 0" }}>
+                  <div style={{ fontFamily: MONO, fontSize: 30, fontWeight: 800, color: COLORS.teal, lineHeight: 1, marginBottom: 8 }}>
+                    {metric.value}
+                  </div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 2 }}>{metric.label}</div>
+                  <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>{metric.sub}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center", marginBottom: 24 }}>
+              <Button asChild size="lg" variant="default" className="gap-2 font-mono text-xs font-bold">
+                <a href={props.entry.githubUrl} target="_blank" rel="noopener noreferrer">
+                  <Github className="h-4 w-4" />
+                  GitHub
+                </a>
+              </Button>
+              {props.entry.notebookUrl ? (
+                <Button variant="outline" size="lg" asChild className="gap-2 font-mono text-xs font-medium">
+                  <a href={props.entry.notebookUrl} target="_blank" rel="noopener noreferrer">
+                    <BookOpen className="h-4 w-4" />
+                    Notebook
+                  </a>
+                </Button>
+              ) : null}
+              {props.entry.videoUrl ? (
+                <Button variant="outline" size="lg" asChild className="gap-2 font-mono text-xs font-medium">
+                  <a href={props.entry.videoUrl} target="_blank" rel="noopener noreferrer">
+                    <Play className="h-4 w-4" />
+                    Demo video
+                  </a>
+                </Button>
+              ) : null}
+            </div>
+
             <CatalogTagPills tags={props.entry.tags} />
           </div>
         </div>
 
         <div style={{ maxWidth: 1280, margin: "0 auto", padding: "64px 40px" }}>
-          <div id="summary" className="scroll-mt-28" style={{ marginBottom: 88 }}>
+          <ScrollReveal as="section" id="summary" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={1} title="Overview" />
             <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
               A retrieval-augmented generation system that enables grounded question-answering over uploaded documents. Users upload PDFs, the system indexes them using semantic chunking and dense embeddings, and questions are answered by retrieving relevant sections and generating responses conditioned on the retrieved context via LLaMA 3.2.
             </Body>
-            <Notice color={COLORS.teal} icon="★">
+            <Notice variant="insight" color={COLORS.teal}>
               How can we build a system where an LLM answers questions about specific documents without hallucinating, and where every claim can be traced back to the source text?
             </Notice>
-          </div>
+          </ScrollReveal>
 
-          <div id="capabilities" className="scroll-mt-28" style={{ marginBottom: 88 }}>
+          <ScrollReveal as="section" id="capabilities" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={2} title="Core Capabilities" />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16, marginBottom: 32 }}>
-              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Document Ingestion</div>
                 <Body style={{ fontSize: 13, color: "var(--foreground)" }}>Users upload PDF documents. The system extracts text, applies semantic chunking to keep sections topically whole, summarizes each chunk with an LLM, and generates dense embeddings from the summaries for efficient retrieval.</Body>
               </div>
-              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Semantic Chunking</div>
                 <Body style={{ fontSize: 13, color: "var(--foreground)" }}>Instead of splitting at arbitrary token boundaries, the system chunks based on semantic coherence. Sections stay topically whole, improving retrieval quality and reducing the need for large context windows during generation.</Body>
               </div>
-              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Retrieval Pipeline</div>
                 <Body style={{ fontSize: 13, color: "var(--foreground)" }}>User questions are rewritten for retrieval precision, embedded, and searched against the indexed summary vectors in ElasticSearch. The top-ranked chunks are returned as context for generation, with their source locations tracked for citation.</Body>
               </div>
-              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Grounded Generation</div>
                 <Body style={{ fontSize: 13, color: "var(--foreground)" }}>LLaMA 3.2 via Groq generates responses conditioned on the retrieved chunks, not on parametric memory. The model is instructed to cite specific document sections, making it possible to trace any claim back to the source text.</Body>
               </div>
-              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Session Management</div>
                 <Body style={{ fontSize: 13, color: "var(--foreground)" }}><Code>ResearchSession</Code> manages which documents are in scope for a given session and maintains a query history so follow-up questions can reference prior answers without re-embedding context.</Body>
               </div>
-              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+              <div style={{ padding: 16, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
                 <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.teal, marginBottom: 8, fontFamily: MONO }}>Query Rewriting</div>
                 <Body style={{ fontSize: 13, color: "var(--foreground)" }}>Conversational questions ("what does the paper say about X?") are poor retrieval queries. A preprocessing step uses the LLM to restructure them into declarative, noun-dense queries that match the vocabulary distribution of indexed summaries.</Body>
               </div>
             </div>
-          </div>
+          </ScrollReveal>
 
-          <div id="pipelines" className="scroll-mt-28" style={{ marginBottom: 88 }}>
+          <ScrollReveal as="section" id="pipelines" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={3} title="Dual-Pipeline Architecture" />
             <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>The system separates into two pipelines with no shared runtime state between them. This separation is intentional: ingestion is a slow, asynchronous, compute-heavy process that runs once per document. The query pipeline is synchronous and latency-sensitive. Mixing them would couple the user experience to document processing time.</Body>
 
-            <div style={{ padding: 20, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)", marginBottom: 24 }}>
+            <div style={{ padding: 20, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)", marginBottom: 24 }}>
               <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 16 }}>Ingestion pipeline (runs once per uploaded document)</div>
               <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
                 <PipelineNode accent={COLORS.teal}>PDF Upload</PipelineNode>
@@ -169,7 +224,7 @@ export default function RAGStudyAssistantPage(props: WorkPageProps) {
               <Body style={{ fontSize: 12, color: "var(--foreground)" }}>Raw text is stored alongside each indexed entry. The embedding is generated from the summary, not the raw text. Both are needed at query time: summaries for retrieval, raw text for context generation.</Body>
             </div>
 
-            <div style={{ padding: 20, border: "1px solid var(--border)", borderRadius: 8, backgroundColor: "var(--card)" }}>
+            <div style={{ padding: 20, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
               <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 16 }}>Query pipeline (runs per user question)</div>
               <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
                 <PipelineNode accent={COLORS.teal}>User Query</PipelineNode>
@@ -186,9 +241,9 @@ export default function RAGStudyAssistantPage(props: WorkPageProps) {
               </div>
               <Body style={{ fontSize: 12, color: "var(--foreground)" }}>The query pipeline is latency-sensitive. Query rewriting happens first to improve retrieval precision. Retrieved chunks are then passed to the LLM with instructions to cite specific sections. The response includes source references so users can trace claims back to the original documents.</Body>
             </div>
-          </div>
+          </ScrollReveal>
 
-          <div id="ingestion" className="scroll-mt-28" style={{ marginBottom: 88 }}>
+          <ScrollReveal as="section" id="ingestion" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={4} title="Ingestion Pipeline" />
             <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>The ingestion pipeline is asynchronous and compute-heavy. It runs once per uploaded document and produces indexed embeddings that power the retrieval pipeline. The pipeline is decoupled from the query pipeline so document processing does not block user interactions.</Body>
 
@@ -213,9 +268,9 @@ export default function RAGStudyAssistantPage(props: WorkPageProps) {
                 <Body style={{ fontSize: 13, color: "var(--foreground)" }}>Summary embeddings are generated using a dense embedding model. Each embedding is indexed in ElasticSearch with the raw chunk text, document ID, session ID, and chunk position metadata. Hybrid keyword + vector search is configured for retrieval.</Body>
               </div>
             </TwoCol>
-          </div>
+          </ScrollReveal>
 
-          <div id="retrieval" className="scroll-mt-28" style={{ marginBottom: 88 }}>
+          <ScrollReveal as="section" id="retrieval" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={5} title="Retrieval & Generation" />
             <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>The retrieval pipeline is synchronous and latency-sensitive. It runs on every user query and returns cited responses grounded in the retrieved document sections.</Body>
 
@@ -240,9 +295,9 @@ export default function RAGStudyAssistantPage(props: WorkPageProps) {
                 <Body style={{ fontSize: 13, color: "var(--foreground)" }}><Code>ResearchSession</Code> maintains query history so follow-up questions can reference prior answers. The session tracks which documents are in scope and maintains conversation context without re-embedding or re-indexing.</Body>
               </div>
             </TwoCol>
-          </div>
+          </ScrollReveal>
 
-          <div id="stack" className="scroll-mt-28" style={{ marginBottom: 88 }}>
+          <ScrollReveal as="section" id="stack" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={6} title="Technical Stack" />
 
             <TwoCol gap={20}>
@@ -277,34 +332,48 @@ export default function RAGStudyAssistantPage(props: WorkPageProps) {
                 <Body style={{ fontSize: 13, color: "var(--foreground)" }}>The three backend modules (DataManagement, RAG, core) are deliberately separated so ingestion and retrieval logic cannot become entangled. Adding support for a new document type requires only changes to DataManagement. Swapping the embedding model requires only changes to shared utilities.</Body>
               </div>
             </TwoCol>
-          </div>
+          </ScrollReveal>
 
-          <div style={{ marginBottom: 88 }}>
+          <ScrollReveal as="section" style={{ marginBottom: 88 }}>
             <SectionLabel n={7} title="Reflections" />
 
             <div style={{ marginBottom: 40 }}>
               <div style={{ fontSize: 14, fontWeight: 700, color: "var(--foreground)", marginBottom: 16 }}>What went well</div>
-              <ul style={{ listStyle: "disc", paddingLeft: 20, color: "var(--muted-foreground)", lineHeight: 1.8 }}>
-                <li>Implemented summarize-then-embed so queries in plain language align better with indexed vectors on dense PDFs.</li>
-                <li>Used semantic chunking so sections stay topically whole instead of split at arbitrary token boundaries.</li>
-                <li>Chose ElasticSearch so hybrid keyword + vector retrieval stays available without a storage migration later.</li>
-                <li>Added query rewriting with session context to support follow-ups and pronouns.</li>
-                <li>Kept ingestion, RAG orchestration, and session logic in separate modules so each stage can evolve on its own.</li>
-              </ul>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 12 }}>
+                {[
+                  "Implemented summarize-then-embed so plain-language queries align better with indexed vectors on dense PDFs.",
+                  "Used semantic chunking so sections stay topically whole instead of splitting at arbitrary token boundaries.",
+                  "Chose ElasticSearch so hybrid keyword + vector retrieval remains available without storage migration later.",
+                  "Added query rewriting with session context to support follow-ups and pronouns.",
+                  "Kept ingestion, RAG orchestration, and session logic in separate modules so each stage can evolve independently.",
+                ].map((item) => (
+                  <div key={item} style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-md)", background: "var(--card)", padding: "14px 16px" }}>
+                    <Body style={{ fontSize: 13, color: "var(--foreground)" }}>{item}</Body>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div>
               <div style={{ fontSize: 14, fontWeight: 700, color: "var(--foreground)", marginBottom: 16 }}>Future improvements</div>
-              <ul style={{ listStyle: "disc", paddingLeft: 20, color: "var(--muted-foreground)", lineHeight: 1.8 }}>
-                <li>Profile ingestion cost and batching now that every chunk pays for a summarization call.</li>
-                <li>Add parsers beyond PDF (e.g. DOCX/HTML) when the use case needs them.</li>
-                <li>Experiment with chunk budgets and re-ranking when queries span very long documents.</li>
-                <li>Build a small eval set and metrics for retrieval hit-rate and groundedness.</li>
-              </ul>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 12 }}>
+                {[
+                  "Profile ingestion cost and batching now that every chunk pays for a summarization call.",
+                  "Add parsers beyond PDF (for example DOCX and HTML) when the use case needs them.",
+                  "Experiment with chunk budgets and re-ranking when queries span very long documents.",
+                  "Build a compact evaluation set and metrics for retrieval hit-rate and groundedness.",
+                ].map((item) => (
+                  <div key={item} style={{ border: "1px solid var(--border)", borderRadius: "var(--radius-md)", background: "var(--card)", padding: "14px 16px" }}>
+                    <Body style={{ fontSize: 13, color: "var(--foreground)" }}>{item}</Body>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          </ScrollReveal>
         </div>
       </div>
     </WorkReportShell>
   );
 }
+
+

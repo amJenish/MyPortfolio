@@ -1,21 +1,22 @@
 import { useState, type ReactNode } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, Cell, LineChart, Line, ReferenceLine,
+  ResponsiveContainer, Cell, ReferenceLine,
 } from "recharts";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
 import { FONT_MONO, FONT_SANS } from "./notebookTheme";
-import { Body, Tag } from "../reportPrimitives";
+import { Body, ReportSectionLabel, Tag } from "../reportPrimitives";
+import { AnalysisBlock, Callout, ChartCard, KPI, Mono } from "@/components/work/reportWidgets";
 
 // ── STANDARD CHART COLORS ──────────────────────────────────────────────────
 
 const CHART_COLORS = {
-  primary: "#6366f1",    // Indigo (primary)
-  primaryDim: "#4f46e5", // Darker indigo for borders
-  success: "#22c55e",    // Green
-  warning: "#f59e0b",    // Amber/Orange
-  danger: "#ef4444",     // Red
-  secondary: "#06b6d4",  // Cyan
+  primary: "var(--primary)",
+  success: "var(--chart-success, #16a34a)",
+  warning: "var(--accent-highlight)",
+  danger: "var(--chart-danger, #dc2626)",
+  secondary: "var(--chart-2)",
 };
 
 const P = {
@@ -83,7 +84,7 @@ function Tip({
 }): React.JSX.Element | null {
   if (!active || !payload?.length) return null;
   return (
-    <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, padding: "10px 14px", borderRadius: 8, fontSize: 13, color: "var(--foreground)", fontFamily: FONT_MONO }}>
+    <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, padding: "10px 14px", borderRadius: "var(--radius-md)", fontSize: 13, color: "var(--foreground)", fontFamily: FONT_MONO }}>
       <div style={{ color: CHART_COLORS.primary, marginBottom: 4 }}>{label}</div>
       {payload.map((p, i) => (
         <div key={i} style={{ color: p.color || "var(--foreground)" }}>
@@ -95,62 +96,6 @@ function Tip({
   );
 }
 
-function Section({ n, title }: { n: number; title: string }): React.JSX.Element {
-  const num = String(n).padStart(2, "0");
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 28 }}>
-      <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: CHART_COLORS.primary, border: `1px solid ${CHART_COLORS.primaryDim}`, padding: "2px 8px", borderRadius: 4, whiteSpace: "nowrap" }}>
-        {num}
-      </span>
-      <h2 style={{ fontFamily: FONT_SANS, fontSize: 24, color: "var(--foreground)", margin: 0, fontWeight: 700, letterSpacing: -0.5, whiteSpace: "nowrap" }}>{title}</h2>
-      <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
-    </div>
-  );
-}
-
-function KPI({ label, value, sub, color }: { label: string; value: ReactNode; sub?: string; color?: string }): React.JSX.Element {
-  return (
-    <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 12, padding: "20px 24px", flex: 1, borderTop: `3px solid ${color || CHART_COLORS.primary}` }}>
-      <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: "var(--muted-foreground)", marginBottom: 8 }}>{label}</div>
-      <div style={{ fontFamily: FONT_SANS, fontSize: 36, color: color || CHART_COLORS.primary, fontWeight: 900, lineHeight: 1 }}>{value}</div>
-      {sub ? <div style={{ marginTop: 6, fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.5 }}>{sub}</div> : null}
-    </div>
-  );
-}
-
-function Mono({ children }: { children: ReactNode }): React.JSX.Element {
-  return (
-    <code style={{ fontFamily: FONT_MONO, fontSize: 11.5, background: "var(--muted)", color: CHART_COLORS.secondary, padding: "2px 7px", borderRadius: 4, border: `1px solid ${"var(--border)"}` }}>{children}</code>
-  );
-}
-
-function Callout({ color = CHART_COLORS.primary, icon, children }: { color?: string; icon?: ReactNode; children: ReactNode }): React.JSX.Element {
-  return (
-    <div style={{ background: `${color}12`, border: `1px solid ${color}40`, borderRadius: 10, padding: "14px 18px", marginTop: 16, display: "flex", gap: 12, alignItems: "flex-start" }}>
-      {icon ? <span style={{ fontSize: 16, flexShrink: 0, marginTop: 1 }}>{icon}</span> : null}
-      <div style={{ fontSize: 13.5, color: "var(--muted-foreground)", lineHeight: 1.7 }}>{children}</div>
-    </div>
-  );
-}
-
-function AnalysisBlock({ heading, children }: { heading?: string; children: ReactNode }): React.JSX.Element {
-  return (
-    <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderLeft: `3px solid ${CHART_COLORS.primary}`, borderRadius: "0 10px 10px 0", padding: "16px 20px", marginTop: 16 }}>
-      {heading ? <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: CHART_COLORS.primary, marginBottom: 8 }}>{heading}</div> : null}
-      <div style={{ fontSize: 14, color: "var(--muted-foreground)", lineHeight: 1.8 }}>{children}</div>
-    </div>
-  );
-}
-
-function ChartCard({ label, note, children }: { label?: string; note?: ReactNode; children: ReactNode }): React.JSX.Element {
-  return (
-    <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 12, padding: "28px 28px 20px" }}>
-      {label ? <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: "var(--muted-foreground)", marginBottom: 6 }}>{label}</div> : null}
-      {note ? <p style={{ margin: "0 0 20px", fontSize: 13.5, color: "var(--muted-foreground)", lineHeight: 1.7 }}>{note}</p> : null}
-      {children}
-    </div>
-  );
-}
 
 function TableRow({ label, value, highlight }: { label: string; value: string; highlight?: boolean }): React.JSX.Element {
   return (
@@ -224,6 +169,7 @@ const expDetails: Record<ExpTab, { title: string; dim: string; f1: string; color
 
 export default function ResumeJobMatchingReport(props: WorkPageProps) {
   const [activeExp, setActiveExp] = useState<ExpTab>("3");
+  const reduceMotion = useReducedMotion();
 
   return (
     <WorkReportShell {...props}>
@@ -239,9 +185,9 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
           style={{
             position: "absolute",
             inset: 0,
-            backgroundImage: "linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)",
-            backgroundSize: "48px 48px",
-            opacity: 0.3,
+            backgroundImage: "radial-gradient(circle, var(--border) 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+            opacity: 0.4,
           }}
         />
 
@@ -257,7 +203,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
           }}
         />
 
-        <div style={{ maxWidth: 980, margin: "0 auto", padding: "0 40px", position: "relative" }}>
+        <div style={{ maxWidth: 980, margin: "0 auto", padding: "0 clamp(1rem, 4vw, 3rem)", position: "relative" }}>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 20, alignItems: "center" }}>
             <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: "var(--muted-foreground)" }}>
               NLP · Representation Learning · Binary Classification · ATS
@@ -305,7 +251,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
       <div style={{ maxWidth: 980, margin: "0 auto", padding: "60px 40px" }}>
 
         {/* KPIs */}
-        <div id="rjm-kpis" className="scroll-mt-28" style={{ display: "flex", gap: 16, marginBottom: 80, flexWrap: "wrap" }}>
+        <div id="rjm-kpis" className="scroll-mt-28" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16, marginBottom: 80 }}>
           <KPI label="Dataset" value="HF" sub="resume-jd-match dataset from Hugging Face, binarized to fit / no-fit labels" />
           <KPI label="Best F1-score" value="88%" sub="MLP on 28-D structured compatibility features in Experiment 5" color={P.purple} />
           <KPI label="Representation gain" value="+24%" sub="F1 improvement from Exp 1 to Exp 3 under a fixed Logistic Regression" color={CHART_COLORS.primary} />
@@ -314,8 +260,8 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
 
         {/* ══ 01 RESEARCH QUESTION ══ */}
         <div id="rjm-question" className="scroll-mt-28" style={{ marginBottom: 80 }}>
-          <Section n={1} title="The Research Question" />
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+          <ReportSectionLabel n={1} title="The Research Question" />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))", gap: 24 }}>
             <div>
               <p style={{ fontSize: 15, color: "var(--muted-foreground)", lineHeight: 1.85, marginTop: 0 }}>
                 Applicant Tracking Systems are under growing pressure to automate the compatibility screening between candidate resumes and job descriptions. Recent transformer-based approaches have improved performance substantially, but the attribution is typically muddied: systems improve their representation and their classifier simultaneously, making it hard to say which change is responsible for which gain.
@@ -324,7 +270,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
                 I designed this project to separate those two axes cleanly. In my first four experiments, I held the classifier constant as a Logistic Regression while the representation changed. Only in the fifth experiment did I vary the classifier, on a fixed representation. The goal was to isolate each contribution and understand the order in which they matter.
               </p>
             </div>
-            <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 12, overflow: "hidden" }}>
+            <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: "var(--radius-lg)", overflow: "hidden" }}>
               <div style={{ padding: "14px 18px", borderBottom: `1px solid ${"var(--border)"}`, fontFamily: FONT_MONO, fontSize: 11, color: "var(--muted-foreground)" }}>Study at a glance</div>
               {[
                 ["Task", "Binary compatibility classification"],
@@ -342,11 +288,11 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
 
         {/* ══ 02 DATASET & PREPROCESSING ══ */}
         <div id="rjm-data" className="scroll-mt-28" style={{ marginBottom: 80 }}>
-          <Section n={2} title="Dataset & Preprocessing" />
+          <ReportSectionLabel n={2} title="Dataset & Preprocessing" />
           <p style={{ fontSize: 15, color: "var(--muted-foreground)", lineHeight: 1.85, marginTop: 0, marginBottom: 20 }}>
             I used <Mono>facehuggerapoorv/resume-jd-match</Mono> from Hugging Face. Each row contains a single packed text field with both a job description and a resume enclosed in <Mono>{"<<...>>"}</Mono> delimiters, alongside a three-way compatibility label. My preprocessing pipeline unpacks, cleans, and standardizes these fields before any feature extraction takes place.
           </p>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))", gap: 24 }}>
             <div>
               <p style={{ fontSize: 15, color: "var(--muted-foreground)", lineHeight: 1.85, marginTop: 0 }}>
                 A notable quality issue I found in the raw data is that many resumes lack punctuation entirely, which may interfere with sentence-level embedding models that rely on syntactic boundaries. Rather than ignoring this, I applied a pretrained punctuation restoration model (<Mono>oliverguhr/fullstop-punctuation-multilang-large</Mono>) to both resumes and job descriptions in batches, re-inserting periods, commas, and question marks based on predicted token boundaries.
@@ -371,7 +317,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
 
         {/* ══ 03 EXPERIMENTAL DESIGN ══ */}
         <div id="rjm-design" className="scroll-mt-28" style={{ marginBottom: 80 }}>
-          <Section n={3} title="Experimental Design" />
+          <ReportSectionLabel n={3} title="Experimental Design" />
           <p style={{ fontSize: 15, color: "var(--muted-foreground)", lineHeight: 1.85, marginTop: 0, marginBottom: 28 }}>
             I organised the study around two phases. In phase one (Experiments 1–4), I held the classifier fixed as a Logistic Regression and varied only the representation, so that performance differences could be attributed to the feature space rather than the model. In phase two (Experiment 5), I held the representation fixed and varied the classifier, testing whether nonlinear decision boundaries could recover signal that a linear model couldn't access.
           </p>
@@ -379,7 +325,13 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
           {/* Experiment selector */}
           <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
             {EXP_TABS.map((tab) => (
-              <button key={tab} type="button" onClick={() => setActiveExp(tab)} style={{ fontFamily: FONT_MONO, fontSize: 11, padding: "8px 18px", borderRadius: 6, cursor: "pointer", background: activeExp === tab ? CHART_COLORS.primary : "var(--card)", color: activeExp === tab ? P.bg : "var(--muted-foreground)", border: `1px solid ${activeExp === tab ? CHART_COLORS.primary : "var(--border)"}`, transition: "all 0.15s" }}>
+              <button
+                key={tab}
+                type="button"
+                onClick={() => setActiveExp(tab)}
+                className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                style={{ fontFamily: FONT_MONO, fontSize: 11, padding: "8px 18px", borderRadius: 6, cursor: "pointer", background: activeExp === tab ? CHART_COLORS.primary : "var(--card)", color: activeExp === tab ? P.bg : "var(--muted-foreground)", border: `1px solid ${activeExp === tab ? CHART_COLORS.primary : "var(--border)"}`, transition: "all 0.15s" }}
+              >
                 Exp {tab}
               </button>
             ))}
@@ -389,18 +341,26 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
           {(() => {
             const d = expDetails[activeExp];
             return (
-              <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 12, padding: "28px", borderTop: `3px solid ${d.color}` }}>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeExp}
+                  initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: -8 }}
+                  transition={{ duration: reduceMotion ? 0 : 0.2, ease: [0.16, 1, 0.3, 1] }}
+                  style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: "var(--radius-lg)", padding: "28px", borderTop: `3px solid ${d.color}` }}
+                >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 18, flexWrap: "wrap", gap: 12 }}>
                   <div>
                     <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: "var(--muted-foreground)", marginBottom: 6 }}>Experiment {activeExp}</div>
                     <h3 style={{ fontFamily: FONT_SANS, fontSize: 22, color: "var(--foreground)", margin: 0, fontWeight: 700 }}>{d.title}</h3>
                   </div>
                   <div style={{ display: "flex", gap: 16 }}>
-                    <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 8, padding: "12px 20px", textAlign: "center" }}>
+                    <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: "var(--radius-md)", padding: "12px 20px", textAlign: "center" }}>
                       <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: "var(--muted-foreground)", marginBottom: 4 }}>Dimensions</div>
                       <div style={{ fontFamily: FONT_MONO, fontSize: 18, color: d.color, fontWeight: 700 }}>{d.dim}</div>
                     </div>
-                    <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 8, padding: "12px 20px", textAlign: "center" }}>
+                    <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: "var(--radius-md)", padding: "12px 20px", textAlign: "center" }}>
                       <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: "var(--muted-foreground)", marginBottom: 4 }}>F1-Score</div>
                       <div style={{ fontFamily: FONT_SANS, fontSize: 28, color: d.color, fontWeight: 900, lineHeight: 1 }}>{d.f1}</div>
                     </div>
@@ -410,7 +370,8 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
                 <AnalysisBlock heading="My interpretation">
                   {d.why}
                 </AnalysisBlock>
-              </div>
+                </motion.div>
+              </AnimatePresence>
             );
           })()}
 
@@ -421,12 +382,12 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
 
         {/* ══ 04 RESULTS ══ */}
         <div id="rjm-results" className="scroll-mt-28" style={{ marginBottom: 80 }}>
-          <Section n={4} title="Results Across All Experiments" />
+          <ReportSectionLabel n={4} title="Results Across All Experiments" />
           <p style={{ fontSize: 15, color: "var(--muted-foreground)", lineHeight: 1.85, marginTop: 0, marginBottom: 24 }}>
             The F1 trajectory across my experiments tells a clear story: representation learning does most of the work, fine-tuning is the single largest lever, and structured symbolic features add interpretability without necessarily adding performance under a linear model. Nonlinear classifiers then unlock the remaining latent signal once the representation is sufficiently rich.
           </p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))", gap: 20 }}>
             <ChartCard
               label="Chart 1 : F1-score progression across experiments"
               note={<>The sharpest jump I observed occurs between Experiment 2 and Experiment 3, where fine-tuning lifts F1 from <strong style={{ color: CHART_COLORS.warning }}>69%</strong> to <strong style={{ color: CHART_COLORS.primary }}>84%</strong> under the same classifier and feature construction. The final MLP closes at <strong style={{ color: P.purple }}>88%</strong>.</>}
@@ -434,8 +395,8 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={f1Progression} barCategoryGap="35%">
                   <CartesianGrid vertical={false} stroke={"var(--border)"} />
-                  <XAxis dataKey="exp" tick={{ fill: "var(--muted-foreground)", fontSize: 12, fontFamily: "JetBrains Mono" }} axisLine={false} tickLine={false} />
-                  <YAxis domain={[55, 92]} tick={{ fill: "var(--muted-foreground)", fontSize: 11, fontFamily: "JetBrains Mono" }} axisLine={false} tickLine={false} tickFormatter={v => `${v}%`} />
+                  <XAxis dataKey="exp" tick={{ fill: "var(--muted-foreground)", fontSize: 12, fontFamily: "var(--font-mono)" }} axisLine={false} tickLine={false} />
+                  <YAxis domain={[55, 92]} tick={{ fill: "var(--muted-foreground)", fontSize: 11, fontFamily: "var(--font-mono)" }} axisLine={false} tickLine={false} tickFormatter={v => `${v}%`} />
                   <Tooltip content={<Tip />} cursor={{ fill: "#ffffff06" }} />
                   <ReferenceLine y={84} stroke={"var(--muted-foreground)"} strokeDasharray="4 4" />
                   <Bar dataKey="f1" name="F1-Score" radius={[5, 5, 0, 0]}>
@@ -455,8 +416,8 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={gainBreakdown} layout="vertical" barCategoryGap="28%">
                   <CartesianGrid horizontal={false} stroke={"var(--border)"} />
-                  <XAxis type="number" tick={{ fill: "var(--muted-foreground)", fontSize: 11, fontFamily: "JetBrains Mono" }} axisLine={false} tickLine={false} tickFormatter={v => `+${v}%`} />
-                  <YAxis type="category" dataKey="source" tick={{ fill: "var(--muted-foreground)", fontSize: 10.5, fontFamily: "JetBrains Mono" }} axisLine={false} tickLine={false} width={160} />
+                  <XAxis type="number" tick={{ fill: "var(--muted-foreground)", fontSize: 11, fontFamily: "var(--font-mono)" }} axisLine={false} tickLine={false} tickFormatter={v => `+${v}%`} />
+                  <YAxis type="category" dataKey="source" tick={{ fill: "var(--muted-foreground)", fontSize: 10.5, fontFamily: "var(--font-mono)" }} axisLine={false} tickLine={false} width={160} />
                   <Tooltip content={<Tip />} cursor={{ fill: "#ffffff06" }} />
                   <Bar dataKey="gain" name="F1 Gain" radius={[0, 5, 5, 0]}>
                     {gainBreakdown.map((d, i) => <Cell key={i} fill={d.fill} />)}
@@ -470,11 +431,12 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
           </div>
 
           {/* Full results table */}
-          <div style={{ marginTop: 20, background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 12, overflow: "hidden" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "2.5fr 1fr 1fr 1fr", background: "var(--card)", padding: "11px 18px", fontFamily: FONT_MONO, fontSize: 11, color: "var(--muted-foreground)", borderBottom: `1px solid ${"var(--border)"}` }}>
-              <span>Experiment</span><span>Representation</span><span>Classifier</span><span>F1-Score</span>
-            </div>
-            {[
+          <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch", marginTop: 20 }}>
+            <div style={{ minWidth: 860, background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: "var(--radius-lg)", overflow: "hidden" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "2.5fr 1fr 1fr 1fr", background: "var(--card)", padding: "11px 18px", fontFamily: FONT_MONO, fontSize: 11, color: "var(--muted-foreground)", borderBottom: `1px solid ${"var(--border)"}` }}>
+                <span>Experiment</span><span>Representation</span><span>Classifier</span><span>F1-Score</span>
+              </div>
+              {[
               { name: "1: Handcrafted 10-D baseline",          rep: "10-D handcrafted",   clf: "Logistic Reg.", f1: "60%",  hl: false },
               { name: "2: Frozen MiniLM + 1536-D interactions", rep: "1536-D frozen",      clf: "Logistic Reg.", f1: "69%",  hl: false },
               { name: "3: Fine-tuned MiniLM bi-encoder",        rep: "1536-D fine-tuned", clf: "Logistic Reg.", f1: "84%",  hl: false },
@@ -485,17 +447,18 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
               { name: "5: 28-D structured + GradBoost",        rep: "28-D structured",   clf: "GradientBoost", f1: "84%",  hl: false },
               { name: "5: 28-D structured + RandomForest",     rep: "28-D structured",   clf: "RandomForest",  f1: "83%",  hl: false },
               { name: "5: 28-D structured + CatBoost",         rep: "28-D structured",   clf: "CatBoost",      f1: "83%",  hl: false },
-            ].map(({ name, rep, clf, f1, hl }) => (
-              <div key={name} style={{ display: "grid", gridTemplateColumns: "2.5fr 1fr 1fr 1fr", padding: "12px 18px", fontSize: 13, color: hl ? CHART_COLORS.primary : "var(--muted-foreground)", background: hl ? `${CHART_COLORS.primary}08` : "transparent", borderBottom: `1px solid ${"var(--border)"}`, fontFamily: hl ? FONT_MONO : "inherit" }}>
-                <span>{name}</span><span>{rep}</span><span>{clf}</span><span>{f1}</span>
-              </div>
-            ))}
+              ].map(({ name, rep, clf, f1, hl }) => (
+                <div key={name} style={{ display: "grid", gridTemplateColumns: "2.5fr 1fr 1fr 1fr", padding: "12px 18px", fontSize: 13, color: hl ? CHART_COLORS.primary : "var(--muted-foreground)", background: hl ? `${CHART_COLORS.primary}08` : "transparent", borderBottom: `1px solid ${"var(--border)"}`, fontFamily: hl ? FONT_MONO : "inherit" }}>
+                  <span>{name}</span><span>{rep}</span><span>{clf}</span><span>{f1}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
         {/* ══ 05 CLASSIFIER COMPARISON ══ */}
         <div id="rjm-classifiers" className="scroll-mt-28" style={{ marginBottom: 80 }}>
-          <Section n={5} title="Classifier Comparison in Experiment 5" />
+          <ReportSectionLabel n={5} title="Classifier Comparison in Experiment 5" />
           <p style={{ fontSize: 15, color: "var(--muted-foreground)", lineHeight: 1.85, marginTop: 0, marginBottom: 24 }}>
             With the 28-dimensional structured representation fixed, I evaluated seven nonlinear classifiers. I deliberately chose the compact 28-dimensional space over the 1536-dimensional embeddings to avoid the confounding effects of very high-dimensional inputs and make the classifier comparison cleaner and more interpretable.
           </p>
@@ -507,9 +470,9 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={classifierComparison} barCategoryGap="30%">
                 <CartesianGrid vertical={false} stroke={"var(--border)"} />
-                <XAxis dataKey="model" tick={{ fill: "var(--muted-foreground)", fontSize: 11, fontFamily: "JetBrains Mono" }} axisLine={false} tickLine={false} />
-                <YAxis domain={[80, 91]} tick={{ fill: "var(--muted-foreground)", fontSize: 11, fontFamily: "JetBrains Mono" }} axisLine={false} tickLine={false} tickFormatter={v => `${v}%`} />
-                <ReferenceLine y={84} stroke={"var(--muted-foreground)"} strokeDasharray="4 4" label={{ value: "LR baseline", fill: "var(--muted-foreground)", fontSize: 10, fontFamily: "JetBrains Mono" }} />
+                <XAxis dataKey="model" tick={{ fill: "var(--muted-foreground)", fontSize: 11, fontFamily: "var(--font-mono)" }} axisLine={false} tickLine={false} />
+                <YAxis domain={[80, 91]} tick={{ fill: "var(--muted-foreground)", fontSize: 11, fontFamily: "var(--font-mono)" }} axisLine={false} tickLine={false} tickFormatter={v => `${v}%`} />
+                <ReferenceLine y={84} stroke={"var(--muted-foreground)"} strokeDasharray="4 4" label={{ value: "LR baseline", fill: "var(--muted-foreground)", fontSize: 10, fontFamily: "var(--font-mono)" }} />
                 <Tooltip content={<Tip />} cursor={{ fill: "#ffffff06" }} />
                 <Bar dataKey="f1" name="F1-Score" radius={[5, 5, 0, 0]}>
                   {classifierComparison.map((d, i) => <Cell key={i} fill={d.fill} />)}
@@ -518,7 +481,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
             </ResponsiveContainer>
           </ChartCard>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 20 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))", gap: 16, marginTop: 20 }}>
             <AnalysisBlock heading="Why I think the MLP leads the tree ensembles">
               The 28-dimensional structured features include skill overlap, experience gaps, and semantic similarity scores that may interact in smooth, continuous ways rather than along sharp thresholds. MLPs are well-suited to capturing such smooth nonlinear interactions, while tree-based methods tend to partition feature space along axis-aligned boundaries. The gap is modest (88% vs 86%), so I treat this as a directional observation rather than a definitive conclusion.
             </AnalysisBlock>
@@ -530,11 +493,11 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
 
         {/* ══ 06 KEY FINDINGS ══ */}
         <div id="rjm-findings" className="scroll-mt-28" style={{ marginBottom: 80 }}>
-          <Section n={6} title="Key Findings" />
+          <ReportSectionLabel n={6} title="Key Findings" />
           <p style={{ fontSize: 15, color: "var(--muted-foreground)", lineHeight: 1.85, marginTop: 0, marginBottom: 24 }}>
             My five experiments across two phases produce a coherent picture of how representation learning and classifier complexity interact in a text-matching task.
           </p>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))", gap: 14 }}>
             {[
               { icon: "📐", color: CHART_COLORS.primary, title: "Representation learning is the dominant driver", body: "Fine-tuning the MiniLM bi-encoder on compatibility labels accounts for 15% of F1 improvement under a fixed linear classifier. That is roughly three times the gain I achieved by switching to the best nonlinear classifier later. The quality of the feature space mattered far more than the sophistication of the classifier, at least up to a point." },
               { icon: "🔧", color: CHART_COLORS.warning, title: "Fine-tuning, not frozen embeddings, was the key step", body: "Frozen MiniLM embeddings improved over my handcrafted baseline (69% vs 60%), but the representation isn't yet shaped around compatibility. Fine-tuning explicitly reshapes the embedding space so that compatible pairs cluster together and incompatible pairs are pushed apart. Which is why I saw such a much larger improvement in Experiment 3 than Experiment 2 under the same classifier." },
@@ -557,9 +520,9 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
 
         {/* ══ 07 LIMITATIONS & NEXT STEPS ══ */}
         <div id="rjm-next" className="scroll-mt-28" style={{ marginBottom: 80 }}>
-          <Section n={7} title="Limitations & What Comes Next" />
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-            <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 12, padding: "24px" }}>
+          <ReportSectionLabel n={7} title="Limitations & What Comes Next" />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))", gap: 20 }}>
+            <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: "var(--radius-lg)", padding: "24px" }}>
               <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: CHART_COLORS.danger, marginBottom: 18 }}>Known limitations</div>
               {[
                 { title: "Single dataset with binary labels", body: "All my experiments use one dataset binarized to a fit / no-fit decision. The real hiring process involves more nuanced degrees of fit, and I'm not confident the same findings would hold on other datasets with different label distributions or domain characteristics." },
@@ -573,7 +536,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
                 </div>
               ))}
             </div>
-            <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 12, padding: "24px" }}>
+            <div style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: "var(--radius-lg)", padding: "24px" }}>
               <div style={{ fontFamily: FONT_MONO, fontSize: 11, color: CHART_COLORS.secondary, marginBottom: 18 }}>High-value next steps</div>
               {[
                 { title: "Multi-level compatibility scoring", body: "Restoring the original three-way label (no fit / potential fit / good fit) as an ordinal prediction task could make the system more useful in practice, where recruiters benefit from ranked shortlists rather than binary gates." },
@@ -601,3 +564,6 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
     </WorkReportShell>
   );
 }
+
+
+

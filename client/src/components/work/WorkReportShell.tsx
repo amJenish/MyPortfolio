@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button";
+import { ScrollProgress } from "@/components/motion/ScrollProgress";
+import { BackToList } from "@/components/work/BackToList";
 import type { WorkPageProps } from "@/content/portfolio/workPageTypes";
 import { FONT_MONO, FONT_SANS } from "@/lib/theme";
-import { ArrowLeft, BookOpen, Github, Play } from "lucide-react";
-import { Link } from "wouter";
 import type { ReactNode } from "react";
 
 function ReportCatalogHero({
@@ -149,15 +148,11 @@ export function WorkReportShell({
         fontFamily: FONT_SANS,
       }}
     >
+      <ScrollProgress />
+
       {/* Back link — small, unobtrusive, proper spacing */}
-      <div style={{ padding: "24px 40px 0" }}>
-        <Link
-          href={backHref}
-          className="inline-flex items-center gap-2 rounded-lg font-mono text-xs font-medium text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          <ArrowLeft className="h-4 w-4 shrink-0" />
-          {backLabel}
-        </Link>
+      <div style={{ padding: "24px clamp(1rem, 4vw, 3rem) 0" }}>
+        <BackToList href={backHref} label={backLabel} />
       </div>
 
       {/* Hero — only rendered when page doesn't own it */}
@@ -165,42 +160,6 @@ export function WorkReportShell({
 
       {/* Content */}
       {children}
-
-      {/* Action buttons — clear CTA row at bottom */}
-      <div
-        style={{
-          padding: "48px 40px 56px",
-          display: "flex",
-          flexDirection: "row",
-          gap: "12px",
-          flexWrap: "wrap",
-          alignItems: "center",
-          borderTop: "1px solid var(--border)",
-        }}
-      >
-        <Button asChild size="lg" variant="default" className="gap-2 font-mono text-xs font-bold">
-          <a href={entry.githubUrl} target="_blank" rel="noopener noreferrer">
-            <Github className="h-4 w-4" />
-            GitHub
-          </a>
-        </Button>
-        {entry.notebookUrl ? (
-          <Button variant="outline" size="lg" asChild className="gap-2 font-mono text-xs font-medium">
-            <a href={entry.notebookUrl} target="_blank" rel="noopener noreferrer">
-              <BookOpen className="h-4 w-4" />
-              Notebook
-            </a>
-          </Button>
-        ) : null}
-        {entry.videoUrl ? (
-          <Button variant="outline" size="lg" asChild className="gap-2 font-mono text-xs font-medium">
-            <a href={entry.videoUrl} target="_blank" rel="noopener noreferrer">
-              <Play className="h-4 w-4" />
-              Demo video
-            </a>
-          </Button>
-        ) : null}
-      </div>
     </div>
   );
 }
