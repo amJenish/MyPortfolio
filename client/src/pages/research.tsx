@@ -1,4 +1,7 @@
 import Layout from "@/components/layout";
+import { PageWrapper } from "@/motion/PageWrapper";
+import { MOTION_CONFIG as M } from "@/motion/config";
+import { useSafeMotion } from "@/motion/useSafeMotion";
 import { researchPapers } from "@/lib/content/registry";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
@@ -8,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { ScrollRevealStagger } from "@/components/motion/ScrollRevealStagger";
 import { SectionDivider } from "@/components/home/SectionDivider";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   scrollEase,
   scrollRevealRouteDelayChildren,
@@ -34,10 +37,11 @@ function PlainAbstract({ text }: { text: string }) {
 export default function PaperworkPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selectedPaper = researchPapers.find((p) => p.id === selectedId);
-  const reduceMotion = useReducedMotion();
+  const { shouldAnimate, safeTransition } = useSafeMotion();
 
   return (
     <Layout>
+      <PageWrapper>
       <div className="space-y-10">
 
         {/* ── Hero header ── */}
@@ -118,10 +122,14 @@ export default function PaperworkPage() {
                   key={selectedPaper.id}
                   role="region"
                   aria-label="Paper details"
-                  initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+                  initial={shouldAnimate ? { opacity: 0, y: 20 } : false}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={reduceMotion ? undefined : { opacity: 0, y: -14 }}
-                  transition={{ duration: 0.24, ease: scrollEase }}
+                  exit={shouldAnimate ? { opacity: 0, y: -14 } : undefined}
+                  transition={{
+                    duration: M.paperworkPanelSwap,
+                    ease: scrollEase,
+                    ...safeTransition,
+                  }}
                   className="space-y-6 rounded-3xl border border-border bg-card p-7 shadow-md md:p-9"
                 >
                   {/* Paper title + download */}
@@ -171,10 +179,14 @@ export default function PaperworkPage() {
                 <motion.div
                   key="empty"
                   role="status"
-                  initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+                  initial={shouldAnimate ? { opacity: 0, y: 16 } : false}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={reduceMotion ? undefined : { opacity: 0, y: -10 }}
-                  transition={{ duration: 0.22, ease: scrollEase }}
+                  exit={shouldAnimate ? { opacity: 0, y: -10 } : undefined}
+                  transition={{
+                    duration: M.paperworkPanelEmpty,
+                    ease: scrollEase,
+                    ...safeTransition,
+                  }}
                   className="flex h-full min-h-[420px] flex-col items-start justify-center rounded-3xl border border-dashed border-border bg-muted/10 p-10 text-left"
                 >
                   <div className="flex h-18 w-18 items-center justify-center rounded-2xl bg-muted/60">
@@ -192,6 +204,7 @@ export default function PaperworkPage() {
           </div>
         </div>
       </div>
+      </PageWrapper>
     </Layout>
   );
 }

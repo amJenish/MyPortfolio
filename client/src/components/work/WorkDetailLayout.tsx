@@ -1,4 +1,5 @@
 import Layout from "@/components/layout";
+import { PageWrapper } from "@/motion/PageWrapper";
 import { getWorkPage } from "@/content/portfolio/registry";
 import type { WorkEntry } from "@/lib/interfaces";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
@@ -24,6 +25,7 @@ export function WorkDetailLayout({
 
   return (
     <Layout>
+      <PageWrapper>
       <div className="pb-16 text-left">
         {hasWorkPage && WorkPageComponent ? (
           <WorkPageComponent
@@ -47,6 +49,7 @@ export function WorkDetailLayout({
           </ScrollReveal>
         )}
       </div>
+      </PageWrapper>
     </Layout>
   );
 }

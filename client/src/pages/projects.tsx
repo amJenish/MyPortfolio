@@ -1,4 +1,5 @@
 import Layout from "@/components/layout";
+import { PageWrapper } from "@/motion/PageWrapper";
 import { WorkListCard } from "@/components/work/WorkListCard";
 import { projects } from "@/lib/content/registry";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
@@ -13,6 +14,7 @@ import {
 export default function Projects() {
   return (
     <Layout>
+      <PageWrapper>
       <div className="space-y-12">
         {/* ── Page header ── */}
         <ScrollReveal as="header" className="max-w-2xl space-y-4 text-left" duration={scrollRevealRouteDuration}>
@@ -55,6 +57,7 @@ export default function Projects() {
           ))}
         </ScrollRevealStagger>
       </div>
+      </PageWrapper>
     </Layout>
   );
 }

@@ -1,79 +1,91 @@
 import * as React from "react";
-import { motion, type HTMLMotionProps, type Variants, useReducedMotion } from "framer-motion";
-import {
-  getScrollRevealStaggerItemVariants,
-  scrollRevealDuration,
-  scrollRevealRootMargin,
-} from "./scrollMotion";
+import { motion, type Variants } from "framer-motion";
+import { MOTION_CONFIG as M } from "@/motion/config";
+import { useSafeMotion } from "@/motion/useSafeMotion";
 
 type Props = {
   children: React.ReactNode;
   className?: string;
   stagger?: number;
   delayChildren?: number;
-  /** Override default stagger item reveal length */
   duration?: number;
-} & Omit<HTMLMotionProps<"div">, "children" | "initial" | "animate" | "whileInView" | "variants">;
+  role?: React.AriaRole;
+  "aria-label"?: string;
+};
 
 /**
- * Staggers children when the container intersects the viewport (IntersectionObserver + variants).
- * Replays when the container leaves and re-enters the viewport.
+ * Staggered grid reveal when the container enters the viewport (below-the-fold).
  */
 export function ScrollRevealStagger({
   children,
   className,
-  stagger = 0.04,
-  delayChildren = 0.03,
-  duration = scrollRevealDuration,
-  ...rest
+  stagger = M.stagger,
+  delayChildren = M.delayChildren,
+  duration = M.duration.standard,
+  role,
+  "aria-label": ariaLabel,
 }: Props) {
-  const reduceMotion = useReducedMotion();
-  const [rootEl, setRootEl] = React.useState<Element | null>(null);
-  const [revealed, setRevealed] = React.useState(false);
-
-  React.useEffect(() => {
-    if (reduceMotion) return;
-    if (!rootEl) return;
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          setRevealed(entry.isIntersecting);
-        });
-      },
-      { root: null, rootMargin: scrollRevealRootMargin, threshold: 0 },
-    );
-    io.observe(rootEl);
-    return () => io.disconnect();
-  }, [rootEl, reduceMotion]);
-
-  const active = Boolean(reduceMotion || revealed);
+  const { safeTransition, shouldAnimate } = useSafeMotion();
+  const ease = [...M.easing] as [number, number, number, number];
 
   const container: Variants = {
     hidden: {},
     show: {
       transition: {
-        staggerChildren: reduceMotion ? 0 : stagger,
-        delayChildren: reduceMotion ? 0 : delayChildren,
+        staggerChildren: stagger,
+        delayChildren,
       },
     },
   };
 
-  const item: Variants = getScrollRevealStaggerItemVariants(reduceMotion, duration);
+  const item: Variants = {
+    hidden: { opacity: 0, y: M.revealDistance },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { duration, ease },
+    },
+  };
+
+  if (!shouldAnimate) {
+    return (
+      <div className={className} role={role} aria-label={ariaLabel}>
+        {React.Children.map(children, (child, i) => (
+          <div
+            key={
+              React.isValidElement(child) && child.key != null
+                ? String(child.key)
+                : i
+            }
+            className="min-h-0 min-w-0 h-full"
+          >
+            {child}
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <motion.div
-      ref={setRootEl}
       className={className}
+      role={role}
+      aria-label={ariaLabel}
       variants={container}
       initial="hidden"
-      animate={active ? "show" : "hidden"}
-      {...rest}
+      whileInView="show"
+      viewport={M.revealViewport}
+      transition={safeTransition}
     >
       {React.Children.map(children, (child, i) => (
         <motion.div
-          key={React.isValidElement(child) && child.key != null ? String(child.key) : i}
+          key={
+            React.isValidElement(child) && child.key != null
+              ? String(child.key)
+              : i
+          }
           variants={item}
+          transition={safeTransition}
           className="min-h-0 min-w-0 h-full"
         >
           {child}

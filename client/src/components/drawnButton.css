@@ -1,0 +1,220 @@
+.drawn-button {
+  --line_color: var(--primary);
+  --back_color: var(--muted);
+  position: relative;
+  z-index: 0;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 100px;
+  width: auto;
+  height: 44px;
+  padding: 0 14px;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--line_color);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: letter-spacing 0.3s ease, color 0.2s ease;
+  outline: none;
+}
+
+.drawn-button:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.drawn-button__text {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.drawn-button__text svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+/* ── Top/bottom bar accents (match nav-link language) ── */
+.drawn-button::before,
+.drawn-button::after,
+.drawn-button__text::before,
+.drawn-button__text::after {
+  content: "";
+  position: absolute;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--line_color);
+  transition: width 0.5s ease;
+}
+
+/* Top-left long bar */
+.drawn-button::before {
+  top: 0;
+  left: 30px;
+  width: calc(100% - 60px - 8px);
+}
+
+/* Top-right short accent */
+.drawn-button::after {
+  top: 0;
+  right: 30px;
+  width: 8px;
+}
+
+/* Bottom-right long bar */
+.drawn-button__text::before {
+  bottom: 0;
+  right: 30px;
+  width: calc(100% - 60px - 8px);
+}
+
+/* Bottom-left short accent */
+.drawn-button__text::after {
+  bottom: 0;
+  left: 30px;
+  width: 8px;
+}
+
+/* ── Rounded end-caps ── */
+.drawn-button__line {
+  position: absolute;
+  top: 0;
+  width: 30px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.drawn-button__line::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 150%;
+  height: 100%;
+  box-sizing: border-box;
+  border-radius: 300px;
+  border: solid 3px var(--line_color);
+}
+
+.drawn-button__line:nth-child(1),
+.drawn-button__line:nth-child(1)::before {
+  left: 0;
+}
+
+.drawn-button__line:nth-child(2),
+.drawn-button__line:nth-child(2)::before {
+  right: 0;
+}
+
+/* ── Hover: letter-spacing expands, bars swap long/short ── */
+.drawn-button:hover {
+  letter-spacing: 4px;
+}
+
+.drawn-button:hover::before,
+.drawn-button:hover .drawn-button__text::before {
+  width: 8px;
+}
+
+.drawn-button:hover::after,
+.drawn-button:hover .drawn-button__text::after {
+  width: calc(100% - 60px - 8px);
+}
+
+/* ── Decorative stroke elements ── */
+.drawn-button__drow1,
+.drawn-button__drow2 {
+  position: absolute;
+  z-index: -1;
+  border-radius: 10px;
+  transform-origin: 10px 10px;
+}
+
+.drawn-button__drow1 {
+  top: -12px;
+  left: 24px;
+  width: 20px;
+  height: 0;
+  transform: rotate(30deg);
+}
+
+.drawn-button__drow2 {
+  top: 34px;
+  left: 46px;
+  width: 20px;
+  height: 0;
+  transform: rotate(-127deg);
+}
+
+.drawn-button__drow1::before,
+.drawn-button__drow1::after,
+.drawn-button__drow2::before,
+.drawn-button__drow2::after {
+  content: "";
+  position: absolute;
+}
+
+.drawn-button__drow1::before {
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 20px;
+  border-radius: 10px;
+  transform-origin: 10px 10px;
+  transform: rotate(-60deg);
+}
+
+.drawn-button__drow1::after {
+  top: -6px;
+  left: 28px;
+  width: 0;
+  height: 20px;
+  border-radius: 10px;
+  transform-origin: 10px 10px;
+  transform: rotate(69deg);
+}
+
+.drawn-button__drow2::before {
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 20px;
+  border-radius: 10px;
+  transform-origin: 10px 10px;
+  transform: rotate(-146deg);
+}
+
+.drawn-button__drow2::after {
+  bottom: 16px;
+  left: -24px;
+  width: 0;
+  height: 20px;
+  border-radius: 10px;
+  transform-origin: 10px 10px;
+  transform: rotate(-262deg);
+}
+
+.drawn-button__drow1,
+.drawn-button__drow1::before,
+.drawn-button__drow1::after,
+.drawn-button__drow2,
+.drawn-button__drow2::before,
+.drawn-button__drow2::after {
+  background: var(--back_color);
+}
+
+/*
+ * NOTE: the original draw-in animations were CSS @keyframes targeting pseudo
+ * elements (::before, ::after) on hover. Those have been removed in favour of
+ * the global Framer Motion language (no raw CSS keyframes anywhere).
+ * The decorative shapes remain static; if/when DrawnButton is wired into the UI,
+ * port the draw-in to motion components driving SVG path lengths.
+ */

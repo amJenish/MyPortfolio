@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useParams, Link } from "wouter";
 import Layout from "@/components/layout";
+import { PageWrapper } from "@/motion/PageWrapper";
 
 export default function ProjectDetail() {
   const params = useParams();
@@ -14,6 +15,7 @@ export default function ProjectDetail() {
   if (!project) {
     return (
       <Layout>
+        <PageWrapper>
         <div className="mx-auto max-w-lg space-y-6 py-16 text-left">
           <Link
             href="/projects"
@@ -30,6 +32,7 @@ export default function ProjectDetail() {
             <Button>All projects</Button>
           </Link>
         </div>
+        </PageWrapper>
       </Layout>
     );
   }
@@ -40,6 +43,7 @@ export default function ProjectDetail() {
   if (!entry) {
     return (
       <Layout>
+        <PageWrapper>
         <div className="mx-auto max-w-lg space-y-6 py-16 text-left">
           <Link
             href="/projects"
@@ -56,6 +60,7 @@ export default function ProjectDetail() {
             <Button>All projects</Button>
           </Link>
         </div>
+        </PageWrapper>
       </Layout>
     );
   }

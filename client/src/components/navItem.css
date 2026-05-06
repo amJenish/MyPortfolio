@@ -1,0 +1,250 @@
+.nav-group {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--muted);
+  margin: 0 auto;
+}
+
+.nav-group--drawer {
+  width: 100%;
+  flex-direction: column;
+  align-items: stretch;
+  border-radius: 8px;
+}
+
+/* Desktop + Drawer nav links */
+.nav-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 16px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+  border-right: 1px solid var(--border);
+}
+
+.nav-link:last-child {
+  border-right: none;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--foreground);
+}
+
+.nav-link.active {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.nav-link__underline {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 6px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--primary);
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+/* Drawer variant: vertical list (no right borders) */
+.nav-link--drawer {
+  width: 100%;
+  justify-content: flex-start;
+  padding: 0 16px;
+  border-right: none;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  height: 44px;
+}
+
+.nav-link--drawer:last-child {
+  border-bottom: none;
+}
+
+.social-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.social-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: var(--background);
+  transition: all 0.15s ease;
+}
+
+.social-icon:hover {
+  color: var(--foreground);
+  background: var(--muted);
+  border-color: var(--border);
+}
+
+.social-icon:active {
+  transform: scale(0.95);
+}
+
+.social-icon--drawer {
+  width: 100%;
+}
+
+.nav-email-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 36px;
+  padding: 0 6px 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--background) 88%, var(--muted));
+}
+
+.nav-email-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+
+.nav-email-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--background);
+  color: var(--foreground);
+  transition: all 0.15s ease;
+}
+
+.nav-email-copy:hover {
+  border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+  background: color-mix(in srgb, var(--primary) 10%, var(--background));
+  color: var(--primary);
+}
+
+.nav-email-copy:active {
+  transform: scale(0.97);
+}
+
+.nav-email-copy--done {
+  color: var(--primary);
+}
+
+.nav-email-chip--drawer {
+  width: 100%;
+  justify-content: space-between;
+  min-height: 42px;
+  padding: 8px 10px;
+}
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  color: var(--muted-foreground);
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 0;
+  padding: 0;
+}
+
+.theme-toggle:hover {
+  color: var(--foreground);
+  background: var(--muted);
+  border-color: var(--border);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+/* Focus & Accessibility */
+.nav-link:focus-visible,
+.social-icon:focus-visible,
+.theme-toggle:focus-visible,
+.nav-email-copy:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* ── App nav surface ───────────────────────────────────────────────────────── */
+/*
+ * The header reads --nav-elev (0 → 1) supplied by Framer Motion via a style prop.
+ * Surface alpha, backdrop blur, shadow and bottom border all key off the same
+ * progress so the navbar transitions continuously instead of snapping.
+ */
+.app-nav {
+  --nav-elev: 0;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(var(--nav-bg-rgb), calc(var(--nav-elev) * 0.88));
+  backdrop-filter: blur(calc(var(--nav-elev) * 14px));
+  -webkit-backdrop-filter: blur(calc(var(--nav-elev) * 14px));
+  border-bottom: 1px solid
+    rgba(var(--nav-shadow-rgb), calc(var(--nav-elev) * 0.12));
+  box-shadow: 0 1px 16px
+    rgba(var(--nav-shadow-rgb), calc(var(--nav-elev) * var(--nav-shadow-alpha)));
+}
+
+.app-nav__bar {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  width: 100%;
+  max-width: min(100%, 88rem);
+  align-items: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .app-nav__bar {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-nav__bar {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}

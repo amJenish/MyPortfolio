@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { useParams, Link, useLocation } from "wouter";
 import { useEffect } from "react";
 import Layout from "@/components/layout";
+import { PageWrapper } from "@/motion/PageWrapper";
 import { DATA_LIST_PATH, mlDetailPath } from "@/lib/routes";
 
 export default function MlDetail() {
@@ -27,6 +28,7 @@ export default function MlDetail() {
   if (!notebook) {
     return (
       <Layout>
+        <PageWrapper>
         <div className="mx-auto max-w-lg space-y-6 py-16 text-left">
           <Link
             href={DATA_LIST_PATH}
@@ -43,6 +45,7 @@ export default function MlDetail() {
             <Button>All notebooks</Button>
           </Link>
         </div>
+        </PageWrapper>
       </Layout>
     );
   }
@@ -53,6 +56,7 @@ export default function MlDetail() {
   if (!entry) {
     return (
       <Layout>
+        <PageWrapper>
         <div className="mx-auto max-w-lg space-y-6 py-16 text-left">
           <Link
             href={DATA_LIST_PATH}
@@ -69,6 +73,7 @@ export default function MlDetail() {
             <Button>All notebooks</Button>
           </Link>
         </div>
+        </PageWrapper>
       </Layout>
     );
   }

@@ -1,4 +1,5 @@
 import Layout from "@/components/layout";
+import { PageWrapper } from "@/motion/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { ArrowLeft, Home, NotebookText } from "lucide-react";
@@ -8,6 +9,7 @@ import { ScrollReveal } from "@/components/motion/ScrollReveal";
 export default function NotFound() {
   return (
     <Layout>
+      <PageWrapper>
       <ScrollReveal className="mx-auto flex max-w-lg flex-col items-start gap-6 py-20 text-left">
         <p className="text-xs font-medium text-muted-foreground">404</p>
         <h1 className="text-3xl font-bold font-heading">Page not found</h1>
@@ -35,6 +37,7 @@ export default function NotFound() {
           </Link>
         </div>
       </ScrollReveal>
+      </PageWrapper>
     </Layout>
   );
 }

@@ -1,4 +1,5 @@
 import Layout from "@/components/layout";
+import { PageWrapper } from "@/motion/PageWrapper";
 import { WorkListCard } from "@/components/work/WorkListCard";
 import { kaggleProjects } from "@/lib/content/registry";
 import { mlDetailPath } from "@/lib/routes";
@@ -14,6 +15,7 @@ import {
 export default function Ml() {
   return (
     <Layout>
+      <PageWrapper>
       <div className="space-y-12">
         {/* ── Page header ── */}
         <ScrollReveal as="header" className="max-w-2xl space-y-4 text-left">
@@ -50,6 +52,7 @@ export default function Ml() {
           ))}
         </ScrollRevealStagger>
       </div>
+      </PageWrapper>
     </Layout>
   );
 }

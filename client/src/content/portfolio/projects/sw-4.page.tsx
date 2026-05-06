@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { MOTION_CONFIG as M } from "@/motion/config";
+import { useSafeMotion } from "@/motion/useSafeMotion";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, LineChart, Line, Legend,
@@ -74,7 +76,8 @@ export const workPageSections = [
 
 export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element {
   const [activeReward, setActiveReward] = useState<RewardTab>("DeltaWaitTime");
-  const reduceMotion = useReducedMotion();
+  const { shouldAnimate, safeTransition } = useSafeMotion();
+  const easeTuple = [...M.easing] as [number, number, number, number];
 
   const rewardDetail: Record<RewardTab, RewardDetail> = {
     WaitTime: {
@@ -364,10 +367,14 @@ export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeReward}
-                initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+                initial={shouldAnimate ? { opacity: 0, y: 8 } : false}
                 animate={{ opacity: 1, y: 0 }}
-                exit={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: -8 }}
-                transition={{ duration: reduceMotion ? 0 : 0.2, ease: [0.16, 1, 0.3, 1] }}
+                exit={shouldAnimate ? { opacity: 0, y: -8 } : undefined}
+                transition={{
+                  duration: shouldAnimate ? M.duration.routeExit : 0,
+                  ease: easeTuple,
+                  ...safeTransition,
+                }}
                 style={{
                   background: "var(--card)", border: "1px solid var(--border)",
                   borderTop: "none", borderRadius: "0 0 10px 10px",

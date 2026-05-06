@@ -3,7 +3,9 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, Cell, ReferenceLine,
 } from "recharts";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { MOTION_CONFIG as M } from "@/motion/config";
+import { useSafeMotion } from "@/motion/useSafeMotion";
 
 import { FONT_MONO, FONT_SANS } from "./notebookTheme";
 import { Body, ReportSectionLabel, Tag } from "../reportPrimitives";
@@ -169,7 +171,8 @@ const expDetails: Record<ExpTab, { title: string; dim: string; f1: string; color
 
 export default function ResumeJobMatchingReport(props: WorkPageProps) {
   const [activeExp, setActiveExp] = useState<ExpTab>("3");
-  const reduceMotion = useReducedMotion();
+  const { shouldAnimate, safeTransition } = useSafeMotion();
+  const easeTuple = [...M.easing] as [number, number, number, number];
 
   return (
     <WorkReportShell {...props}>
@@ -344,10 +347,14 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeExp}
-                  initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+                  initial={shouldAnimate ? { opacity: 0, y: 8 } : false}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: -8 }}
-                  transition={{ duration: reduceMotion ? 0 : 0.2, ease: [0.16, 1, 0.3, 1] }}
+                  exit={shouldAnimate ? { opacity: 0, y: -8 } : undefined}
+                  transition={{
+                    duration: shouldAnimate ? M.duration.routeExit : 0,
+                    ease: easeTuple,
+                    ...safeTransition,
+                  }}
                   style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: "var(--radius-lg)", padding: "28px", borderTop: `3px solid ${d.color}` }}
                 >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 18, flexWrap: "wrap", gap: 12 }}>

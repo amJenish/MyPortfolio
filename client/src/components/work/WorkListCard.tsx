@@ -1,8 +1,11 @@
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
 import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import type { CardMetric } from "@/lib/interfaces";
+import { MOTION_CONFIG as M } from "@/motion/config";
+import { useSafeMotion } from "@/motion/useSafeMotion";
 
 export type WorkListCardVariant = "software" | "ml";
 
@@ -15,9 +18,7 @@ type WorkListCardProps = {
   meta?: string;
   metrics?: CardMetric[];
   ctaLabel?: string;
-  /** Reserved for variant-specific styling */
   variant?: WorkListCardVariant;
-  /** Merged onto the card `<article>` */
   articleClassName?: string;
 };
 
@@ -30,29 +31,37 @@ export function WorkListCard({
   meta,
   metrics,
   ctaLabel,
-  variant: _variant = "software",
+  variant = "software",
   articleClassName,
 }: WorkListCardProps) {
+  const showSubtitle = variant === "ml" && Boolean(date || meta);
+  const { shouldAnimate, safeTransition } = useSafeMotion();
+  const ease = [...M.easing] as [number, number, number, number];
+
   return (
     <Link href={href} className="block h-full min-h-0 focus-visible:outline-none">
-      <article
+      <motion.article
+        whileHover={shouldAnimate ? { y: -5 } : undefined}
+        transition={{
+          duration: M.duration.hoverLift,
+          ease,
+          ...safeTransition,
+        }}
         className={cn(
           "group relative flex h-full min-h-[11rem] flex-col rounded-2xl border border-border bg-card p-6 sm:p-7",
-          "transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/45 hover:shadow-[0_0_0_1px_oklch(from_var(--primary)_l_c_h_/_0.12),0_12px_40px_oklch(from_var(--primary)_l_c_h_/_0.1)]",
+          "transition-colors duration-200 hover:border-primary/45",
           "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background",
           articleClassName,
         )}
       >
         <div className="flex flex-1 flex-col gap-4">
-          {/* Header row: meta + arrow */}
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 space-y-2.5">
-              {(date || meta) && (
+              {showSubtitle && (
                 <p className="font-mono text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                   {[date, meta].filter(Boolean).join(" · ")}
                 </p>
               )}
-              {/* Title — strong hierarchy, largest text on card */}
               <h2 className="font-heading text-xl font-bold tracking-tight text-foreground transition-colors group-hover:text-primary sm:text-[1.25rem]">
                 {title}
               </h2>
@@ -68,7 +77,6 @@ export function WorkListCard({
             />
           </div>
 
-          {/* Metrics row */}
           {metrics && metrics.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {metrics.map((m) => (
@@ -84,7 +92,6 @@ export function WorkListCard({
             </div>
           )}
 
-          {/* Tags */}
           <div className="mt-auto flex flex-wrap gap-1.5 pt-1">
             {tags?.slice(0, 6).map((tag, index) => (
               <Badge
@@ -107,14 +114,13 @@ export function WorkListCard({
             )}
           </div>
 
-          {/* CTA label */}
           {ctaLabel && (
             <p className="pt-0.5 text-left text-xs font-semibold text-primary">
               {ctaLabel} →
             </p>
           )}
         </div>
-      </article>
+      </motion.article>
     </Link>
   );
 }
