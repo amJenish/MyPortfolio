@@ -6,7 +6,7 @@ import { useParams, Link, useLocation } from "wouter";
 import { useEffect } from "react";
 import Layout from "@/components/layout";
 import { PageWrapper } from "@/motion/PageWrapper";
-import { DATA_LIST_PATH, mlDetailPath } from "@/lib/routes";
+import { PROJECTS_LIST_PATH, mlDetailPath } from "@/lib/routes";
 
 export default function MlDetail() {
   const params = useParams();
@@ -31,18 +31,18 @@ export default function MlDetail() {
         <PageWrapper>
         <div className="mx-auto max-w-lg space-y-6 py-16 text-left">
           <Link
-            href={DATA_LIST_PATH}
+            href={PROJECTS_LIST_PATH}
             className="inline-flex items-center gap-2 text-sm font-medium text-primary"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Data &amp; ML
+            Back to Projects
           </Link>
           <h1 className="text-2xl font-bold">Notebook not found</h1>
           <p className="text-muted-foreground text-sm">
             That ID is not in the list.
           </p>
-          <Link href={DATA_LIST_PATH}>
-            <Button>All notebooks</Button>
+          <Link href={PROJECTS_LIST_PATH}>
+            <Button>All projects</Button>
           </Link>
         </div>
         </PageWrapper>
@@ -59,18 +59,18 @@ export default function MlDetail() {
         <PageWrapper>
         <div className="mx-auto max-w-lg space-y-6 py-16 text-left">
           <Link
-            href={DATA_LIST_PATH}
+            href={PROJECTS_LIST_PATH}
             className="inline-flex items-center gap-2 text-sm font-medium text-primary"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Data &amp; ML
+            Back to Projects
           </Link>
           <h1 className="text-2xl font-bold">No report page found</h1>
           <p className="text-muted-foreground text-sm">
             This notebook does not have a registered report page yet.
           </p>
-          <Link href={DATA_LIST_PATH}>
-            <Button>All notebooks</Button>
+          <Link href={PROJECTS_LIST_PATH}>
+            <Button>All projects</Button>
           </Link>
         </div>
         </PageWrapper>
@@ -85,9 +85,9 @@ export default function MlDetail() {
     <Layout fullWidth>
       <Page
         entry={notebook}
-        backHref={DATA_LIST_PATH}
-        backLabel="Back to Data & ML"
-        categoryLabel="Data & ML"
+        backHref={PROJECTS_LIST_PATH}
+        backLabel="Back to Projects"
+        categoryLabel="Data Analytics/Science"
         sections={sections}
         ownsHero={ownsHero ?? false}
       />

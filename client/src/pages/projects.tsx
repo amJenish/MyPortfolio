@@ -1,62 +1,127 @@
+import * as React from "react";
 import Layout from "@/components/layout";
 import { PageWrapper } from "@/motion/PageWrapper";
 import { WorkListCard } from "@/components/work/WorkListCard";
-import { projects } from "@/lib/content/registry";
-import { ScrollReveal } from "@/components/motion/ScrollReveal";
+import { projects, kaggleProjects } from "@/lib/content/registry";
+import { mlDetailPath } from "@/lib/routes";
 import { ScrollRevealStagger } from "@/components/motion/ScrollRevealStagger";
-import { SectionDivider } from "@/components/home/SectionDivider";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   scrollRevealRouteDelayChildren,
   scrollRevealRouteDuration,
   scrollRevealRouteStagger,
 } from "@/components/motion/scrollMotion";
+import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
+import { MOTION_CONFIG as M } from "@/motion/config";
+import { useSafeMotion } from "@/motion/useSafeMotion";
+
+type Category = "swe" | "data";
 
 export default function Projects() {
+  const [category, setCategory] = React.useState<Category>("swe");
+  const { shouldAnimate, safeTransition } = useSafeMotion();
+  const ease = [...M.easing] as [number, number, number, number];
+
   return (
     <Layout>
       <PageWrapper>
-      <div className="space-y-12">
-        {/* ── Page header ── */}
-        <ScrollReveal as="header" className="max-w-2xl space-y-4 text-left" duration={scrollRevealRouteDuration}>
-          <h1 className="font-heading text-4xl font-extrabold tracking-tight md:text-5xl">
-            Projects
-          </h1>
-          <p className="text-[0.9375rem] leading-relaxed text-muted-foreground">
-            Backend-heavy work and full-stack applications built following SWE Principles alongside ML Implementations. Each card links to a full write-up.
-          </p>
-          {/* Visual divider with gradient — reinforces section hierarchy */}
-          <div className="h-1 w-24 rounded-full bg-gradient-to-r from-primary to-primary/20" aria-hidden />
-        </ScrollReveal>
+        <div className="space-y-10">
+          <Tabs
+            value={category}
+            onValueChange={(value) => setCategory(value as Category)}
+            className="w-full"
+          >
+            <TabsList
+              aria-label="Project category"
+              className="mx-auto flex h-auto w-full max-w-md gap-1.5 rounded-2xl border border-border/70 bg-card/80 p-1.5 shadow-sm sm:w-auto"
+            >
+              <TabsTrigger
+                value="swe"
+                className={cn(
+                  "flex-1 rounded-xl border border-transparent px-5 py-2.5 text-sm font-semibold transition-all duration-200 sm:flex-none sm:px-6",
+                  "data-[state=active]:border-primary/25 data-[state=active]:bg-primary/[0.09] data-[state=active]:text-primary data-[state=active]:shadow-sm",
+                  "data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:bg-muted/50 data-[state=inactive]:hover:text-foreground",
+                )}
+              >
+                SWE
+              </TabsTrigger>
+              <TabsTrigger
+                value="data"
+                className={cn(
+                  "flex-1 rounded-xl border border-transparent px-5 py-2.5 text-sm font-semibold transition-all duration-200 sm:flex-none sm:px-6",
+                  "data-[state=active]:border-primary/25 data-[state=active]:bg-primary/[0.09] data-[state=active]:text-primary data-[state=active]:shadow-sm",
+                  "data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:bg-muted/50 data-[state=inactive]:hover:text-foreground",
+                )}
+              >
+                Data Analytics/Science
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
 
-        <SectionDivider />
-
-        {/* ── Project grid ── */}
-        <ScrollRevealStagger
-          className="grid grid-cols-1 gap-6 md:grid-cols-2"
-          stagger={scrollRevealRouteStagger}
-          delayChildren={scrollRevealRouteDelayChildren}
-          duration={scrollRevealRouteDuration}
-        >
-          {projects.map((project) => (
-            <WorkListCard
-              key={project.id}
-              href={`/project/${project.id}`}
-              title={project.title}
-              summary={project.summary}
-              tags={project.tags}
-              meta={
-                project.reportSlug === "ai-1"
-                  ? "AI AUTOMATION"
-                  : project.reportSlug === "ml-exp-1"
-                    ? "Experiment / RL"
-                    : "Application / product"
-              }
-              variant="software"
-              ctaLabel="View project"
-            />
-          ))}
-        </ScrollRevealStagger>
-      </div>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={category}
+              initial={shouldAnimate ? { opacity: 0, y: 12 } : false}
+              animate={{ opacity: 1, y: 0 }}
+              exit={shouldAnimate ? { opacity: 0, y: -8 } : undefined}
+              transition={{
+                duration: M.duration.micro,
+                ease,
+                ...safeTransition,
+              }}
+            >
+              {category === "swe" ? (
+                <ScrollRevealStagger
+                  className="grid grid-cols-1 gap-6 md:grid-cols-2"
+                  stagger={scrollRevealRouteStagger}
+                  delayChildren={scrollRevealRouteDelayChildren}
+                  duration={scrollRevealRouteDuration}
+                >
+                  {projects.map((project) => (
+                    <WorkListCard
+                      key={project.id}
+                      href={`/project/${project.id}`}
+                      title={project.title}
+                      summary={project.summary}
+                      tags={project.tags}
+                      meta={
+                        project.reportSlug === "ai-1"
+                          ? "AI AUTOMATION"
+                          : project.reportSlug === "ml-exp-1"
+                            ? "Experiment / RL"
+                            : "Application / product"
+                      }
+                      variant="software"
+                      ctaLabel="View project"
+                    />
+                  ))}
+                </ScrollRevealStagger>
+              ) : (
+                <ScrollRevealStagger
+                  className="grid grid-cols-1 gap-6 md:grid-cols-2"
+                  stagger={scrollRevealRouteStagger}
+                  delayChildren={scrollRevealRouteDelayChildren}
+                  duration={scrollRevealRouteDuration}
+                >
+                  {kaggleProjects.map((p) => (
+                    <WorkListCard
+                      key={p.id}
+                      href={mlDetailPath(p.id)}
+                      title={p.title}
+                      summary={p.summary}
+                      tags={p.tags}
+                      date={p.date}
+                      metrics={p.cardMetrics}
+                      variant="ml"
+                      ctaLabel="View report"
+                    />
+                  ))}
+                </ScrollRevealStagger>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </PageWrapper>
     </Layout>
   );

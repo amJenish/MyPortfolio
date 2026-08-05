@@ -45,9 +45,6 @@ export const MOTION_CONFIG = {
   heroCursorRepeat: 5,
   /** Skills tab chip stagger */
   skillChipStagger: 0.02,
-  /** Paperwork / research detail panel cross-fades */
-  paperworkPanelSwap: 0.24,
-  paperworkPanelEmpty: 0.22,
 } as const;
 
 export type MotionConfig = typeof MOTION_CONFIG;

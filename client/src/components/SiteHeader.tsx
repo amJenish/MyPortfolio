@@ -1,12 +1,10 @@
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import {
-  BookOpen,
   Check,
   Copy,
   Home,
   FolderGit2,
-  NotebookText,
   Menu,
   X,
   Github,
@@ -21,14 +19,7 @@ import {
 } from "framer-motion";
 import { profile } from "@/lib/content/registry";
 import "./navItem.css";
-import {
-  ML_LIST_PATH,
-  PAPERWORK_LIST_PATH,
-  isMlSection,
-  isMlSectionLegacy,
-  isPaperworkSection,
-  isProjectsSection,
-} from "@/lib/routes";
+import { isProjectsSection } from "@/lib/routes";
 import { CosmicToggle } from "./CosmicToggle";
 import { CopyEmailButton } from "./CopyEmailButton";
 import { MOTION_CONFIG as M } from "@/motion/config";
@@ -47,18 +38,6 @@ const navItems = [
     label: "Projects",
     icon: FolderGit2,
     match: (path: string) => isProjectsSection(path),
-  },
-  {
-    href: ML_LIST_PATH,
-    label: "Data & ML",
-    icon: NotebookText,
-    match: (path: string) => isMlSection(path) || isMlSectionLegacy(path),
-  },
-  {
-    href: PAPERWORK_LIST_PATH,
-    label: "Paperwork",
-    icon: BookOpen,
-    match: (path: string) => isPaperworkSection(path),
   },
 ] as const;
 

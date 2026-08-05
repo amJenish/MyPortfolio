@@ -2,8 +2,7 @@ import Layout from "@/components/layout";
 import { PageWrapper } from "@/motion/PageWrapper";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { ArrowLeft, Home, NotebookText } from "lucide-react";
-import { ML_LIST_PATH } from "@/lib/routes";
+import { ArrowLeft, Home } from "lucide-react";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 
 export default function NotFound() {
@@ -27,12 +26,6 @@ export default function NotFound() {
             <Button variant="outline" className="gap-2">
               <ArrowLeft className="h-4 w-4" />
               Projects
-            </Button>
-          </Link>
-          <Link href={ML_LIST_PATH} aria-label="Data-Science, ML and Notebook">
-            <Button variant="outline" className="gap-2">
-              <NotebookText className="h-4 w-4" />
-              Data-Science, ML
             </Button>
           </Link>
         </div>

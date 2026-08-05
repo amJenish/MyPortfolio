@@ -2,16 +2,10 @@ import React, { useRef, useCallback, useMemo } from "react";
 import Layout from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
-import { profile, projects, kaggleProjects } from "@/lib/content/registry";
+import { profile } from "@/lib/content/registry";
 import { Link } from "wouter";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ML_LIST_PATH } from "@/lib/routes";
-import {
-  HOME_SPOTLIGHT_NOTEBOOK_IDS,
-  HOME_SPOTLIGHT_PROJECT_IDS,
-  resolveSpotlightByIds,
-} from "@/lib/content/home/spotlightConfig";
-import { HomeSpotlightSection } from "@/components/home/HomeSpotlightSection";
+import { PROJECTS_LIST_PATH, mlDetailPath } from "@/lib/routes";
 import { SkillsShowcase } from "@/components/home/SkillsShowcase";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { SectionDivider } from "@/components/home/SectionDivider";
@@ -24,7 +18,6 @@ import {
   heroBadge,
   heroContainer,
   heroCtaRow,
-  heroSubhead,
 } from "@/motion/variants";
 import { useSafeMotion } from "@/motion/useSafeMotion";
 import { cn } from "@/lib/utils";
@@ -63,15 +56,6 @@ export default function Home() {
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll();
   const heroParallax = useTransform(scrollYProgress, [0, 0.12], [0, 52]);
-
-  const spotlightProjects = useMemo(
-    () => resolveSpotlightByIds(projects, HOME_SPOTLIGHT_PROJECT_IDS),
-    [],
-  );
-  const spotlightNotebooks = useMemo(
-    () => resolveSpotlightByIds(kaggleProjects, HOME_SPOTLIGHT_NOTEBOOK_IDS),
-    [],
-  );
 
   const onHeroPointerMove = useCallback(
     (e: React.PointerEvent<HTMLElement>) => {
@@ -142,40 +126,11 @@ export default function Home() {
 
               <HeroHeadline text={profile.name} />
 
-              <motion.p
-                className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
-                variants={shouldAnimate ? heroSubhead : undefined}
-              >
-                CS student at Western University building full-stack systems with React, TypeScript, and Python-backed APIs,
-                then pressure-testing ideas through reproducible Data & ML notebook studies.
-              </motion.p>
-
               <motion.div
                 className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center"
                 variants={shouldAnimate ? heroCtaRow : undefined}
               >
-                <AnimatedButton variant="primary">
-                  <Link href="/projects">
-                    <Button size="lg" variant="cta" className="h-12 min-w-[11rem] px-8 text-sm font-semibold">
-                      View Projects
-                      <ArrowRight className="ml-1.5 h-4 w-4" />
-                    </Button>
-                  </Link>
-                </AnimatedButton>
-                <AnimatedButton variant="secondary">
-                  <Button
-                    variant="cta"
-                    size="lg"
-                    asChild
-                    className="h-12 min-w-[11rem] px-8 text-sm font-semibold"
-                  >
-                    <Link href={ML_LIST_PATH}>
-                      View Data &amp; ML work
-                      <ArrowRight className="ml-1.5 h-4 w-4" />
-                    </Link>
-                  </Button>
-                </AnimatedButton>
-                <p className="mt-6 w-full text-center text-xs text-muted-foreground sm:mt-0 sm:basis-full">
+                <p className="w-full text-center text-xs text-muted-foreground">
                   Computer Science · Western University
                 </p>
               </motion.div>
@@ -198,26 +153,60 @@ export default function Home() {
             </ScrollReveal>
           </section>
 
-          <ScrollReveal as="section">
-            <HomeSpotlightSection
-              variant="software"
-              items={spotlightProjects}
-              title="Projects"
-              eyebrow={null}
-              seeAllHref="/projects"
-              seeAllLabel="See all projects"
-            />
+          <ScrollReveal
+            as="section"
+            className="experience-section space-y-8"
+            aria-labelledby="experience-heading"
+          >
+            <div className="relative z-[1]">
+              <SectionHeading id="experience-heading">Experience</SectionHeading>
+            </div>
+            <div className="relative z-[1] grid grid-cols-1 gap-5 md:grid-cols-3">
+              <Link
+                href={mlDetailPath("data-5")}
+                className="experience-glass-card experience-glass-card--filled px-6 py-6"
+                aria-label="AtoZDeals — View Dashboard"
+              >
+                <div className="relative z-[1] flex h-full flex-col gap-3 text-left">
+                  <div className="space-y-1">
+                    <h3 className="font-heading text-lg font-bold tracking-tight text-foreground">
+                      AtoZDeals
+                    </h3>
+                    <p className="text-xs font-medium text-primary sm:text-[0.8125rem]">
+                      Freelance Data Analyst · July–August 2026
+                    </p>
+                  </div>
+                  <p className="flex-1 text-[0.8125rem] leading-relaxed text-muted-foreground sm:text-[0.875rem]">
+                    Built an interactive Power BI dashboard analyzing AtoZDeals&apos;
+                    sales performance, surfacing trends in revenue and product categories to
+                    identify top-performing categories. Data anonymized and used with permission.
+                  </p>
+                  <span className="inline-flex items-center gap-1 text-sm font-semibold text-primary">
+                    View Dashboard
+                    <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+                  </span>
+                </div>
+              </Link>
+
+              {[0, 1].map((slot) => (
+                <article
+                  key={slot}
+                  className="experience-glass-card px-6 py-8"
+                  aria-label={`Experience slot ${slot + 2}`}
+                />
+              ))}
+            </div>
           </ScrollReveal>
 
-          <ScrollReveal as="section" delay={0.04}>
-            <HomeSpotlightSection
-              variant="ml"
-              items={spotlightNotebooks}
-              title="Analytical & Research Thinking"
-              eyebrow={null}
-              seeAllHref={ML_LIST_PATH}
-              seeAllLabel={`All notebooks (${kaggleProjects.length})`}
-            />
+          <ScrollReveal as="div" className="flex justify-center">
+            <AnimatedButton variant="primary">
+              <Link href={PROJECTS_LIST_PATH}>
+                <Button size="lg" variant="cta" className="h-12 min-w-[11rem] px-8 text-sm font-semibold">
+                  View Projects
+                  <ArrowRight className="ml-1.5 h-4 w-4" />
+                </Button>
+              </Link>
+            </AnimatedButton>
           </ScrollReveal>
 
       </PageWrapper>

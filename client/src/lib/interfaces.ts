@@ -30,11 +30,3 @@ export interface KaggleProject extends WorkEntry {
   /** Old URL segments (e.g. kaggle-1) — still accepted; router redirects to canonical `id` */
   legacyIds?: string[];
 }
-
-export interface ResearchPaper {
-  id: string;
-  title: string;
-  date: string;
-  pdfUrl: string;
-  abstract: string;
-}

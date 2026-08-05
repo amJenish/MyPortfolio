@@ -4,7 +4,7 @@
  * 2. Append a `KaggleProject` with `reportSlug` matching that slug, plus `githubUrl`, `date`, `tags`, `summary`, `highlights`, optional `cardMetrics` / `notebookUrl`.
  * 3. Put figures in `client/public/portfolio/notebooks/<slug>/`; use `WorkFigure` with `placeholder` until assets exist.
  * 4. Run `npm run check` and open `/data/<id>` (canonical detail, e.g. data-1). Legacy `/ml/kaggle-*` and `/data/kaggle-*` redirect to `/data/data-*`.
- * 5. Home spotlight IDs live in `lib/content/home/spotlightConfig.ts`; full list is on `/ml` or `/data`.
+ * 5. Home spotlight IDs live in `lib/content/home/spotlightConfig.ts`; full list is on `/projects` (Data Analytics/Science section). Legacy `/ml` and `/data` list routes also show that page.
  */
 
 import type { KaggleProject } from "../interfaces";
@@ -16,6 +16,19 @@ export function findMlProjectByRouteId(routeId: string): KaggleProject | undefin
 }
 
 export const kaggleProjects: KaggleProject[] = [
+  {
+    id: "data-5",
+    title: "AtoZDeals Sales Records PowerBI Dashboard",
+    date: "2026-08-05",
+    summary:
+      "An interactive Power BI dashboard built from AtoZDeals sales records, covering sales performance and related business insights. Published with anonymization and company approval.",
+    githubUrl: "",
+    reportSlug: "atozdeals-powerbi",
+    notebookUrl:
+      "https://app.fabric.microsoft.com/view?r=eyJrIjoiMGM1NDUzOTUtNWUxZi00MzYzLTlhOTktMzJiOGJiNThhYjgxIiwidCI6IjZhNTIxNDI3LTI3NDYtNGZmMC1iNjRlLWQ5NWM0NzUyZmY4YyJ9",
+    tags: ["Power BI", "Sales Analytics", "Dashboard"],
+    highlights: [],
+  },
   {
     id: "data-4",
     legacyIds: ["kaggle-4"],

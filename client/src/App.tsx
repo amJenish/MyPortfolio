@@ -10,8 +10,6 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import Projects from "@/pages/projects";
 import ProjectDetail from "@/pages/project-detail";
-import Research from "@/pages/research";
-import Ml from "@/pages/ml";
 import MlDetail from "@/pages/ml-detail";
 import { useHashLocation } from "wouter/use-hash-location";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -88,12 +86,10 @@ function AppShell() {
         <Switch>
           <Route path="/projects" component={Projects} />
           <Route path="/project/:id" component={ProjectDetail} />
-          <Route path="/paperwork" component={Research} />
-          <Route path="/research" component={Research} />
           <Route path="/ml/:id" component={MlDetail} />
-          <Route path="/ml" component={Ml} />
+          <Route path="/ml" component={Projects} />
           <Route path="/data/:id" component={MlDetail} />
-          <Route path="/data" component={Ml} />
+          <Route path="/data" component={Projects} />
           <Route path="/" component={Home} />
           <Route component={NotFound} />
         </Switch>
