@@ -173,7 +173,7 @@ export default function Home() {
                       AtoZDeals
                     </h3>
                     <p className="text-xs font-medium text-primary sm:text-[0.8125rem]">
-                      Freelance Data Analyst · July–August 2026
+                      Freelance · July–August 2026
                     </p>
                   </div>
                   <p className="flex-1 text-[0.8125rem] leading-relaxed text-muted-foreground sm:text-[0.875rem]">
