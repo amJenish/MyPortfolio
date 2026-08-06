@@ -4,7 +4,7 @@ import { C, FONT_MONO, FONT_SANS } from "@/lib/theme";
 
 export { C, FONT_MONO, FONT_SANS };
 
-/** Primary accent color — uses the CSS variable so it adapts to light/dark mode */
+/** Primary accent color: uses the CSS variable so it adapts to light/dark mode */
 const PRIMARY = "var(--primary)";
 const PRIMARY_DIM = "var(--primary)";
 const ACCENT = "var(--accent-highlight)";
@@ -81,7 +81,7 @@ export function Code({ children }: { children: ReactNode }): React.JSX.Element {
   );
 }
 
-export function ReportSectionLabel({ n, title, id }: { n: number; title: string; id?: string }): React.JSX.Element {
+export function ReportSectionLabel({ title, id }: { n?: number; title: string; id?: string }): React.JSX.Element {
   const copyAnchor = async (event: MouseEvent<HTMLButtonElement>) => {
     const closestId = event.currentTarget.closest("[id]")?.id;
     const targetId = id ?? closestId;
@@ -97,19 +97,8 @@ export function ReportSectionLabel({ n, title, id }: { n: number; title: string;
   };
 
   return (
-    <div className="group" style={{ marginBottom: 36 }}>
+    <div className="group" style={{ marginBottom: 28 }}>
       <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
-        <span
-          style={{
-            fontFamily: FONT_MONO,
-            fontSize: 11,
-            color: ACCENT,
-            letterSpacing: "0.08em",
-            opacity: 0.82,
-          }}
-        >
-          {String(n).padStart(2, "0")}
-        </span>
         <h2
           style={{
             fontFamily: FONT_SANS,
@@ -140,7 +129,6 @@ export function ReportSectionLabel({ n, title, id }: { n: number; title: string;
           <Link2 size={13} />
         </button>
       </div>
-      <div style={{ height: 1, background: "linear-gradient(90deg, var(--accent-highlight), transparent)", marginTop: 12 }} />
     </div>
   );
 }
@@ -176,19 +164,18 @@ export function Notice({
   icon?: string;
 }): React.JSX.Element {
   const toneByVariant = {
-    insight: { color: PRIMARY, icon: "★" },
-    warning: { color: "var(--accent-highlight)", icon: "▲" },
-    critique: { color: "var(--chart-danger, #dc2626)", icon: "◈" },
-    result: { color: "var(--chart-success, #16a34a)", icon: "✓" },
+    insight: { color: PRIMARY },
+    warning: { color: "var(--accent-highlight)" },
+    critique: { color: "var(--chart-danger, #dc2626)" },
+    result: { color: "var(--chart-success, #16a34a)" },
   } as const;
 
   const resolvedColor = color === PRIMARY ? toneByVariant[variant].color : color;
-  const resolvedIcon = icon ?? toneByVariant[variant].icon;
 
   return (
     <div style={{ borderLeft: `2px solid ${resolvedColor}`, paddingLeft: 16, paddingTop: 2, marginTop: 20 }}>
       <div style={{ fontSize: 13.5, color: "var(--muted-foreground)", lineHeight: 1.75 }}>
-        {resolvedIcon != null && <span style={{ marginRight: 8 }}>{resolvedIcon}</span>}
+        {icon ? <span style={{ marginRight: 8 }}>{icon}</span> : null}
         {children}
       </div>
     </div>

@@ -39,11 +39,11 @@ const f1Progression = [
   { exp: "Exp 2", label: "Frozen MiniLM\n1536-D (LR)", f1: 69, fill: CHART_COLORS.warning },
   { exp: "Exp 3", label: "Fine-tuned\nMiniLM (LR)", f1: 84, fill: CHART_COLORS.warning },
   { exp: "Exp 4", label: "28-D Features\n(LR)", f1: 84, fill: CHART_COLORS.secondary },
-  { exp: "Exp 5", label: "28-D Features\n+ MLP ★", f1: 88, fill: CHART_COLORS.secondary },
+  { exp: "Exp 5", label: "28-D Features\n+ MLP", f1: 88, fill: CHART_COLORS.secondary },
 ];
 
 const classifierComparison = [
-  { model: "MLP ★",               f1: 88, fill: CHART_COLORS.secondary },
+  { model: "MLP",               f1: 88, fill: CHART_COLORS.secondary },
   { model: "XGBoost",             f1: 86, fill: CHART_COLORS.warning },
   { model: "LightGBM",            f1: 86, fill: CHART_COLORS.warning },
   { model: "GradBoost",           f1: 84, fill: CHART_COLORS.secondary },
@@ -305,13 +305,13 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
               </p>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <Callout color={CHART_COLORS.secondary} icon="①">
+              <Callout color={CHART_COLORS.secondary}>
                 <strong style={{ color: "var(--foreground)" }}>Label binarization.</strong> I collapsed the original three-way labels ("no fit", "potential fit", "good fit") to binary: anything other than "no fit" is treated as a positive match. This reflects the practical ATS decision of whether to shortlist a candidate.
               </Callout>
-              <Callout color={CHART_COLORS.warning} icon="②">
+              <Callout color={CHART_COLORS.warning}>
                 <strong style={{ color: "var(--foreground)" }}>Punctuation restoration.</strong> Resumes in the dataset frequently lack punctuation, which may degrade sentence-embedding quality. I applied the <Mono>fullstop</Mono> model to restore these boundaries before any encoding takes place.
               </Callout>
-              <Callout color={P.purple} icon="③">
+              <Callout color={P.purple}>
                 <strong style={{ color: "var(--foreground)" }}>Feature standardization.</strong> I scaled all numeric feature vectors (handcrafted stats, interaction vectors, structured compatibility features) using <Mono>StandardScaler</Mono> before passing them to any classifier. I didn't apply stemming or lemmatization, as transformer-based encoders handle lexical variation internally.
               </Callout>
             </div>
@@ -382,7 +382,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
             );
           })()}
 
-          <Callout color={CHART_COLORS.primary} icon="→">
+          <Callout color={CHART_COLORS.primary}>
             <strong style={{ color: "var(--foreground)" }}>Why I used Logistic Regression as the fixed classifier.</strong> A linear model can't implicitly learn complex nonlinear interactions between features. Any performance improvement I observed across Experiments 1–4 was therefore more cleanly attributable to the quality of the representation rather than to the classifier's ability to compensate for a poor feature space.
           </Callout>
         </div>
@@ -448,7 +448,7 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
               { name: "2: Frozen MiniLM + 1536-D interactions", rep: "1536-D frozen",      clf: "Logistic Reg.", f1: "69%",  hl: false },
               { name: "3: Fine-tuned MiniLM bi-encoder",        rep: "1536-D fine-tuned", clf: "Logistic Reg.", f1: "84%",  hl: false },
               { name: "4: 28-D structured compatibility",       rep: "28-D structured",   clf: "Logistic Reg.", f1: "≈84%", hl: false },
-              { name: "5: 28-D structured + MLP ★",            rep: "28-D structured",   clf: "MLP",           f1: "88%",  hl: true  },
+              { name: "5: 28-D structured + MLP",            rep: "28-D structured",   clf: "MLP",           f1: "88%",  hl: true  },
               { name: "5: 28-D structured + XGBoost",          rep: "28-D structured",   clf: "XGBoost",       f1: "86%",  hl: false },
               { name: "5: 28-D structured + LightGBM",         rep: "28-D structured",   clf: "LightGBM",      f1: "86%",  hl: false },
               { name: "5: 28-D structured + GradBoost",        rep: "28-D structured",   clf: "GradientBoost", f1: "84%",  hl: false },
@@ -506,21 +506,20 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))", gap: 14 }}>
             {[
-              { icon: "📐", color: CHART_COLORS.primary, title: "Representation learning is the dominant driver", body: "Fine-tuning the MiniLM bi-encoder on compatibility labels accounts for 15% of F1 improvement under a fixed linear classifier. That is roughly three times the gain I achieved by switching to the best nonlinear classifier later. The quality of the feature space mattered far more than the sophistication of the classifier, at least up to a point." },
-              { icon: "🔧", color: CHART_COLORS.warning, title: "Fine-tuning, not frozen embeddings, was the key step", body: "Frozen MiniLM embeddings improved over my handcrafted baseline (69% vs 60%), but the representation isn't yet shaped around compatibility. Fine-tuning explicitly reshapes the embedding space so that compatible pairs cluster together and incompatible pairs are pushed apart. Which is why I saw such a much larger improvement in Experiment 3 than Experiment 2 under the same classifier." },
-              { icon: "📊", color: CHART_COLORS.secondary, title: "Structured features added interpretability, not performance", body: "The 28-D structured compatibility features I built (skill overlap, experience gap, Jaccard similarity, education alignment) added human-readable signal without improving F1 under a linear classifier. When I looked at the pairplot and PCA projection of the feature space, I could see heavily overlapping, nonlinearly separable class boundaries which helps explain why logistic regression couldn't exploit these features despite them seeming intuitively informative." },
-              { icon: "🧠", color: P.purple, title: "Classifier complexity is useful, but only once the representation is ready", body: "Applying the MLP to a rich representation yielded 88% F1. Applied to the Experiment 1 feature space, a nonlinear classifier would likely have given much smaller gains. The order matters: I found that investing in representation quality first, then introducing classifier complexity, was the more efficient path in this text matching task." },
-            ].map(({ icon, color, title, body }) => (
+              { color: CHART_COLORS.primary, title: "Representation learning is the dominant driver", body: "Fine-tuning the MiniLM bi-encoder on compatibility labels accounts for 15% of F1 improvement under a fixed linear classifier. That is roughly three times the gain I achieved by switching to the best nonlinear classifier later. The quality of the feature space mattered far more than the sophistication of the classifier, at least up to a point." },
+              { color: CHART_COLORS.warning, title: "Fine-tuning, not frozen embeddings, was the key step", body: "Frozen MiniLM embeddings improved over my handcrafted baseline (69% vs 60%), but the representation isn't yet shaped around compatibility. Fine-tuning explicitly reshapes the embedding space so that compatible pairs cluster together and incompatible pairs are pushed apart. Which is why I saw such a much larger improvement in Experiment 3 than Experiment 2 under the same classifier." },
+              { color: CHART_COLORS.secondary, title: "Structured features added interpretability, not performance", body: "The 28-D structured compatibility features I built (skill overlap, experience gap, Jaccard similarity, education alignment) added human-readable signal without improving F1 under a linear classifier. When I looked at the pairplot and PCA projection of the feature space, I could see heavily overlapping, nonlinearly separable class boundaries which helps explain why logistic regression couldn't exploit these features despite them seeming intuitively informative." },
+              { color: P.purple, title: "Classifier complexity is useful, but only once the representation is ready", body: "Applying the MLP to a rich representation yielded 88% F1. Applied to the Experiment 1 feature space, a nonlinear classifier would likely have given much smaller gains. The order matters: I found that investing in representation quality first, then introducing classifier complexity, was the more efficient path in this text matching task." },
+            ].map(({ color, title, body }) => (
               <div key={title} style={{ background: "var(--card)", border: `1px solid ${"var(--border)"}`, borderRadius: 10, padding: "20px", borderTop: `3px solid ${color}` }}>
-                <div style={{ display: "flex", gap: 10, marginBottom: 10, alignItems: "flex-start" }}>
-                  <span style={{ fontSize: 18 }}>{icon}</span>
+                <div style={{ marginBottom: 10 }}>
                   <strong style={{ fontSize: 14, color: "var(--foreground)", lineHeight: 1.4 }}>{title}</strong>
                 </div>
                 <p style={{ margin: 0, fontSize: 13, color: "var(--muted-foreground)", lineHeight: 1.75 }}>{body}</p>
               </div>
             ))}
           </div>
-          <Callout color={CHART_COLORS.primary} icon="★">
+          <Callout color={CHART_COLORS.primary}>
             <strong style={{ color: "var(--foreground)" }}>My central takeaway:</strong> in a resume–job matching setting, the choice of representation appears to matter far more than the choice of classifier, at least until representational capacity is no longer the bottleneck. This may have practical implications for ATS system design: optimising the encoder for the task is likely to yield larger returns than trying more powerful classifiers on a poorly suited feature space.
           </Callout>
         </div>

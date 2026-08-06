@@ -134,7 +134,7 @@ export default function StudentEnrollmentPage(props: WorkPageProps) {
               <li>LoggedUserInformation maintains session state so each request is authorized against the currently authenticated user's role.</li>
             </ul>
 
-            <Notice color={COLORS.teal} icon="★">
+            <Notice color={COLORS.teal}>
               Academic enrollment systems need to enforce complex interdependencies across entities: a student cannot register for a course without its prerequisites, cannot double-book a time slot, and cannot exceed a course's seat cap. How should these constraints be implemented so they remain enforceable as the system scales?
             </Notice>
           </div>

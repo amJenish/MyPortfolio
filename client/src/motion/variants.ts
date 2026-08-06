@@ -20,25 +20,6 @@ export const fadeUp: Variants = {
   show: { opacity: 1, y: 0, transition: t() },
 };
 
-export const fadeLeft: Variants = {
-  hidden: { opacity: 0, x: -M.revealDistance },
-  show: { opacity: 1, x: 0, transition: t() },
-};
-
-export const fadeRight: Variants = {
-  hidden: { opacity: 0, x: M.revealDistance },
-  show: { opacity: 1, x: 0, transition: t() },
-};
-
-export const scaleIn: Variants = {
-  hidden: { opacity: 0, scale: 0.94 },
-  show: {
-    opacity: 1,
-    scale: 1,
-    transition: t({ duration: M.duration.cinematic }),
-  },
-};
-
 export const heroBadge: Variants = {
   hidden: { opacity: 0, scale: 0.94 },
   show: {
@@ -48,15 +29,6 @@ export const heroBadge: Variants = {
       duration: M.duration.cinematic,
       delay: M.heroGraphicDelay,
     }),
-  },
-};
-
-export const heroSubhead: Variants = {
-  hidden: { opacity: 0, y: M.revealDistance },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: t({ delay: M.heroSubheadDelay }),
   },
 };
 
@@ -85,22 +57,6 @@ export const heroContainer: Variants = {
     transition: {
       staggerChildren: M.heroWordStagger,
       delayChildren: M.heroDelayChildren,
-    },
-  },
-};
-
-export const cardItem: Variants = {
-  hidden: { opacity: 0, y: M.revealDistance },
-  show: { opacity: 1, y: 0, transition: t() },
-};
-
-/** Staggered grid that reveals when the container enters view (below-fold grids). */
-export const staggerContainerInView: Variants = {
-  hidden: {},
-  show: {
-    transition: {
-      staggerChildren: M.stagger,
-      delayChildren: M.delayChildren,
     },
   },
 };

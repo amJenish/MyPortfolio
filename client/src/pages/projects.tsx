@@ -85,13 +85,6 @@ export default function Projects() {
                       title={project.title}
                       summary={project.summary}
                       tags={project.tags}
-                      meta={
-                        project.reportSlug === "ai-1"
-                          ? "AI AUTOMATION"
-                          : project.reportSlug === "ml-exp-1"
-                            ? "Experiment / RL"
-                            : "Application / product"
-                      }
                       variant="software"
                       ctaLabel="View project"
                     />

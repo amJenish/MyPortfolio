@@ -368,10 +368,10 @@ export default function GeeseMapPage(props: WorkPageProps) {
               <div><span style={{ color: COLORS.rose }}>PostService</span> → <span style={{ color: COLORS.orange }}>ImageUploadService</span> (upload image, receive COS URL)</div>
               <div><span style={{ color: COLORS.rose }}>PostService</span> → <span style={{ color: COLORS.purple }}>ImageVerificationService</span> (verify image content via Roboflow)</div>
               <div><span style={{ color: COLORS.rose }}>PostService</span> → <span style={{ color: COLORS.amber }}>MetadataExtractionService</span> (extract GPS + timestamp from EXIF)</div>
-              <div><span style={{ color: COLORS.teal }}>AccountService</span> — no upstream service dependencies</div>
-              <div><span style={{ color: COLORS.orange }}>ImageUploadService</span> — no upstream service dependencies</div>
-              <div><span style={{ color: COLORS.purple }}>ImageVerificationService</span> — no upstream service dependencies</div>
-              <div><span style={{ color: COLORS.amber }}>MetadataExtractionService</span> — no upstream service dependencies</div>
+              <div><span style={{ color: COLORS.teal }}>AccountService</span> ,  no upstream service dependencies</div>
+              <div><span style={{ color: COLORS.orange }}>ImageUploadService</span> ,  no upstream service dependencies</div>
+              <div><span style={{ color: COLORS.purple }}>ImageVerificationService</span> ,  no upstream service dependencies</div>
+              <div><span style={{ color: COLORS.amber }}>MetadataExtractionService</span> ,  no upstream service dependencies</div>
             </div>
           </div>
 
@@ -470,7 +470,7 @@ export default function GeeseMapPage(props: WorkPageProps) {
                 transition={{
                   duration: shouldAnimate ? M.duration.routeExit : 0,
                   ease: easeTuple,
-                  ...safeTransition,
+                    ...safeTransition,
                 }}
               >
                 <TwoCol gap={20}>
@@ -484,8 +484,8 @@ export default function GeeseMapPage(props: WorkPageProps) {
                   </div>
                 </TwoCol>
 
-                <Notice color={detail.accent} icon="★">
-                  <strong>{activeService}</strong> — {detail.noteworthy}
+                <Notice color={detail.accent}>
+                  <strong>{activeService}</strong> ,  {detail.noteworthy}
                 </Notice>
               </motion.div>
             </AnimatePresence>

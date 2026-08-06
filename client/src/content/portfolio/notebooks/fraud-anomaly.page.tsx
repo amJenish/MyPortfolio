@@ -141,7 +141,7 @@ const timeSignalDiagnostic = [
 
 const cleanModelComparison = [
   { name: "LightGBM v1 (100 trees, baseline)",           precision: 20, recall: 90, f1: 32, threshold: 0.9000, hl: false },
-  { name: "LightGBM v2 (1000 trees + early stopping) ★", precision: 57, recall: 90, f1: 70, threshold: 0.3328, hl: true  },
+  { name: "LightGBM v2 (1000 trees + early stopping)", precision: 57, recall: 90, f1: 70, threshold: 0.3328, hl: true  },
   { name: "XGBoost v1 (same inputs as LightGBM v2)",     precision: 54, recall: 90, f1: 67, threshold: 0.9936, hl: false },
   { name: "LightGBM v3 (+ time gap features)",           precision: 46, recall: 90, f1: 61, threshold: 0.1801, hl: false },
   { name: "XGBoost v2 (same inputs as LightGBM v3)",     precision: 52, recall: 90, f1: 66, threshold: 0.9813, hl: false },
@@ -279,7 +279,7 @@ export default function FraudDetectionAnalysis(props: WorkPageProps) {
               works, but the strongest reliable signal is much smaller and comes from a handful of
               observable patterns rather than rich account history.
             </Body>
-            <Notice color={CHART_COLORS.danger} icon="▲">
+            <Notice color={CHART_COLORS.danger}>
               PaySim is best treated as a study of what a synthetic fraud dataset allows and does
               not allow. The strongest signal requires information that only exists after a
               transaction settles, and the vast majority of senders appear only once, so account
@@ -480,15 +480,14 @@ export default function FraudDetectionAnalysis(props: WorkPageProps) {
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 12, marginTop: 16 }}>
               {[
-                { icon: "▲", color: CHART_COLORS.danger,      text: "Fraud is exclusive to transfers (0.769%) and cash-outs (0.184%). Payments, cash-ins, and debits contain zero fraud across all 6.36M rows. The model keeps all transaction types and lets that boundary speak for itself." },
-                { icon: "▲", color: CHART_COLORS.danger,      text: "All transactions with a sent amount of zero are labelled fraud. This covers 16 cases across the full dataset, 0.00025% of rows. The signal is real but far too rare to be useful as a standalone detection rule." },
-                { icon: "○", color: "var(--muted-foreground)", text: "All senders are consumer accounts, so there is no variation there. Every sender-recipient pair in the entire dataset appears exactly once, so there is no history of prior interactions between any two accounts to draw on." },
-                { icon: "▲", color: CHART_COLORS.warning,     text: "Over 99% of senders appear exactly once. Sender-side history is essentially non-existent. Any pattern built from a sender's past behaviour is dominated by first-time actors with no history to compare against." },
-                { icon: "▼", color: CHART_COLORS.success,     text: "Fraud amounts are 8.72x larger on average. At the median, fraud transactions drain the entire sender balance in one move: the typical fraud sends 100% of what's available, while a legitimate user sends roughly one-sixth." },
-                { icon: "▲", color: CHART_COLORS.danger,      text: "The simulation's built-in fraud detection catches zero fraud cases in the validation window. It is not a useful benchmark for comparison." },
+                { color: CHART_COLORS.danger,      text: "Fraud is exclusive to transfers (0.769%) and cash-outs (0.184%). Payments, cash-ins, and debits contain zero fraud across all 6.36M rows. The model keeps all transaction types and lets that boundary speak for itself." },
+                { color: CHART_COLORS.danger,      text: "All transactions with a sent amount of zero are labelled fraud. This covers 16 cases across the full dataset, 0.00025% of rows. The signal is real but far too rare to be useful as a standalone detection rule." },
+                { color: "var(--muted-foreground)", text: "All senders are consumer accounts, so there is no variation there. Every sender-recipient pair in the entire dataset appears exactly once, so there is no history of prior interactions between any two accounts to draw on." },
+                { color: CHART_COLORS.warning,     text: "Over 99% of senders appear exactly once. Sender-side history is essentially non-existent. Any pattern built from a sender's past behaviour is dominated by first-time actors with no history to compare against." },
+                { color: CHART_COLORS.success,     text: "Fraud amounts are 8.72x larger on average. At the median, fraud transactions drain the entire sender balance in one move: the typical fraud sends 100% of what's available, while a legitimate user sends roughly one-sixth." },
+                { color: CHART_COLORS.danger,      text: "The simulation's built-in fraud detection catches zero fraud cases in the validation window. It is not a useful benchmark for comparison." },
               ].map((item, i) => (
                 <div key={i} style={{ padding: "14px 16px", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)", display: "flex", gap: 10 }}>
-                  <span style={{ color: item.color, fontSize: 16, flexShrink: 0, marginTop: 2 }}>{item.icon}</span>
                   <Body style={{ fontSize: 13, margin: 0 }}>{item.text}</Body>
                 </div>
               ))}
@@ -575,7 +574,7 @@ export default function FraudDetectionAnalysis(props: WorkPageProps) {
               technical review.
             </Body>
 
-            <Notice color={CHART_COLORS.danger} icon="▲">
+            <Notice color={CHART_COLORS.danger}>
               These results are not a benchmark. A fraud detection system cannot use information
               about what happened after a transaction settled to decide whether to allow that same
               transaction. The experimental phase exists to answer one question: what makes fraud
@@ -724,7 +723,7 @@ export default function FraudDetectionAnalysis(props: WorkPageProps) {
             </Body>
 
             <div style={{ marginTop: 20 }}>
-              <Notice color={CHART_COLORS.warning} icon="◈">
+              <Notice color={CHART_COLORS.warning}>
                 All sender-side behavioural signals were dropped. Sender activity history scored
                 zero with identical averages for both classes. Time-since-last-sender-transaction
                 and total sender interactions were dominated by placeholder fill artefacts from
@@ -825,7 +824,7 @@ export default function FraudDetectionAnalysis(props: WorkPageProps) {
               figures for technical inspection and reproducibility.
             </Body>
 
-            <Notice color={CHART_COLORS.warning} icon="◈">
+            <Notice color={CHART_COLORS.warning}>
               The confidence threshold is more informative than any single accuracy metric.
               Three of the five configurations required a near-certain threshold to hit 90% recall,
               which signals that their confidence scores had all piled up at the top rather than

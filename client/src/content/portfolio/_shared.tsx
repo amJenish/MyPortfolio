@@ -1,36 +1,28 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-/** Section label with number badge — establishes clear reading order */
+/** Section heading without numbering or accent bars */
 export function WorkSectionLabel({
-  number,
+  number: _number,
   title,
   className,
   id,
 }: {
-  number: number;
+  number?: number;
   title: string;
   className?: string;
   id?: string;
 }) {
-  const n = String(number).padStart(2, "0");
   return (
-    <div id={id} className={cn("mb-8 scroll-mt-28 flex items-center gap-4", className)}>
-      <span
-        className="rounded-lg border border-accent-highlight/35 bg-accent-highlight/[0.12] px-2.5 py-1 font-mono text-xs font-bold text-accent-highlight"
-        aria-hidden
-      >
-        {n}
-      </span>
+    <div id={id} className={cn("mb-8 scroll-mt-28", className)}>
       <h2 className="font-heading m-0 text-xl font-bold tracking-tight text-foreground md:text-2xl">
         {title}
       </h2>
-      <div className="h-px min-w-[2rem] flex-1 bg-gradient-to-r from-border to-transparent" aria-hidden />
     </div>
   );
 }
 
-/** Metric stat card — strong number emphasis, clear label hierarchy */
+/** Metric stat card ,  strong number emphasis, clear label hierarchy */
 export function WorkStatCard({
   label,
   value,
@@ -62,7 +54,7 @@ export function WorkStatCard({
   );
 }
 
-/** Insight pill — subtle, readable, good proximity grouping */
+/** Insight pill ,  subtle, readable, good proximity grouping */
 export function WorkInsightPill({ text, icon }: { text: string; icon?: React.ReactNode }) {
   return (
     <div className="mb-3 flex gap-3 rounded-xl border border-border bg-muted/25 p-4 last:mb-0">
@@ -83,7 +75,7 @@ export function WorkCodeChip({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** Chart card — consistent container for all charts */
+/** Chart card ,  consistent container for all charts */
 export function WorkChartCard({
   title,
   takeaway,
@@ -108,7 +100,7 @@ export function WorkChartCard({
   );
 }
 
-/** Recharts tooltip — theme-aligned */
+/** Recharts tooltip ,  theme-aligned */
 export function WorkChartTooltip({
   active,
   payload,
@@ -134,7 +126,7 @@ export function WorkChartTooltip({
   );
 }
 
-/** Executive summary — prominent, highlighted section */
+/** Executive summary ,  prominent, highlighted section */
 export function WorkExecutiveSummary({
   id,
   title = "Summary",
@@ -168,7 +160,7 @@ export function WorkExecutiveSummary({
   );
 }
 
-/** Framing question — blockquote-style emphasis */
+/** Framing question ,  blockquote-style emphasis */
 export function WorkFramingQuestion({ children }: { children: React.ReactNode }) {
   return (
     <p className="text-report-body border-l-[3px] border-primary/50 pl-5 not-italic">{children}</p>
@@ -351,7 +343,7 @@ export function WorkDataTable({ headers, rows }: { headers: string[]; rows: stri
   );
 }
 
-/* Chart color constants — updated to match indigo-violet system */
+/* Chart color constants ,  updated to match indigo-violet system */
 export const chartMuted = "#6b7299";
 export const chartPrimary = "#818cf8";
 export const chartRose = "hsl(350 80% 58%)";

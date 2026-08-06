@@ -36,7 +36,7 @@ const modelComparison = [
   { model: "Random Forest", r2: 89.5, fill: CHART_COLORS.warning },
   { model: "CatBoost", r2: 91.4, fill: CHART_COLORS.secondary },
   { model: "XGB Full (73)", r2: 92.2, fill: CHART_COLORS.warning },
-  { model: "XGB Selected ★", r2: 92.6, fill: CHART_COLORS.secondary },
+  { model: "XGB Selected", r2: 92.6, fill: CHART_COLORS.secondary },
 ];
 
 // Feature importance from RF (cell 137), capped at top 10, deduplicated
@@ -223,9 +223,9 @@ export default function HousingPriceAnalysis(props: WorkPageProps) {
           <div id="housing-overview" className="scroll-mt-28" style={{ marginBottom: 88 }}>
             <SectionLabel n={1} title="Overview" />
             <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
-              This project analyzes the Ames Housing dataset, which contains 79 explanatory variables describing residential homes in Ames, Iowa. The goal was to perform a comprehensive data science workflow—from handling missing values to tuning high-performance gradient boosting models—to understand the underlying patterns in housing prices.
+              This project analyzes the Ames Housing dataset, which contains 79 explanatory variables describing residential homes in Ames, Iowa. The goal was to perform a comprehensive data science workflow, from handling missing values to tuning high-performance gradient boosting models, to understand the underlying patterns in housing prices.
             </Body>
-            <Notice color={CHART_COLORS.primary} icon="★">
+            <Notice color={CHART_COLORS.primary}>
               The focus was on identifying which property characteristics carry the most weight in determining value and how different modeling techniques handle the complexity of real estate data.
             </Notice>
           </div>
@@ -272,7 +272,7 @@ export default function HousingPriceAnalysis(props: WorkPageProps) {
             <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
               I explored the relationship between property characteristics and sale prices. For instance, I looked at how different lot shapes and foundation types correlated with the final price and overall quality ratings.
             </Body>
-            <Notice color={CHART_COLORS.secondary} icon="ℹ">
+            <Notice color={CHART_COLORS.secondary}>
               The exploratory phase revealed that while dimensional features like living area are important, subjective ratings like overall quality often show the strongest correlation with price.
             </Notice>
 
@@ -363,7 +363,7 @@ export default function HousingPriceAnalysis(props: WorkPageProps) {
                 { name: "Random Forest",             feat: "73 (all)",  r2: "89.5%", note: "Default n_estimators=100, no tuning", hl: false },
                 { name: "XGBoost (all features)",    feat: "73 (all)",  r2: "92.2%", note: "n_estimators=500, lr=0.05, depth=4", hl: false },
                 { name: "CatBoost",                  feat: "23 selected", r2: "91.4%", note: "Untuned, iterations=500, depth=4", hl: false },
-                { name: "XGBoost + target enc. ★",  feat: "23 selected", r2: "92.6%", note: "Post-tuning: n=800, depth=3, lr=0.05", hl: true  },
+                { name: "XGBoost + target enc.",  feat: "23 selected", r2: "92.6%", note: "Post-tuning: n=800, depth=3, lr=0.05", hl: true  },
               ].map(({ name, feat, r2, note, hl }) => (
                 <div key={name} style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 2fr", padding: "12px 18px", fontSize: 13, color: hl ? CHART_COLORS.primary : "var(--muted-foreground)", background: hl ? `${CHART_COLORS.primary}08` : "transparent", borderBottom: `1px solid ${"var(--border)"}`, fontFamily: hl ? FONT_MONO : "inherit" }}>
                   <span>{name}</span><span>{feat}</span><span>{r2}</span><span style={{ fontSize: 12 }}>{note}</span>
@@ -451,7 +451,7 @@ export default function HousingPriceAnalysis(props: WorkPageProps) {
                 <TableRow label="Gap (CV to test)"    value="+4.3 pts" />
               </div>
             </div>
-            <Notice color={CHART_COLORS.warning} icon="⚠">
+            <Notice color={CHART_COLORS.warning}>
               <strong style={{ color: "var(--foreground)" }}>The CV score (88.3%) is notably lower than the test R² (92.6%).</strong> A positive gap of this magnitude is unusual, and I want to flag it honestly. Typical cross-validation scores slightly exceed test scores because the full training set is used for the final fit. The inverse here may indicate that the random 80/20 test split captured a particularly "easy" subset of the data, or that my target encoding was computed differently between the CV folds and the final train/test split, creating a mild form of leakage. This warrants further investigation before treating 92.6% as a reliable out-of-sample estimate.
             </Notice>
           </div>
@@ -478,7 +478,7 @@ export default function HousingPriceAnalysis(props: WorkPageProps) {
                   <p style={{ margin: 0, fontSize: 13, color: "var(--muted-foreground)", lineHeight: 1.7 }}>The dataset covers Ames, Iowa residential sales from 2006 to 2010. A model I trained on this data may not transfer to other markets, time periods, or property types. The 2006 to 2010 window also includes the beginning of the US housing correction, which may mean some price relationships differ from a stable market.</p>
                 </div>
               </div>
-              <Notice color={CHART_COLORS.warning} icon="💡">
+              <Notice color={CHART_COLORS.warning}>
                 The extreme dominance of the Overall Quality feature tells us the model is heavily reliant on a human judgment that may be inconsistently applied across different neighborhoods.
               </Notice>
             </div>

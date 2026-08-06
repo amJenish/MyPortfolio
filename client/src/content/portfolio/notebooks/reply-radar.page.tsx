@@ -176,7 +176,7 @@ export default function ReplyRadarReport(props: WorkPageProps) {
               ReplyRadar is a lightweight Windows application designed for zero friction productivity. It monitors your Gmail inbox in the background, analyzing every new message with an LLM to determine if a response is required. Unlike traditional filters, it understands context by distinguishing between a shipping notification and a genuine request for a meeting.
             </Body>
 
-            <Notice color={COLORS.primary} icon="★">
+            <Notice color={COLORS.primary}>
               The goal was to build a silent companion. By integrating directly with Windows Task Scheduler and native toast notifications, ReplyRadar stays completely invisible until it has something important to tell you.
             </Notice>
           </div>
@@ -250,7 +250,7 @@ export default function ReplyRadarReport(props: WorkPageProps) {
             <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
               ReplyRadar ships as a single Windows executable. Download it from the repo&apos;s <strong>dist</strong> folder, run
               the setup app once to enter credentials and preferences, then inject the background agent. No Python install and no
-              dependency management—everything is bundled in <strong>setup.exe</strong>.
+              dependency management, everything is bundled in <strong>setup.exe</strong>.
             </Body>
 
             <div
@@ -267,7 +267,7 @@ export default function ReplyRadarReport(props: WorkPageProps) {
                   <div style={{ fontSize: 13, fontWeight: 600, color: COLORS.primary, marginBottom: 10 }}>1. Download</div>
                   <Body style={{ fontSize: 13, color: "var(--muted-foreground)", lineHeight: 1.65, margin: 0 }}>
                     Download <strong>setup.exe</strong> from the <strong>dist</strong> folder in this repository. That is the only
-                    file you need—nothing else to install, no Python required, no dependencies to manage.
+                    file you need, nothing else to install, no Python required, no dependencies to manage.
                   </Body>
                 </div>
 
@@ -305,26 +305,26 @@ export default function ReplyRadarReport(props: WorkPageProps) {
                     }}
                   >
                     <li>
-                      <strong style={{ color: "var(--foreground)" }}>Gmail address</strong> — your full Gmail address.
+                      <strong style={{ color: "var(--foreground)" }}>Gmail address</strong> ,  your full Gmail address.
                     </li>
                     <li>
-                      <strong style={{ color: "var(--foreground)" }}>Gmail app password</strong> — the 16-character app password
+                      <strong style={{ color: "var(--foreground)" }}>Gmail app password</strong> ,  the 16-character app password
                       from Google Account security (see Prerequisites above), not your normal Gmail password.
                     </li>
                     <li>
-                      <strong style={{ color: "var(--foreground)" }}>Groq API key</strong> — create one at{" "}
+                      <strong style={{ color: "var(--foreground)" }}>Groq API key</strong> ,  create one at{" "}
                       <span style={{ fontFamily: FONT_MONO, fontSize: 12 }}>console.groq.com</span>.
                     </li>
                     <li>
-                      <strong style={{ color: "var(--foreground)" }}>Stop reminding after N days</strong> — how many days before
+                      <strong style={{ color: "var(--foreground)" }}>Stop reminding after N days</strong> ,  how many days before
                       the agent stops chasing an email you never answered (default <strong>3</strong>).
                     </li>
                     <li>
-                      <strong style={{ color: "var(--foreground)" }}>Remind every N hours</strong> — how often you get nudged about
+                      <strong style={{ color: "var(--foreground)" }}>Remind every N hours</strong> ,  how often you get nudged about
                       a thread you still haven&apos;t replied to (default <strong>8</strong>).
                     </li>
                     <li>
-                      <strong style={{ color: "var(--foreground)" }}>New email notifications</strong> — turn off if you only want
+                      <strong style={{ color: "var(--foreground)" }}>New email notifications</strong> ,  turn off if you only want
                       follow-up reminders, not toasts for every brand-new message.
                     </li>
                   </ul>
@@ -361,8 +361,8 @@ export default function ReplyRadarReport(props: WorkPageProps) {
               </div>
             </div>
 
-            <Notice color={COLORS.success} icon="✅">
-              After <strong>Inject</strong>, you can discard <strong>setup.exe</strong> if you like—the running agent does not
+            <Notice color={COLORS.success}>
+              After <strong>Inject</strong>, you can discard <strong>setup.exe</strong> if you like, the running agent does not
               depend on it. To uninstall everything later, use the removal flow below.
             </Notice>
           </div>
@@ -373,7 +373,7 @@ export default function ReplyRadarReport(props: WorkPageProps) {
             <Body style={{ marginBottom: 16, color: "var(--foreground)" }}>
               Open <strong>setup.exe</strong> again. The app detects that an agent is already installed and disables{" "}
               <strong>Inject</strong>. Click <strong>Remove</strong>: it stops the agent, deletes its data under AppData, and
-              removes the scheduled task—clean uninstall with nothing left behind.
+              removes the scheduled task, clean uninstall with nothing left behind.
             </Body>
           </div>
 

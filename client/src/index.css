@@ -377,15 +377,6 @@
     transition: opacity 0.3s ease;
   }
 
-  /* ── Spotlight cards (non-clickable wrapper — no hover lift, only color feedback) ── */
-  .home-spotlight-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-xl);
-    padding: 1.5rem;
-    transition: border-color 0.2s ease;
-  }
-
   /* ── Experience section shell ── */
   .experience-section {
     position: relative;

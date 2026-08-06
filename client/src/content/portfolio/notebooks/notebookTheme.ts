@@ -5,7 +5,7 @@
 export { C, FONT_MONO, FONT_SANS } from "@/lib/theme";
 
 /**
- * @deprecated — kept for backward compatibility only.
+ * @deprecated: kept for backward compatibility only.
  * Use C from @/lib/theme for all new code.
  * These values now match the indigo-violet design system.
  */

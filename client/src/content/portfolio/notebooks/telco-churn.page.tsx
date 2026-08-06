@@ -103,7 +103,7 @@ const modelComparison = [
   { name: "XGBoost",            acc: "77.0%", prec: "59%", rec: "50%", f1: "54%", hl: false },
   { name: "Random Forest",      acc: "79.3%", prec: "66%", rec: "44%", f1: "53%", hl: false },
   { name: "Grad. Boosting",     acc: "80.3%", prec: "67%", rec: "51%", f1: "58%", hl: false },
-  { name: "Hist GBM t=0.35 ★", acc: "66.0%", prec: "44%", rec: "90%", f1: "59%", hl: true  },
+  { name: "Hist GBM t=0.35", acc: "66.0%", prec: "44%", rec: "90%", f1: "59%", hl: true  },
 ];
 
 const modelRecallData = [
@@ -281,7 +281,7 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
             <Body>
               In this project I built a machine learning pipeline to predict customer churn
               within a telecommunications dataset. I worked under the assumption that the cost
-              of reaching out to flagged customers would be low — something along the lines of
+              of reaching out to flagged customers would be low ,  something along the lines of
               an email or a small discount offer. Given that framing, catching as many real
               churners as possible mattered more than raw accuracy, since missing a churner
               carries more cost than unnecessarily contacting a loyal customer.
@@ -292,7 +292,7 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
               threshold of 0.35 as the final model. It catches 90% of real churners, which
               under those assumptions is the metric that matters most.
             </Body>
-            <Notice color={CHART_COLORS.primary} icon="★">
+            <Notice color={CHART_COLORS.primary}>
               I intentionally optimised for recall over precision, based on the assumption
               that the cost of outreach is low. The final model flags more customers than
               will actually churn, but when the downside of a false positive is just an
@@ -317,7 +317,7 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
               attributes, service subscriptions, contract terms, billing details, and a binary
               churn label. A data quality check revealed that <Code>TotalCharges</Code> was ingested
               as an object column rather than a numeric type. Eleven records with blank strings were
-              dropped — each had zero tenure and no churn, making them uninformative. A consistency
+              dropped ,  each had zero tenure and no churn, making them uninformative. A consistency
               audit confirmed that all internet dependent service flags resolve
               to <Code>"No internet service"</Code> whenever <Code>InternetService</Code> is set to
               No, with no contradictions across fields.
@@ -331,7 +331,7 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
                 },
                 {
                   title: "TotalCharges Discrepancy",
-                  body: "2,323 mismatches exceeding a $50 tolerance between TotalCharges and tenure × MonthlyCharges — likely mid-cycle plan changes or promotions recorded in billing history.",
+                  body: "2,323 mismatches exceeding a $50 tolerance between TotalCharges and tenure × MonthlyCharges ,  likely mid-cycle plan changes or promotions recorded in billing history.",
                 },
                 {
                   title: "Consistency Checks",
@@ -491,21 +491,20 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 12 }}>
               {[
-                { icon: "○", color: "var(--muted-foreground)", text: "Gender shows no meaningful difference in churn rate across the dataset." },
-                { icon: "▲", color: CHART_COLORS.danger,       text: "New customers under 12 months are the highest risk segment for early churn." },
-                { icon: "▲", color: CHART_COLORS.danger,       text: "Higher monthly charges are consistently associated with greater attrition." },
-                { icon: "▲", color: CHART_COLORS.danger,       text: "Month to month contract holders represent the majority of churned customers." },
-                { icon: "▲", color: CHART_COLORS.danger,       text: "Electronic check payment is strongly linked to churn, partially confounded by senior citizen demographics." },
-                { icon: "▲", color: CHART_COLORS.danger,       text: "Fiber optic subscribers churn noticeably more often than DSL or no internet customers." },
-                { icon: "▼", color: CHART_COLORS.success,      text: "Customers with dependents are substantially less likely to churn." },
-                { icon: "▼", color: CHART_COLORS.success,      text: "Having a partner correlates with higher retention rates." },
-                { icon: "▲", color: CHART_COLORS.warning,      text: "Senior citizens churn at disproportionately high rates relative to their share of the customer base." },
-                { icon: "▼", color: CHART_COLORS.success,      text: "Online security subscribers exhibit roughly one third the churn rate of those without it." },
-                { icon: "▲", color: CHART_COLORS.warning,      text: "Paperless billing customers are more likely to churn, possibly a proxy for users who actively compare prices." },
-                { icon: "▼", color: CHART_COLORS.success,      text: "Technical support subscribers display substantially better retention, similar to online security." },
+                { color: "var(--muted-foreground)", text: "Gender shows no meaningful difference in churn rate across the dataset." },
+                { color: CHART_COLORS.danger,       text: "New customers under 12 months are the highest risk segment for early churn." },
+                { color: CHART_COLORS.danger,       text: "Higher monthly charges are consistently associated with greater attrition." },
+                { color: CHART_COLORS.danger,       text: "Month to month contract holders represent the majority of churned customers." },
+                { color: CHART_COLORS.danger,       text: "Electronic check payment is strongly linked to churn, partially confounded by senior citizen demographics." },
+                { color: CHART_COLORS.danger,       text: "Fiber optic subscribers churn noticeably more often than DSL or no internet customers." },
+                { color: CHART_COLORS.success,      text: "Customers with dependents are substantially less likely to churn." },
+                { color: CHART_COLORS.success,      text: "Having a partner correlates with higher retention rates." },
+                { color: CHART_COLORS.warning,      text: "Senior citizens churn at disproportionately high rates relative to their share of the customer base." },
+                { color: CHART_COLORS.success,      text: "Online security subscribers exhibit roughly one third the churn rate of those without it." },
+                { color: CHART_COLORS.warning,      text: "Paperless billing customers are more likely to churn, possibly a proxy for users who actively compare prices." },
+                { color: CHART_COLORS.success,      text: "Technical support subscribers display substantially better retention, similar to online security." },
               ].map((item, i) => (
                 <div key={i} style={{ padding: "14px 16px", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)", display: "flex", gap: 10 }}>
-                  <span style={{ color: item.color, fontSize: 16, flexShrink: 0, marginTop: 2 }}>{item.icon}</span>
                   <Body style={{ fontSize: 13, margin: 0 }}>{item.text}</Body>
                 </div>
               ))}
@@ -534,7 +533,7 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
               </div>
             </div>
 
-            <Notice color={CHART_COLORS.warning} icon="◈">
+            <Notice color={CHART_COLORS.warning}>
               The <Code>risk_score</Code> feature aggregates nine binary risk indicators
               (senior citizen status, high monthly charges, short tenure, month to month contract,
               fiber without security, no support services, paperless billing, electronic check,
@@ -606,7 +605,7 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
               ))}
             </div>
 
-            <Notice color={CHART_COLORS.warning} icon="◈">
+            <Notice color={CHART_COLORS.warning}>
               The accuracy drop from 80% to 66% is a product of the model flagging customers more
               aggressively. A model that scores 80% accuracy by missing half the churners would be
               less useful given the design decisions made here.
@@ -665,7 +664,7 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
             <Body>
               The final model was evaluated on a held out test set of 2,110 subscribers. Among 561
               actual churners, the model caught 504, giving a recall of 90%. It missed 57 and
-              unnecessarily flagged 653 loyal customers — an acceptable cost for the recall it
+              unnecessarily flagged 653 loyal customers ,  an acceptable cost for the recall it
               produces given the assumptions baked into the design.
             </Body>
 
@@ -699,7 +698,7 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
               </ChartCard>
             </div>
 
-            <Notice color={CHART_COLORS.warning} icon="◈">
+            <Notice color={CHART_COLORS.warning}>
               The wide gap between churned and retained class metrics is intentional. If the
               assumed outreach cost were high, a different threshold or scoring objective
               would have been the right call.
@@ -721,7 +720,7 @@ export default function TelcoChurnAnalysis(props: WorkPageProps) {
                 { title: "Threshold Monitoring",      color: CHART_COLORS.primary,   body: "The 0.35 threshold could be re-tested across multiple folds and time splits, which may improve confidence in recall stability and reduce sensitivity to a single test sample." },
                 { title: "Advanced Explainability",   color: CHART_COLORS.secondary, body: "SHAP-based explanation layers could be added for prediction level attribution, which would improve trust, auditability, and decision quality in any downstream retention workflow." },
                 { title: "Interaction Feature Depth", color: CHART_COLORS.warning,   body: "A broader sweep of two way and three way interaction features could surface compound churn signals missed by individual feature effects." },
-                { title: "Segment Level Modeling",    color: CHART_COLORS.purple,    body: "Separate models trained on concentrated risk groups — such as fiber users on month to month contracts — could improve segment level precision while preserving strong recall." },
+                { title: "Segment Level Modeling",    color: CHART_COLORS.purple,    body: "Separate models trained on concentrated risk groups ,  such as fiber users on month to month contracts ,  could improve segment level precision while preserving strong recall." },
               ].map((card) => (
                 <div key={card.title} style={{ padding: 20, border: "1px solid var(--border)", borderRadius: "var(--radius-md)", backgroundColor: "var(--card)" }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: card.color, marginBottom: 8 }}>{card.title}</div>

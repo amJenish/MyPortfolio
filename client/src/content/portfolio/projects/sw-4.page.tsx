@@ -1,414 +1,369 @@
-import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { MOTION_CONFIG as M } from "@/motion/config";
-import { useSafeMotion } from "@/motion/useSafeMotion";
-import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, LineChart, Line, Legend,
-} from "recharts";
+import { Button } from "@/components/ui/button";
+import { FileText, Github } from "lucide-react";
 import {
   CatalogTagPills,
   Body,
-  ChartTip,
-  ChartWrap,
-  Code,
   FONT_MONO as MONO,
   FONT_SANS as SANS,
-  Notice,
-  Panel,
-  PanelLabel,
   SectionLabel,
-  TwoCol,
 } from "../reportPrimitives";
 import type { WorkPageProps } from "@/content/portfolio/workPageTypes";
 import { WorkReportShell } from "@/components/work/WorkReportShell";
 
-// ── DATA ──────────────────────────────────────────────────────────────────────
-
-const rewardFunctions = [
-  { name: "WaitTime",        stability: 3, clarity: 6 },
-  { name: "DeltaWaitTime",   stability: 5, clarity: 7 },
-  { name: "Throughput",      stability: 6, clarity: 5 },
-  { name: "ThroughputQueue", stability: 5, clarity: 6 },
-  { name: "Composite",       stability: 4, clarity: 4 },
-];
-
-const stabilityData = [
-  { config: "WaitTime + DQN",     stable: 2, diverged: 4 },
-  { config: "DeltaWait + DQN",    stable: 3, diverged: 3 },
-  { config: "WaitTime + DDQN",    stable: 4, diverged: 2 },
-  { config: "DeltaWait + DDQN",   stable: 5, diverged: 1 },
-  { config: "ThroughputQ + DDQN", stable: 4, diverged: 2 },
-];
-
-const convergenceData = [
-  { ep: 0,   dqn: -420, ddqn: -420 },
-  { ep: 20,  dqn: -380, ddqn: -370 },
-  { ep: 40,  dqn: -410, ddqn: -330 },
-  { ep: 60,  dqn: -440, ddqn: -290 },
-  { ep: 80,  dqn: -400, ddqn: -270 },
-  { ep: 100, dqn: -460, ddqn: -255 },
-  { ep: 120, dqn: -420, ddqn: -245 },
-  { ep: 140, dqn: -450, ddqn: -240 },
-  { ep: 160, dqn: -430, ddqn: -238 },
-  { ep: 180, dqn: -460, ddqn: -235 },
-];
-
-// ── TYPES ──────────────────────────────────────────────────────────────────────
-
-type RewardTab = "WaitTime" | "DeltaWaitTime" | "Throughput" | "Composite" | "ThroughputQueue";
-
-const REWARD_TABS: RewardTab[] = ["WaitTime", "DeltaWaitTime", "Throughput", "Composite", "ThroughputQueue"];
-
-type RewardDetail = { formula: string; color: string; body: string; risk: string };
+const REPORT_PDF = "/portfolio/projects/rl-traffic/Final-Project-Report.pdf";
 
 export const workPageSections = [
-  { id: "rl-kpis",     label: "Overview"           },
-  { id: "rl-problem",  label: "The problem"        },
-  { id: "rl-arch",     label: "Architecture"       },
-  { id: "rl-rewards",  label: "Reward engineering" },
-  { id: "rl-dqn",      label: "DQN → Double DQN"  },
-  { id: "rl-training", label: "Training runs"      },
-  { id: "rl-now",      label: "Where I am now"     },
+  { id: "problem", label: "The problem" },
+  { id: "built", label: "What we built" },
+  { id: "rewards", label: "Reward design" },
+  { id: "smdp", label: "Decision timing" },
+  { id: "doubledqn", label: "Double DQN" },
+  { id: "eval-bug", label: "Evaluation fairness" },
+  { id: "testing", label: "Testing" },
+  { id: "results", label: "Results" },
+  { id: "convergence", label: "Convergence" },
+  { id: "stack", label: "Tech stack" },
 ] as const;
 
-// ── MAIN ──────────────────────────────────────────────────────────────────────
-
 export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element {
-  const [activeReward, setActiveReward] = useState<RewardTab>("DeltaWaitTime");
-  const { shouldAnimate, safeTransition } = useSafeMotion();
-  const easeTuple = [...M.easing] as [number, number, number, number];
-
-  const rewardDetail: Record<RewardTab, RewardDetail> = {
-    WaitTime: {
-      formula: "r = −Σ wait_i",
-      color: "rgb(239, 68, 68)",
-      body: "The most direct formulation: penalise by total cumulative waiting time across all vehicles at every decision step. The signal is strong and unambiguous — every unit of delay is directly reflected in the reward. In practice this produces large-magnitude, dense reward values that can cause Q-value scale issues early in training.",
-      risk: "High-magnitude rewards compound Q-value overestimation. The signal is also volume-sensitive, so a heavy-traffic episode produces much larger absolute penalties than a light one even if the agent is making equally good decisions.",
-    },
-    DeltaWaitTime: {
-      formula: "r = wait_prev − wait_curr",
-      color: "rgb(245, 158, 11)",
-      body: "Instead of penalising absolute delay, I reward the reduction in waiting vehicles compared to the previous step. The signal is relative: positive when congestion decreases, negative when it increases, zero when nothing changes. This makes it less sensitive to traffic volume variance across the 60-day training window.",
-      risk: "Oscillatory policies. An agent can learn to alternate phases in a way that manufactures an artificial decrease-then-increase cycle, producing a net-zero delta without actually improving throughput.",
-    },
-    Throughput: {
-      formula: "r = vehicles_cleared",
-      color: "var(--primary)",
-      body: "Reward is proportional to the number of vehicles that clear the intersection during the current phase. Intuitive and directly tied to what a good signal policy should achieve. The signal is sparse by design — it only accumulates during active green phases.",
-      risk: "Throughput alone ignores queue buildup on non-served approaches. An agent optimising purely for throughput on one direction will let perpendicular queues grow if it maximises clearance on the dominant flow.",
-    },
-    ThroughputQueue: {
-      formula: "r = α·throughput − β·queue",
-      color: "var(--primary)",
-      body: "A two-term reward combining positive throughput signal with a queue-length penalty. This directly patches the failure mode of the pure throughput formulation. The α and β weights control the trade-off between clearing vehicles and preventing buildup.",
-      risk: "The weighting is fragile. Too much throughput emphasis and the agent ignores queues. Too much queue penalty and the agent becomes overly conservative, switching phases before they've cleared the current wave.",
-    },
-    Composite: {
-      formula: "r = w₁·Δwait + w₂·throughput − w₃·queue",
-      color: "var(--muted-foreground)",
-      body: "My attempt at combining the best parts of each formulation into a single weighted objective. The delta term incentivises improvement, throughput rewards clearance, and the queue term prevents one-directional bias. Anti-oscillation mechanisms are planned here specifically.",
-      risk: "Multi-term rewards are much harder to debug. When training performs poorly, it's not obvious which term is the problem. Per-term logging during training is something I want to add before leaning on this formulation.",
-    },
-  };
-
-  const rd = rewardDetail[activeReward];
-
   return (
     <WorkReportShell {...props}>
       <div style={{ color: "var(--foreground)", fontFamily: SANS, textAlign: "left" }}>
-
-        {/* ── HERO ── */}
-        <div style={{ borderBottom: "1px solid var(--border)", padding: "80px 0 64px", position: "relative", overflow: "hidden" }}>
-          <div style={{
-            position: "absolute", inset: 0,
-            backgroundImage: "radial-gradient(circle, var(--border) 1px, transparent 1px)",
-            backgroundSize: "32px 32px",
-            opacity: 0.35,
-          }} />
-          <div style={{
-            position: "absolute",
-            top: "-20%",
-            right: "5%",
-            width: 520,
-            height: 520,
-            background: "radial-gradient(ellipse, color-mix(in srgb, var(--primary) 8%, transparent) 0%, transparent 62%)",
-            pointerEvents: "none",
-          }} />
-          <div style={{
-            position: "absolute",
-            bottom: "-10%",
-            left: "10%",
-            width: 320,
-            height: 320,
-            background: "radial-gradient(ellipse, color-mix(in srgb, var(--primary) 5%, transparent) 0%, transparent 60%)",
-            pointerEvents: "none",
-          }} />
+        <div style={{ borderBottom: "1px solid var(--border)", padding: "88px 0 72px", position: "relative", overflow: "hidden" }}>
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundImage: "radial-gradient(circle, var(--border) 1px, transparent 1px)",
+              backgroundSize: "32px 32px",
+              opacity: 0.35,
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              top: "-20%",
+              right: "5%",
+              width: 520,
+              height: 520,
+              background:
+                "radial-gradient(ellipse, color-mix(in srgb, var(--primary) 8%, transparent) 0%, transparent 62%)",
+              pointerEvents: "none",
+            }}
+          />
 
           <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(1rem, 4vw, 3rem)", position: "relative" }}>
-            <h1 style={{
-              fontFamily: SANS,
-              fontSize: "clamp(30px, 4.5vw, 54px)",
-              fontWeight: 800, margin: "0 0 20px",
-              lineHeight: 1.12, letterSpacing: -1, color: "var(--foreground)",
-            }}>
-              Adaptive traffic signal<br />
-              <span style={{ color: "var(--primary)" }}>control via reinforcement learning</span>
+            <p
+              style={{
+                fontFamily: MONO,
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "var(--primary)",
+                marginBottom: 20,
+              }}
+            >
+              Reinforcement Learning
+            </p>
+
+            <h1
+              className="gradient-heading"
+              style={{
+                fontFamily: SANS,
+                fontSize: "clamp(36px, 6vw, 64px)",
+                fontWeight: 800,
+                margin: "0 0 28px",
+                lineHeight: 1.05,
+                letterSpacing: -1.5,
+                maxWidth: 900,
+              }}
+            >
+              Smart Traffic Light Controller
             </h1>
 
-            <Body style={{ maxWidth: 1280, marginBottom: 12, color: "var(--foreground)" }}>
-              I&apos;m building a reinforcement learning system that learns adaptive signal timing policies at
-              a single intersection from 60 days of historical traffic data. Key question: can a learned policy consistently outperform a fixed-time plan, and which
-              reward formulation gets us there most reliably?
-            </Body>
-            <Body style={{ maxWidth: 1280, marginBottom: 36, color: "var(--foreground)" }}>
-              The system is built around a modular architecture that lets me swap reward functions,
-              observation spaces, and agent architectures independently. I&apos;ve implemented DQN and Double DQN,
-              designed five reward formulations, and have both fixed-time and actuated baselines ready.
-              Right now I&apos;m working through a convergence problem before I can run clean comparisons.
-            </Body>
-
-            <CatalogTagPills tags={props.entry.tags} />
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+              <Button asChild size="lg" variant="default" className="gap-2 font-mono text-xs font-bold">
+                <a href={props.entry.githubUrl} target="_blank" rel="noopener noreferrer">
+                  <Github className="h-4 w-4" />
+                  GitHub
+                </a>
+              </Button>
+              <CatalogTagPills tags={props.entry.tags} />
+            </div>
           </div>
         </div>
 
-        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "64px 40px" }}>
-
-          {/* ── STATS STRIP ── */}
-          <div id="rl-kpis" style={{
-            display: "grid", gridTemplateColumns: "repeat(4, 1fr)",
-            borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)",
-            marginBottom: 88,
-          }}>
-            {([
-              { value: "60d",         label: "Training data",    sub: "Historical intersection flow",    color: "var(--primary)"  },
-              { value: "5",           label: "Reward functions", sub: "From WaitTime to Composite",      color: "var(--primary)"  },
-              { value: "2",           label: "Baselines",        sub: "Fixed-time & actuated",           color: "var(--primary)"  },
-              { value: "Convergence", label: "Current blocker",  sub: "Not reliably converging yet",     color: "rgb(245, 158, 11)" },
-            ] as { value: string; label: string; sub: string; color: string }[]).map((s, i) => (
-              <div key={s.label} style={{
-                padding: "32px 28px",
-                borderRight: i < 3 ? "1px solid var(--border)" : undefined,
-              }}>
-                <div style={{
-                  fontFamily: MONO,
-                  fontSize: s.value.length > 5 ? 22 : 38,
-                  fontWeight: 800, color: s.color,
-                  lineHeight: 1, marginBottom: 10,
-                }}>
-                  {s.value}
-                </div>
-                <div style={{ fontSize: 13, color: "var(--foreground)", fontWeight: 600, marginBottom: 4 }}>{s.label}</div>
-                <div style={{ fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.5 }}>{s.sub}</div>
-              </div>
-            ))}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            padding: "40px clamp(1rem, 4vw, 3rem) 8px",
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: 520,
+              textAlign: "center",
+              padding: "28px 32px",
+              borderRadius: 16,
+              border: "1px solid color-mix(in srgb, var(--primary) 28%, var(--border))",
+              background:
+                "linear-gradient(160deg, color-mix(in srgb, var(--card) 88%, transparent) 0%, color-mix(in srgb, var(--primary) 10%, var(--card)) 100%)",
+              boxShadow:
+                "inset 0 1px 0 color-mix(in srgb, var(--foreground) 8%, transparent), 0 12px 32px color-mix(in srgb, var(--primary) 8%, transparent)",
+            }}
+          >
+            <p
+              style={{
+                margin: "0 0 16px",
+                fontFamily: SANS,
+                fontSize: 15,
+                fontWeight: 600,
+                color: "var(--foreground)",
+                letterSpacing: "-0.01em",
+              }}
+            >
+              View the final report here:
+            </p>
+            <Button asChild size="lg" variant="cta" className="h-11 gap-2 px-7 text-sm font-semibold">
+              <a href={REPORT_PDF} target="_blank" rel="noopener noreferrer">
+                <FileText className="h-4 w-4" />
+                Final project report
+              </a>
+            </Button>
           </div>
+        </div>
 
-          {/* ══ 01 THE PROBLEM ══ */}
-          <div id="rl-problem" className="scroll-mt-28" style={{ marginBottom: 88 }}>
-            <SectionLabel n={1} title="The Problem" />
-            <TwoCol>
-              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-                <Body>
-                  Fixed-time signal plans are the default at most intersections. They allocate green time
-                  according to a preset schedule that never changes, regardless of how traffic actually behaves.
-                  The result is wasted green time during low-demand windows and unnecessary queuing when demand
-                  spikes. I want to replace that static schedule with a policy that observes intersection state
-                  and adapts its timing decisions in real time.
-                </Body>
-                <Body>
-                  I&apos;m framing this as a Semi-Markov Decision Process (SMDP) rather than a standard MDP because
-                  signal phases have variable durations. SMDP handles variable holding times by discounting
-                  rewards by the actual elapsed time per decision, making the timing of phase switches part of
-                  what the agent learns, not an external parameter.
-                </Body>
-              </div>
+        <div style={{ maxWidth: 860, margin: "0 auto", padding: "64px clamp(1rem, 4vw, 3rem)" }}>
+          <section id="problem" className="scroll-mt-28" style={{ marginBottom: 72 }}>
+            <SectionLabel title="The problem" />
+            <Body style={{ marginBottom: 16, color: "var(--foreground)" }}>
+              Most traffic lights run on a timer or a simple rule. They turn green and red on a fixed schedule
+              that does not look at how much traffic is waiting. That works sometimes, but it wastes time when
+              one direction is busier than usual. Cars sit at red lights for no good reason, and queues build up.
+            </Body>
+            <Body style={{ color: "var(--foreground)" }}>
+              We asked a concrete question: given real traffic counts from an intersection, could a learned
+              controller beat fixed-time and actuated baselines under the same simulated conditions?
+            </Body>
+          </section>
 
-              <div style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden" }}>
-                <div style={{
-                  padding: "12px 18px", borderBottom: "1px solid var(--border)",
-                  fontFamily: MONO, fontSize: 10.5, color: "var(--muted-foreground)", letterSpacing: "0.03em",
-                }}>
-                  Current project snapshot
-                </div>
-                {([
-                  ["Framework",     "Semi-Markov Decision Process (SMDP)" ],
-                  ["Simulator",     "SUMO, seeded from 60-day traffic data"],
-                  ["Observation",   "Queue lengths per approach"           ],
-                  ["Action space",  "Discrete — keep phase or switch"      ],
-                  ["Baselines",     "fixed_time.py + actuated.py"          ],
-                  ["Current agent", "Double DQN"                           ],
-                  ["LR Scheduler",  "Cosine Scheduler"                     ],
-                  ["Replay",        "Uniform experience replay"            ],
-                ] as [string, string][]).map(([k, v], i) => (
-                  <div key={k} style={{
-                    display: "flex", justifyContent: "space-between", alignItems: "center",
-                    padding: "10px 18px", borderBottom: "1px solid var(--border)",
-                    background: i % 2 === 0 ? "transparent" : "rgba(255, 255, 255, 0.02)", gap: 12,
-                  }}>
-                    <span style={{ fontSize: 12.5, color: "var(--muted-foreground)", flexShrink: 0 }}>{k}</span>
-                    <span style={{ fontFamily: MONO, fontSize: 11.5, color: "var(--foreground)", textAlign: "right" }}>{v}</span>
-                  </div>
-                ))}
-              </div>
-            </TwoCol>
-          </div>
+          <section id="built" className="scroll-mt-28" style={{ marginBottom: 72 }}>
+            <SectionLabel title="What we built" />
+            <Body style={{ marginBottom: 16, color: "var(--foreground)" }}>
+              We built an end-to-end system, not only a model. It takes traffic count data and an intersection
+              layout, generates SUMO simulation inputs, trains a reinforcement learning controller, evaluates
+              it against baselines, and exports a readable signal schedule. You can drive the same pipeline from
+              a Streamlit app or the command line.
+            </Body>
+            <Body style={{ color: "var(--foreground)" }}>
+              The interesting part was not the final score alone. Getting there meant iterating through rewards,
+              decision timing, algorithms, evaluation bugs, and tests that could fail silently if we were not careful.
+            </Body>
+          </section>
 
-          {/* ══ 02 ARCHITECTURE ══ */}
-          <div id="rl-arch" className="scroll-mt-28" style={{ marginBottom: 88 }}>
-            <SectionLabel n={2} title="How I Built It" />
-            <Body style={{ marginBottom: 32, color: "var(--foreground)" }}>
-              The codebase is built around a components-and-connector pattern. Every major piece has an
-              abstract base class and a concrete implementation. <Code>agent.py</Code> and{" "}
-              <Code>trainer.py</Code> act as the connectors, wiring together whichever combination of
-              components a given experiment requires — swap a reward function without touching anything else,
-              add a new architecture without rewriting the training loop.
+          <section id="rewards" className="scroll-mt-28" style={{ marginBottom: 72 }}>
+            <SectionLabel title="Reward design: what we tried first" />
+            <Body style={{ marginBottom: 16, color: "var(--foreground)" }}>
+              In reinforcement learning, the reward is the score the agent gets after each decision. If that score
+              is incomplete, the agent can look good on paper while making the intersection worse in other ways.
+            </Body>
+            <Body style={{ marginBottom: 16, color: "var(--foreground)" }}>
+              We started with simpler rewards: total wait time, change in wait time between steps, and
+              throughput alone (how many cars cleared). Each one optimized one signal in isolation. A
+              throughput-only agent could push cars through one approach while perpendicular queues grew.
+              A wait-time-only agent was sensitive to traffic volume and produced large, noisy scores that were
+              hard to train on stably.
+            </Body>
+            <Body style={{ color: "var(--foreground)" }}>
+              We settled on a composite reward that combines throughput, average queue length, and how uneven
+              those queues are across approaches, with tunable weights (alpha, beta, gamma). In plain terms: get
+              cars through, do not let queues explode overall, and do not leave one direction stuck while others
+              are fine. That closed the failure modes the single-term rewards left open.
+            </Body>
+          </section>
+
+          <section id="smdp" className="scroll-mt-28" style={{ marginBottom: 72 }}>
+            <SectionLabel title="Why not decide every simulator tick" />
+            <Body style={{ marginBottom: 16, color: "var(--foreground)" }}>
+              A standard Markov decision process (MDP) assumes the agent acts on a fixed clock, often every
+              simulation step. Traffic lights do not work that way. Meaningful choices happen when it is legal
+              to hold or advance a phase, and yellow and all-red clearances have to run in between.
+            </Body>
+            <Body style={{ marginBottom: 16, color: "var(--foreground)" }}>
+              We modeled the problem as a semi-Markov decision process (SMDP): decisions happen at variable
+              intervals, and the time spent in a phase is part of what the agent experiences. Between decisions,
+              yellow and all-red transitions are forced rather than left to the network to invent.
+            </Body>
+            <Body style={{ color: "var(--foreground)" }}>
+              That design also forced hard timing constraints: minimum and maximum green, yellow clearance, and
+              all-red intervals. Without those rules, an agent could flicker the light in ways that look clever
+              in simulation and would be unsafe or illegal in the real world. Constraints made the action space
+              smaller and more honest.
+            </Body>
+          </section>
+
+          <section id="doubledqn" className="scroll-mt-28" style={{ marginBottom: 72 }}>
+            <SectionLabel title="Double DQN instead of plain DQN" />
+            <Body style={{ marginBottom: 16, color: "var(--foreground)" }}>
+              Deep Q-Networks (DQN) learn a score for each action in a given state. Vanilla DQN uses the same
+              network both to pick the best next action and to estimate how good that action is. That can
+              systematically overestimate values, which made training noisier than we wanted.
+            </Body>
+            <Body style={{ color: "var(--foreground)" }}>
+              Double DQN separates those jobs: the online network selects the next action, and a target network
+              evaluates it. That cut overestimation bias and made learning more stable for our discrete hold-or-switch
+              action space, which is why we shipped Double DQN as the final policy.
+            </Body>
+          </section>
+
+          <section id="eval-bug" className="scroll-mt-28" style={{ marginBottom: 72 }}>
+            <SectionLabel title="The evaluation fairness bug we caught" />
+            <Body style={{ marginBottom: 16, color: "var(--foreground)" }}>
+              Early comparison tables looked too good to trust without checking. When we lined up the archived
+              baseline runs against the final Double DQN test logs, the day IDs did not fully match. The baseline
+              batch and the DQN test batch had been evaluated on partially different held-out days.
+            </Body>
+            <Body style={{ marginBottom: 16, color: "var(--foreground)" }}>
+              Publishing a headline average across mismatched days would have been misleading. What tipped us
+              off was comparing the split files and run manifests side by side, not the reward numbers alone.
+            </Body>
+            <Body style={{ color: "var(--foreground)" }}>
+              The fix was simple and strict: for the primary baseline comparison, we only report the three
+              overlapping test days (0, 1, and 4). Pre-train versus post-train comparisons still use identical
+              day sets for the RL agent. That is why the Results numbers below are trustworthy for the claim
+              we actually make.
+            </Body>
+          </section>
+
+          <section id="testing" className="scroll-mt-28" style={{ marginBottom: 72 }}>
+            <SectionLabel title="Testing what could silently break" />
+            <Body style={{ marginBottom: 16, color: "var(--foreground)" }}>
+              Preprocessing bugs are dangerous in this project because SUMO will often run with bad inputs and
+              produce nonsense traffic instead of crashing. We wrote unit and integration tests around route and
+              network generation for that reason.
+            </Body>
+            <Body style={{ marginBottom: 16, color: "var(--foreground)" }}>
+              One concrete worry was overlapping flow intervals on the same route, which could inject impossible
+              demand into the simulator. Tests assert that no two flow elements on the same route share overlapping
+              begin and end times. Another check verifies that generated signal state strings only use valid SUMO
+              characters and consistent lengths, so a malformed phase definition cannot slip through.
+            </Body>
+            <Body style={{ color: "var(--foreground)" }}>
+              We also force a clean failure when <code style={{ fontFamily: MONO, fontSize: 13 }}>netconvert</code> is
+              missing, instead of a half-written network directory that looks complete. Full CLI runs are checked for
+              the expected artifacts (<code style={{ fontFamily: MONO, fontSize: 13 }}>train_log.json</code>,{" "}
+              <code style={{ fontFamily: MONO, fontSize: 13 }}>test_log.json</code>,{" "}
+              <code style={{ fontFamily: MONO, fontSize: 13 }}>final_model.pt</code>). Grid search over rewards and
+              hyperparameters sat on top of that same logging, so failed experiments stayed comparable.
+            </Body>
+          </section>
+
+          <section id="results" className="scroll-mt-28" style={{ marginBottom: 72 }}>
+            <SectionLabel title="Results" />
+            <Body style={{ marginBottom: 20, color: "var(--foreground)" }}>
+              We trained Double DQN for 300 epochs on demand derived from City of Toronto turning-movement counts,
+              then evaluated on held-out days. Against an untrained random policy on the same five DQN test days,
+              mean reward moved from about −1,173 to about +1.61.
+            </Body>
+            <Body style={{ marginBottom: 24, color: "var(--foreground)" }}>
+              On the three overlapping days used for fair baseline comparison, mean reward was about −18.5 for the
+              learned controller, versus about −1,551 for fixed-time and −1,698 for actuated control.
             </Body>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginBottom: 16 }}>
-              {([
-                { name: "Environment",   file: "sumo_environment.py",  color: "var(--primary)",    note: "Wraps SUMO, manages simulation state, handles phase transitions, exposes step/reset." },
-                { name: "Observation",   file: "queue_observation.py", color: "var(--primary)",    note: "Extracts queue length per lane and formats it as the state vector fed to the Q-network." },
-                { name: "Reward",        file: "5 implementations",    color: "rgb(245, 158, 11)",   note: "Pluggable reward functions — each implements the same base interface." },
-                { name: "Policy",        file: "double_dqn.py",        color: "var(--muted-foreground)", note: "Q-network, target network, and update logic. DQN and Double DQN both live here." },
-                { name: "Replay Buffer", file: "uniform.py",           color: "var(--muted-foreground)", note: "Stores (s, a, r, s′, done) tuples and samples random minibatches." },
-                { name: "Scheduler",     file: "cosine.py",            color: "var(--muted-foreground)", note: "Cosine LR scheduling applied to the Q-network optimizer across training epochs." },
-              ] as { name: string; file: string; color: string; note: string }[]).map(({ name, file, color, note }) => (
-                <div key={name} style={{
-                  background: "var(--card)", border: "1px solid var(--border)",
-                  borderRadius: "var(--radius-md)", padding: "16px", borderLeft: `2px solid ${color}`,
-                }}>
-                  <div style={{ fontFamily: MONO, fontSize: 11, color, marginBottom: 2 }}>{name}</div>
-                  <div style={{ fontFamily: MONO, fontSize: 10, color: "var(--muted-foreground)", marginBottom: 10 }}>{file}</div>
-                  <div style={{ fontSize: 12.5, color: "var(--muted-foreground)", lineHeight: 1.6 }}>{note}</div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+                gap: 12,
+                marginBottom: 8,
+              }}
+            >
+              {(
+                [
+                  { label: "Learned policy", value: "−18.5", note: "Mean reward, days 0, 1, 4" },
+                  { label: "Fixed-time", value: "−1,551", note: "Same days, same setup" },
+                  { label: "Actuated", value: "−1,698", note: "Same days, same setup" },
+                ] as const
+              ).map((item) => (
+                <div
+                  key={item.label}
+                  style={{
+                    background: "var(--card)",
+                    border: "1px solid var(--border)",
+                    borderRadius: 12,
+                    padding: "18px 16px",
+                  }}
+                >
+                  <div style={{ fontSize: 12, color: "var(--muted-foreground)", marginBottom: 8 }}>{item.label}</div>
+                  <div style={{ fontFamily: MONO, fontSize: 26, fontWeight: 800, color: "var(--primary)", lineHeight: 1 }}>
+                    {item.value}
+                  </div>
+                  <div style={{ fontSize: 12, color: "var(--muted-foreground)", marginTop: 8, lineHeight: 1.45 }}>
+                    {item.note}
+                  </div>
                 </div>
               ))}
             </div>
+          </section>
 
-            <div style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 10, padding: "22px 24px", marginBottom: 16 }}>
-              <div style={{ fontFamily: MONO, fontSize: 10.5, color: "var(--muted-foreground)", marginBottom: 18, letterSpacing: "0.03em" }}>
-                Connectors
-              </div>
-              <TwoCol gap={28}>
-                <div>
-                  <div style={{ fontFamily: MONO, fontSize: 12, color: "var(--primary)", marginBottom: 8 }}>agent.py</div>
-                  <Body style={{ fontSize: 13.5, color: "var(--foreground)" }}>
-                    Owns the policy and replay buffer. Exposes <Code>act(state)</Code> for epsilon-greedy
-                    action selection and <Code>learn()</Code> for sampling from the buffer and updating the
-                    Q-network. Deliberately knows nothing about the environment or reward function.
-                  </Body>
-                </div>
-                <div>
-                  <div style={{ fontFamily: MONO, fontSize: 12, color: "var(--primary)", marginBottom: 8 }}>trainer.py</div>
-                  <Body style={{ fontSize: 13.5, color: "var(--foreground)" }}>
-                    Orchestrates the training loop. Holds environment, reward function, and scheduler.
-                    Experiments are driven by <Code>reward_configuration.json</Code> and{" "}
-                    <Code>policy_configuration.json</Code> — no code changes between runs.
-                  </Body>
-                </div>
-              </TwoCol>
-            </div>
-
-            <TwoCol gap={10}>
-              <Notice color="var(--primary)" icon="✓">
-                <strong>Baselines are first-class.</strong>{" "}
-                <Code>fixed_time.py</Code> and <Code>actuated.py</Code> live in a dedicated{" "}
-                <Code>baselines/</Code> module with an evaluation script. Comparing against fixed-time is
-                built into the project, not an afterthought.
-              </Notice>
-              <Notice color="rgb(245, 158, 11)" icon="→">
-                <strong>Grid search is already wired up.</strong>{" "}
-                The <Code>experiments/grid_search/</Code> directory holds sweep configurations for
-                systematic hyperparameter exploration. I just need stable training runs before a sweep
-                produces meaningful signal.
-              </Notice>
-            </TwoCol>
-          </div>
-
-          {/* ══ 03 REWARD ENGINEERING ══ */}
-          <div id="rl-rewards" className="scroll-mt-28" style={{ marginBottom: 88 }}>
-            <SectionLabel n={3} title="Reward Engineering" />
-            <Body style={{ marginBottom: 28, color: "var(--foreground)" }}>
-              Reward design has been the majority of the research work so far. Different formulations produce
-              very different agent behaviours even with identical architectures. I built five reward functions,
-              each implementing the same base interface so they&apos;re fully interchangeable in the training loop.
+          <section id="convergence" className="scroll-mt-28" style={{ marginBottom: 72 }}>
+            <SectionLabel title="Convergence: what we did not oversell" />
+            <Body style={{ marginBottom: 16, color: "var(--foreground)" }}>
+              After 300 epochs, exploration rate epsilon was still about 0.49. It had not decayed to the low values
+              we would expect from a fully trained policy. The agent was still exploring a lot of random actions.
             </Body>
+            <Body style={{ marginBottom: 16, color: "var(--foreground)" }}>
+              We treated that as a real limitation, not a footnote. The learning curve still showed clear improvement
+              over the random baseline on identical test days, which is evidence of adaptive behaviour, not proof of a
+              finished optimum.
+            </Body>
+            <Body style={{ color: "var(--foreground)" }}>
+              The natural next step is longer training or a faster epsilon decay schedule, then re-running the same
+              overlapping-day comparison. Until that happens, these results should be read as a strong partially
+              trained controller, not a converged production timing plan.
+            </Body>
+          </section>
 
-            <div style={{
-              display: "flex", gap: 0,
-              border: "1px solid var(--border)",
-              borderRadius: "10px 10px 0 0",
-              overflow: "hidden",
-            }}>
-              {REWARD_TABS.map((tab, i) => {
-                const active = activeReward === tab;
-                return (
-                  <button
-                    key={tab} type="button"
-                    onClick={() => { setActiveReward(tab); }}
-                    className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    style={{
-                      flex: 1, fontFamily: MONO, fontSize: 11,
-                      padding: "12px 8px", cursor: "pointer",
-                      background: active ? "var(--card)" : "transparent",
-                      color: active ? "var(--primary)" : "var(--muted-foreground)",
-                      border: "none",
-                      borderRight: i < REWARD_TABS.length - 1 ? "1px solid var(--border)" : "none",
-                      borderBottom: active ? "2px solid var(--primary)" : "2px solid transparent",
-                      transition: "all 0.15s",
-                    }}
-                  >
-                    {tab}
-                  </button>
-                );
-              })}
+          <section id="stack" className="scroll-mt-28" style={{ marginBottom: 40 }}>
+            <SectionLabel title="Tech stack" />
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              {[
+                "Python",
+                "PyTorch",
+                "SUMO",
+                "TraCI",
+                "Streamlit",
+                "Pandas",
+                "NumPy",
+                "Matplotlib",
+              ].map((tech) => (
+                <span
+                  key={tech}
+                  style={{
+                    fontFamily: MONO,
+                    fontSize: 12,
+                    fontWeight: 500,
+                    color: "var(--primary)",
+                    background: "color-mix(in srgb, var(--primary) 10%, transparent)",
+                    border: "1px solid color-mix(in srgb, var(--primary) 25%, transparent)",
+                    padding: "6px 12px",
+                    borderRadius: 24,
+                  }}
+                >
+                  {tech}
+                </span>
+              ))}
             </div>
-
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeReward}
-                initial={shouldAnimate ? { opacity: 0, y: 8 } : false}
-                animate={{ opacity: 1, y: 0 }}
-                exit={shouldAnimate ? { opacity: 0, y: -8 } : undefined}
-                transition={{
-                  duration: shouldAnimate ? M.duration.routeExit : 0,
-                  ease: easeTuple,
-                  ...safeTransition,
-                }}
-                style={{
-                  background: "var(--card)", border: "1px solid var(--border)",
-                  borderTop: "none", borderRadius: "0 0 10px 10px",
-                  padding: "28px", marginBottom: 20,
-                }}
-              >
-              <div style={{
-                display: "flex", justifyContent: "space-between", alignItems: "center",
-                marginBottom: 20, flexWrap: "wrap", gap: 12,
-              }}>
-                <h3 style={{ fontFamily: SANS, fontSize: 20, fontWeight: 700, color: rd.color, margin: 0 }}>
-                  {activeReward}
-                </h3>
-                <div style={{
-                  fontFamily: MONO, fontSize: 13, color: "var(--primary)",
-                  background: "var(--muted)", border: "1px solid var(--border)",
-                  padding: "9px 16px", borderRadius: 6,
-                }}>
-                  {rd.formula}
-                </div>
-              </div>
-              <Body style={{ marginBottom: 16 }}>{rd.body}</Body>
-              <div style={{ borderLeft: "2px solid rgb(245, 158, 11)", paddingLeft: 14, paddingTop: 2 }}>
-                <span style={{ fontFamily: MONO, fontSize: 10, color: "rgb(245, 158, 11)", display: "block", marginBottom: 4 }}>Risk</span>
-                <span style={{ fontSize: 13, color: "var(--muted-foreground)", lineHeight: 1.7 }}>{rd.risk}</span>
-              </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
+            <Body style={{ marginTop: 28, color: "var(--muted-foreground)", fontSize: 14 }}>
+              Team project with Aydan Karmali and Samreet Johal. Equations, full tables, and appendices are in the
+              final project report linked above.
+            </Body>
+          </section>
         </div>
       </div>
     </WorkReportShell>
   );
 }
-
-

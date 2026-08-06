@@ -4,7 +4,7 @@
  * 2. Append a `KaggleProject` with `reportSlug` matching that slug, plus `githubUrl`, `date`, `tags`, `summary`, `highlights`, optional `cardMetrics` / `notebookUrl`.
  * 3. Put figures in `client/public/portfolio/notebooks/<slug>/`; use `WorkFigure` with `placeholder` until assets exist.
  * 4. Run `npm run check` and open `/data/<id>` (canonical detail, e.g. data-1). Legacy `/ml/kaggle-*` and `/data/kaggle-*` redirect to `/data/data-*`.
- * 5. Home spotlight IDs live in `lib/content/home/spotlightConfig.ts`; full list is on `/projects` (Data Analytics/Science section). Legacy `/ml` and `/data` list routes also show that page.
+ * 5. Full list is on `/projects` (Data Analytics/Science section). Legacy `/ml` and `/data` list routes also show that page.
  */
 
 import type { KaggleProject } from "../interfaces";
@@ -26,7 +26,7 @@ export const kaggleProjects: KaggleProject[] = [
     reportSlug: "atozdeals-powerbi",
     notebookUrl:
       "https://app.fabric.microsoft.com/view?r=eyJrIjoiMGM1NDUzOTUtNWUxZi00MzYzLTlhOTktMzJiOGJiNThhYjgxIiwidCI6IjZhNTIxNDI3LTI3NDYtNGZmMC1iNjRlLWQ5NWM0NzUyZmY4YyJ9",
-    tags: ["Power BI", "Sales Analytics", "Dashboard"],
+    tags: ["Power BI"],
     highlights: [],
   },
   {
@@ -39,6 +39,7 @@ export const kaggleProjects: KaggleProject[] = [
     reportSlug: "fraud-anomaly",
     notebookUrl:
       "https://nbviewer.org/github/amJenish/Transaction-Fraud-Detection-Notebook/tree/main/",
+    tags: ["Anomaly Detection"],
     highlights: [],
   },
   {
@@ -50,6 +51,7 @@ export const kaggleProjects: KaggleProject[] = [
     githubUrl: "https://github.com/amJenish/Job-Resume-Matching",
     reportSlug: "job-resume",
     notebookUrl: "https://nbviewer.org/github/amJenish/Job-Resume-Matching/blob/main/Main.ipynb",
+    tags: ["NLP"],
     highlights: [],
   },
   {
@@ -62,6 +64,7 @@ export const kaggleProjects: KaggleProject[] = [
     reportSlug: "telco-churn",
     notebookUrl:
       "https://nbviewer.org/github/amJenish/Telco-Customer-Churn-Prediction/blob/main/Analysis%20and%20Modeling.ipynb",
+    tags: ["Classification"],
     highlights: [],
   },
   {
@@ -74,6 +77,7 @@ export const kaggleProjects: KaggleProject[] = [
     reportSlug: "house-prices",
     notebookUrl:
       "https://nbviewer.org/github/amJenish/House-Prices-Advanced-Regression/blob/main/House%20Prices%20Advanced%20Regression%20Techniques.ipynb",
+    tags: ["Regression"],
     highlights: [],
   },
 ];

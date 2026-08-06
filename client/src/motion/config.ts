@@ -38,7 +38,6 @@ export const MOTION_CONFIG = {
   sectionAccentDelay: 0.15,
   /** Home hero orchestration delays (seconds) */
   heroGraphicDelay: 0.2,
-  heroSubheadDelay: 0.55,
   heroCtaDelay: 0.75,
   /** Availability badge cursor blink */
   heroCursorBlinkDuration: 1.1,
