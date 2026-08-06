@@ -1,14 +1,14 @@
 import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import { BackToList } from "@/components/work/BackToList";
+import { Button } from "@/components/ui/button";
 import type { WorkPageProps } from "@/content/portfolio/workPageTypes";
 import { FONT_MONO, FONT_SANS } from "@/lib/theme";
+import { Github } from "lucide-react";
 import type { ReactNode } from "react";
 
 function ReportCatalogHero({
-  categoryLabel,
   entry,
 }: {
-  categoryLabel: string;
   entry: WorkPageProps["entry"];
 }) {
   return (
@@ -56,29 +56,12 @@ function ReportCatalogHero({
       />
 
       <div style={{ maxWidth: 960, margin: "0 auto", padding: "0 40px", position: "relative" }}>
-        {/* Category + date — small, monospace, tertiary hierarchy */}
-        <p
-          style={{
-            fontFamily: FONT_MONO,
-            fontSize: 11,
-            fontWeight: 600,
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            color: "var(--primary)",
-            marginBottom: 20,
-          }}
-        >
-          {categoryLabel}
-          {entry.date ? ` · ${entry.date}` : ""}
-        </p>
-
-        {/* Title — maximum hierarchy, largest element */}
         <h1
           style={{
             fontFamily: FONT_SANS,
             fontSize: "clamp(28px, 4.5vw, 48px)",
             fontWeight: 800,
-            margin: "0 0 18px",
+            margin: "0 0 28px",
             lineHeight: 1.08,
             letterSpacing: "-0.03em",
             color: "var(--foreground)",
@@ -87,25 +70,16 @@ function ReportCatalogHero({
           {entry.title}
         </h1>
 
-        {/* Summary — secondary hierarchy, comfortable reading size */}
-        {entry.summary ? (
-          <p
-            style={{
-              fontFamily: FONT_SANS,
-              fontSize: 16,
-              color: "var(--muted-foreground)",
-              lineHeight: 1.8,
-              margin: "0 0 28px",
-              maxWidth: 680,
-            }}
-          >
-            {entry.summary}
-          </p>
-        ) : null}
-
-        {/* Tags — tertiary, small pills */}
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          {entry.tags?.map((tag) => (
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+          {entry.githubUrl ? (
+            <Button asChild size="lg" variant="default" className="gap-2 font-mono text-xs font-bold">
+              <a href={entry.githubUrl} target="_blank" rel="noopener noreferrer">
+                <Github className="h-4 w-4" />
+                GitHub
+              </a>
+            </Button>
+          ) : null}
+          {entry.tags?.slice(0, 1).map((tag) => (
             <span
               key={tag}
               style={{
@@ -135,8 +109,6 @@ export function WorkReportShell({
   entry,
   backHref,
   backLabel,
-  categoryLabel,
-  sections,
   ownsHero,
   children,
 }: WorkReportShellProps) {
@@ -156,7 +128,7 @@ export function WorkReportShell({
       </div>
 
       {/* Hero — only rendered when page doesn't own it */}
-      {!ownsHero ? <ReportCatalogHero categoryLabel={categoryLabel} entry={entry} /> : null}
+      {!ownsHero ? <ReportCatalogHero entry={entry} /> : null}
 
       {/* Content */}
       {children}

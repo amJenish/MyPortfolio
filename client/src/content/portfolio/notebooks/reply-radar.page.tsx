@@ -89,17 +89,11 @@ export default function ReplyRadarReport(props: WorkPageProps) {
           }} />
 
           <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(1rem, 4vw, 3rem)", position: "relative" }}>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 20, alignItems: "center" }}>
-              <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: "var(--muted-foreground)" }}>
-                AI Automation · Windows Utility · Productivity Tool
-              </span>
-            </div>
-
             <h1 style={{
               fontFamily: FONT_SANS,
               fontSize: "clamp(30px, 4.5vw, 54px)",
               fontWeight: 800,
-              margin: "0 0 20px",
+              margin: "0 0 28px",
               lineHeight: 1.12,
               color: "var(--foreground)",
               letterSpacing: -1,
@@ -108,38 +102,7 @@ export default function ReplyRadarReport(props: WorkPageProps) {
               <span style={{ color: COLORS.primary }}>Your Silent Inbox Guardian</span>
             </h1>
 
-            <Body style={{ maxWidth: 660, marginBottom: 24, color: "var(--foreground)" }}>
-              Professionals often spend hours sifting through noise like newsletters and automated updates. I built ReplyRadar to act as a digital filter: a background agent that uses Llama 3 to find the emails that actually need a human touch.
-            </Body>
-
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))",
-                gap: 12,
-                borderTop: "1px solid var(--border)",
-                borderBottom: "1px solid var(--border)",
-                padding: "20px 0",
-                marginBottom: 24,
-              }}
-            >
-              {[
-                { value: "60s", label: "Cycle", sub: "Wakes every minute" },
-                { value: "5", label: "Core Modules", sub: "Agent plus four services" },
-                { value: "3d", label: "Default Stop Window", sub: "Stop reminding after N days" },
-                { value: "8h", label: "Default Reminder", sub: "Follow-up cadence" },
-              ].map((metric) => (
-                <div key={metric.label} style={{ padding: "8px 0" }}>
-                  <div style={{ fontFamily: FONT_MONO, fontSize: 30, fontWeight: 800, color: COLORS.primary, lineHeight: 1, marginBottom: 8 }}>
-                    {metric.value}
-                  </div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 2 }}>{metric.label}</div>
-                  <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>{metric.sub}</div>
-                </div>
-              ))}
-            </div>
-
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center", marginBottom: 24 }}>
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
               <Button asChild size="lg" variant="default" className="gap-2 font-mono text-xs font-bold">
                 <a href={props.entry.githubUrl} target="_blank" rel="noopener noreferrer">
                   <Github className="h-4 w-4" />
@@ -162,9 +125,8 @@ export default function ReplyRadarReport(props: WorkPageProps) {
                   </a>
                 </Button>
               ) : null}
+              <CatalogTagPills tags={props.entry.tags} />
             </div>
-
-            <CatalogTagPills tags={props.entry.tags} />
           </div>
         </div>
 

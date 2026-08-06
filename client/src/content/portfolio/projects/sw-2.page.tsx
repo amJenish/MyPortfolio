@@ -185,48 +185,14 @@ export default function GeeseMapPage(props: WorkPageProps) {
             <h1 style={{
               fontFamily: SANS,
               fontSize: "clamp(30px, 4.5vw, 54px)",
-              fontWeight: 800, margin: "0 0 20px",
+              fontWeight: 800, margin: "0 0 28px",
               lineHeight: 1.12, letterSpacing: -1, color: "var(--foreground)",
             }}>
               Geese Map<br />
               <span style={{ color: "var(--primary)" }}>A location-aware social heatmap</span>
             </h1>
 
-            <Body style={{ maxWidth: 1280, marginBottom: 12, color: "var(--foreground)" }}>
-              A microservices-based backend that powers a location-aware social heatmap. Users upload photos taken at a location; the system verifies the image content, extracts GPS and timestamp metadata from EXIF data, and aggregates the resulting post records into a heatmap dataset. Each concern is handled by a dedicated service.
-            </Body>
-            <Body style={{ maxWidth: 1280, marginBottom: 36, color: "var(--foreground)" }}>
-              The system comprises five domain services (AccountService, ImageUploadService, ImageVerificationService, MetadataExtractionService, PostService) and a ServiceRegistry for service discovery. ImageVerificationService is written in Python to take advantage of Roboflow's ML Model ; the remaining services are Java and Spring Boot.
-            </Body>
-
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-                gap: 12,
-                borderTop: "1px solid var(--border)",
-                borderBottom: "1px solid var(--border)",
-                padding: "20px 0",
-                marginBottom: 24,
-              }}
-            >
-              {[
-                { value: "5", label: "Domain Services", sub: "Auth, upload, verify, metadata, orchestration" },
-                { value: "1", label: "Python Service", sub: "Image verification via Roboflow" },
-                { value: "2", label: "External APIs", sub: "IBM COS and Roboflow" },
-                { value: "6", label: "Deployable Units", sub: "Five services plus Eureka" },
-              ].map((metric) => (
-                <div key={metric.label} style={{ padding: "8px 0" }}>
-                  <div style={{ fontFamily: MONO, fontSize: 30, fontWeight: 800, color: "var(--primary)", lineHeight: 1, marginBottom: 8 }}>
-                    {metric.value}
-                  </div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 2 }}>{metric.label}</div>
-                  <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>{metric.sub}</div>
-                </div>
-              ))}
-            </div>
-
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center", marginBottom: 24 }}>
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
               <Button asChild size="lg" variant="default" className="gap-2 font-mono text-xs font-bold">
                 <a href={props.entry.githubUrl} target="_blank" rel="noopener noreferrer">
                   <Github className="h-4 w-4" />
@@ -249,9 +215,8 @@ export default function GeeseMapPage(props: WorkPageProps) {
                   </a>
                 </Button>
               ) : null}
+              <CatalogTagPills tags={props.entry.tags} />
             </div>
-
-            <CatalogTagPills tags={props.entry.tags} />
           </div>
         </div>
 

@@ -53,20 +53,6 @@ export default function RLTrafficReport(props: WorkPageProps): React.JSX.Element
           />
 
           <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(1rem, 4vw, 3rem)", position: "relative" }}>
-            <p
-              style={{
-                fontFamily: MONO,
-                fontSize: 11,
-                fontWeight: 600,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: "var(--primary)",
-                marginBottom: 20,
-              }}
-            >
-              Reinforcement Learning
-            </p>
-
             <h1
               className="gradient-heading"
               style={{

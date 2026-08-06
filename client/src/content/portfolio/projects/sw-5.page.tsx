@@ -91,48 +91,14 @@ export default function RAGStudyAssistantPage(props: WorkPageProps) {
             <h1 style={{
               fontFamily: SANS,
               fontSize: "clamp(30px, 4.5vw, 54px)",
-              fontWeight: 800, margin: "0 0 20px",
+              fontWeight: 800, margin: "0 0 28px",
               lineHeight: 1.12, letterSpacing: -1, color: "var(--foreground)",
             }}>
               RAG + LLM<br />
               <span style={{ color: COLORS.teal }}>Study assistant for papers and articles</span>
             </h1>
 
-            <Body style={{ maxWidth: 1280, marginBottom: 12, color: "var(--foreground)" }}>
-              A full-stack retrieval-augmented generation (RAG) system that helps students and researchers explore papers and articles effectively. Users upload PDFs, and the system indexes them using semantic chunking and dense embeddings. Questions are answered by retrieving relevant sections and generating grounded responses via LLaMA 3.2.
-            </Body>
-            <Body style={{ maxWidth: 1280, marginBottom: 36, color: "var(--foreground)" }}>
-              The architecture separates ingestion (asynchronous, compute-heavy) from retrieval (synchronous, latency-sensitive). ElasticSearch provides hybrid keyword + vector search. The FastAPI backend orchestrates the RAG pipeline. React with Blueprint UI provides the frontend. Everything runs in Docker containers.
-            </Body>
-
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-                gap: 12,
-                borderTop: "1px solid var(--border)",
-                borderBottom: "1px solid var(--border)",
-                padding: "20px 0",
-                marginBottom: 24,
-              }}
-            >
-              {[
-                { value: "2", label: "Pipelines", sub: "Ingestion and retrieval" },
-                { value: "3", label: "LLM Calls", sub: "Summarize, rewrite, answer" },
-                { value: "3", label: "Backend Modules", sub: "DataManagement, RAG, core" },
-                { value: "3", label: "Containers", sub: "API, ElasticSearch, frontend" },
-              ].map((metric) => (
-                <div key={metric.label} style={{ padding: "8px 0" }}>
-                  <div style={{ fontFamily: MONO, fontSize: 30, fontWeight: 800, color: COLORS.teal, lineHeight: 1, marginBottom: 8 }}>
-                    {metric.value}
-                  </div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 2 }}>{metric.label}</div>
-                  <div style={{ fontSize: 12, color: "var(--muted-foreground)" }}>{metric.sub}</div>
-                </div>
-              ))}
-            </div>
-
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center", marginBottom: 24 }}>
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
               <Button asChild size="lg" variant="default" className="gap-2 font-mono text-xs font-bold">
                 <a href={props.entry.githubUrl} target="_blank" rel="noopener noreferrer">
                   <Github className="h-4 w-4" />
@@ -155,9 +121,8 @@ export default function RAGStudyAssistantPage(props: WorkPageProps) {
                   </a>
                 </Button>
               ) : null}
+              <CatalogTagPills tags={props.entry.tags} />
             </div>
-
-            <CatalogTagPills tags={props.entry.tags} />
           </div>
         </div>
 

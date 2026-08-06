@@ -33,32 +33,24 @@ export function Tag({ children, color = ACCENT }: { children: ReactNode; color?:
  */
 export function CatalogTagPills({ tags }: { tags?: readonly string[] }): React.JSX.Element | null {
   if (!tags?.length) return null;
+  const tag = tags[0];
   return (
     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-      {tags.map((tag, index) => (
-        <span
-          key={tag}
-          style={{
-            fontFamily: FONT_MONO,
-            fontSize: 11,
-            fontWeight: 500,
-            color: index === 0 ? ACCENT : PRIMARY,
-            background:
-              index === 0
-                ? "color-mix(in srgb, var(--accent-highlight) 12%, transparent)"
-                : "color-mix(in srgb, var(--primary) 10%, transparent)",
-            border:
-              index === 0
-                ? "1px solid color-mix(in srgb, var(--accent-highlight) 28%, transparent)"
-                : "1px solid color-mix(in srgb, var(--primary) 25%, transparent)",
-            padding: "4px 12px",
-            borderRadius: 24,
-            letterSpacing: "0.04em",
-          }}
-        >
-          {tag}
-        </span>
-      ))}
+      <span
+        style={{
+          fontFamily: FONT_MONO,
+          fontSize: 11,
+          fontWeight: 500,
+          color: ACCENT,
+          background: "color-mix(in srgb, var(--accent-highlight) 12%, transparent)",
+          border: "1px solid color-mix(in srgb, var(--accent-highlight) 28%, transparent)",
+          padding: "4px 12px",
+          borderRadius: 24,
+          letterSpacing: "0.04em",
+        }}
+      >
+        {tag}
+      </span>
     </div>
   );
 }

@@ -6,6 +6,8 @@ import {
   AreaChart, Area,
   ComposedChart, ReferenceLine, ScatterChart, Scatter, ZAxis,
 } from "recharts";
+import { Button } from "@/components/ui/button";
+import { Github } from "lucide-react";
 import {
   Body,
   Code,
@@ -240,21 +242,20 @@ export default function FraudDetectionAnalysis(props: WorkPageProps) {
           <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle, var(--border) 1px, transparent 1px)", backgroundSize: "28px 28px", opacity: 0.4 }} />
           <div style={{ position: "absolute", top: "-20%", left: "60%", width: 600, height: 600, background: "radial-gradient(ellipse, rgba(245,158,11,0.08) 0%, transparent 65%)", pointerEvents: "none" }} />
           <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(1rem, 4vw, 3rem)", position: "relative" }}>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 20, alignItems: "center" }}>
-              <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: "var(--muted-foreground)" }}>Data Analysis · Fraud Detection · Financial Behaviour</span>
-              <Tag color={CHART_COLORS.success}>Complete</Tag>
-            </div>
-            <h1 style={{ fontFamily: FONT_SANS, fontSize: "clamp(36px, 5vw, 62px)", fontWeight: 700, margin: "0 0 16px", lineHeight: 1.15, color: "var(--foreground)", letterSpacing: -0.02 }}>
+            <h1 style={{ fontFamily: FONT_SANS, fontSize: "clamp(36px, 5vw, 62px)", fontWeight: 700, margin: "0 0 28px", lineHeight: 1.15, color: "var(--foreground)", letterSpacing: -0.02 }}>
               Transaction Fraud Anomaly<br /><span style={{ color: CHART_COLORS.primary }}>Analysis and Detection</span>
             </h1>
-            <Body style={{ maxWidth: 660, marginBottom: 24 }}>
-              This report studies the PaySim synthetic financial dataset to answer three questions:
-              what fraudulent transactions look like, which observable patterns make them detectable,
-              and how far a realistic detection model can reasonably go. The analysis is organised
-              as an introduction, a question-oriented body, conclusions, and an appendix with
-              supporting technical detail.
-            </Body>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{props.entry.tags?.map((t) => <Tag key={t}>{t}</Tag>)}</div>
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+              {props.entry.githubUrl ? (
+                <Button asChild size="lg" variant="default" className="gap-2 font-mono text-xs font-bold">
+                  <a href={props.entry.githubUrl} target="_blank" rel="noopener noreferrer">
+                    <Github className="h-4 w-4" />
+                    GitHub
+                  </a>
+                </Button>
+              ) : null}
+              {props.entry.tags?.slice(0, 1).map((t) => <Tag key={t}>{t}</Tag>)}
+            </div>
           </div>
         </div>
 

@@ -1,4 +1,6 @@
 import { type ReactNode } from "react";
+import { Button } from "@/components/ui/button";
+import { Github } from "lucide-react";
 import {
   CatalogTagPills,
   Body,
@@ -96,21 +98,24 @@ export default function StudentEnrollmentPage(props: WorkPageProps) {
             <h1 style={{
               fontFamily: SANS,
               fontSize: "clamp(30px, 4.5vw, 54px)",
-              fontWeight: 800, margin: "0 0 20px",
+              fontWeight: 800, margin: "0 0 28px",
               lineHeight: 1.12, letterSpacing: -1, color: "var(--foreground)",
             }}>
               Student Enrollment<br />
               <span style={{ color: COLORS.teal }}>Academic administration system</span>
             </h1>
 
-            <Body style={{ maxWidth: 1280, marginBottom: 12, color: "var(--foreground)" }}>
-              A servlet-based academic administration platform built in Java that manages the full lifecycle of student enrollment: from program selection and prerequisite validation through schedule conflict detection and course registration. The system supports three distinct user roles (Student, Professor, Administrator), each with scoped permissions and a dedicated service boundary.
-            </Body>
-            <Body style={{ maxWidth: 1280, marginBottom: 36, color: "var(--foreground)" }}>
-              The architecture follows a strict layered separation between HTTP handling, business logic, and data access. Thirteen dedicated data access objects, nine service classes, and a shared helper layer handle cross-cutting concerns like data validation and query construction. All database interaction goes through JDBC with prepared statements.
-            </Body>
-
-            <CatalogTagPills tags={props.entry.tags} />
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+              {props.entry.githubUrl ? (
+                <Button asChild size="lg" variant="default" className="gap-2 font-mono text-xs font-bold">
+                  <a href={props.entry.githubUrl} target="_blank" rel="noopener noreferrer">
+                    <Github className="h-4 w-4" />
+                    GitHub
+                  </a>
+                </Button>
+              ) : null}
+              <CatalogTagPills tags={props.entry.tags} />
+            </div>
           </div>
         </div>
 

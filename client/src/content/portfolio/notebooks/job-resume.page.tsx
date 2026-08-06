@@ -4,12 +4,16 @@ import {
   ResponsiveContainer, Cell, ReferenceLine,
 } from "recharts";
 import { AnimatePresence, motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Github } from "lucide-react";
 import { MOTION_CONFIG as M } from "@/motion/config";
 import { useSafeMotion } from "@/motion/useSafeMotion";
 
 import { FONT_MONO, FONT_SANS } from "./notebookTheme";
 import { Body, ReportSectionLabel, Tag } from "../reportPrimitives";
 import { AnalysisBlock, Callout, ChartCard, KPI, Mono } from "@/components/work/reportWidgets";
+import type { WorkPageProps } from "../workPageTypes";
+import { WorkReportShell } from "@/components/work/WorkReportShell";
 
 // ── STANDARD CHART COLORS ──────────────────────────────────────────────────
 
@@ -25,10 +29,6 @@ const P = {
   purple: "#a855f7",
   bg: "var(--background)",
 } as const;
-
-
-import type { WorkPageProps } from "../workPageTypes";
-import { WorkReportShell } from "@/components/work/WorkReportShell";
 
 
 
@@ -207,19 +207,12 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
         />
 
         <div style={{ maxWidth: 980, margin: "0 auto", padding: "0 clamp(1rem, 4vw, 3rem)", position: "relative" }}>
-          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 20, alignItems: "center" }}>
-            <span style={{ fontFamily: FONT_MONO, fontSize: 11, color: "var(--muted-foreground)" }}>
-              NLP · Representation Learning · Binary Classification · ATS
-            </span>
-            <Tag color={CHART_COLORS.success}>Complete</Tag>
-          </div>
-
           <h1
             style={{
               fontFamily: FONT_SANS,
               fontSize: "clamp(36px, 5vw, 62px)",
               fontWeight: 700,
-              margin: "0 0 16px",
+              margin: "0 0 28px",
               lineHeight: 1.15,
               color: "var(--foreground)",
               letterSpacing: -0.02,
@@ -230,21 +223,16 @@ export default function ResumeJobMatchingReport(props: WorkPageProps) {
             <span style={{ color: CHART_COLORS.primary }}>Representation vs. Classifier</span>
           </h1>
 
-          <Body style={{ maxWidth: 660, marginBottom: 24, color: "var(--foreground)" }}>
-            When an ML system improves, it's often unclear whether credit belongs to a better representation or a more expressive classifier. I built a controlled framework to answer that question in the context of Applicant Tracking Systems:{" "}
-            <strong style={{ color: "var(--foreground)" }}>
-              how much of the gain comes from learning better embeddings, and how much from choosing a more powerful model?
-            </strong>
-          </Body>
-
-          <Body style={{ maxWidth: 660, marginBottom: 36, color: "var(--foreground)" }}>
-            Across five staged experiments, I found that representation learning alone lifted F1 from{" "}
-            <strong style={{ color: "var(--foreground)" }}>60% to 84%</strong> under a fixed linear classifier. Switching to a nonlinear MLP then pushed it further to{" "}
-            <strong style={{ color: "var(--foreground)" }}>88%</strong>, suggesting the two contributions are sequential rather than interchangeable.
-          </Body>
-
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            {props.entry.tags?.map((t) => (
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+            {props.entry.githubUrl ? (
+              <Button asChild size="lg" variant="default" className="gap-2 font-mono text-xs font-bold">
+                <a href={props.entry.githubUrl} target="_blank" rel="noopener noreferrer">
+                  <Github className="h-4 w-4" />
+                  GitHub
+                </a>
+              </Button>
+            ) : null}
+            {props.entry.tags?.slice(0, 1).map((t) => (
               <Tag key={t}>{t}</Tag>
             ))}
           </div>
